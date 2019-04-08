@@ -133,12 +133,13 @@ int main(void){
 		if(controller.press(RPDS3::SQUARE)){
 			if(hanger_flag == true){
 				ms.send(MECHANISM_MDD_NUM,3,1);
-             
+
 				hanger_flag = false;
 			}else{
-                                ms.send(MECHANISM_MDD_NUM,3,2);
+				ms.send(MECHANISM_MDD_NUM,3,2);
 				hanger_flag = true;
 			}
+			std::cout << "sqrt" << std::endl;
 		}
 		//コートチェンジ
 		if(controller.press(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
@@ -154,7 +155,7 @@ int main(void){
 
 		//回収機構のアーム
 
-                right_theta = std::atan2(right_y,right_x) + M_PI;
+		right_theta = std::atan2(right_y,right_x) + M_PI;
 
 		if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
                 	arms_x = 0;
@@ -182,6 +183,7 @@ int main(void){
 				ms.send(MECHANISM_MDD_NUM,BOX,0);
 				box_flag = true;	
 			}	
+		std::cout << "まるまる！"<< std::endl;
 		}
 
 		if(controller.button(RPDS3::R1) == true){
@@ -235,6 +237,7 @@ int main(void){
 				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
 			}
 		}
+		std::cout << "-1" << std::endl;
 	}
 	ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
 	ms.send(MECHANISM_MDD_NUM,Z_ARM,0);
