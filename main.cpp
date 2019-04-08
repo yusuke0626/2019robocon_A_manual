@@ -19,7 +19,7 @@ int main(void){
 	constexpr short BOX = 2;
 	constexpr short Z_ARM = 5; 
 	constexpr short Y_ARM = 4;
-	constexpr short PWM_MAX_VALUE = 50;
+	constexpr short PWM_MAX_VALUE = 150;
 	constexpr short RIGHT_T_ARM = 2;
 	constexpr short LEFT_T_ARM = 3;
 	constexpr short TOWEL_SOLENOID = 4;
