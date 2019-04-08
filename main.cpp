@@ -80,13 +80,27 @@ int main(void){
 		double right_x = controller.stick(RPDS3::RIGHT_X) * changer;
 		double right_y = controller.stick(RPDS3::RIGHT_Y) ;
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
+		int y;
+		int x==1;
 
 		int t_arm_limit_1;
 		int t_arm_limit_2;
 
 		double theta = 0;
 
+<<<<<<< HEAD
 		left_theta = std::atan2(-left_y,left_x) + M_PI;
+=======
+		if(controller.press(RPDS3::CIRCLE)){
+			if(left_hanger_flag == true){
+				ms.send(MECHANISM_MDD_NUM,HANGER_RIGHT_SOLENOID,262);
+				left_hanger_flag = true;
+			}else{
+				ms.send(MECHANISM_MDD_NUM,HANGER_RIGHT_SOLENOID,-262);
+				left_hanger_flag = true;
+			}
+		}
+>>>>>>> origin/master
 
 		if(left_distance > PWM_MAX_VALUE){
 			left_distance = PWM_MAX_VALUE;
@@ -184,6 +198,27 @@ int main(void){
 			}	
 		std::cout << "まるまる！"<< std::endl;
 		}
+<<<<<<< HEAD
+=======
+
+		//revolve = (controller.stick(RPDS3::LEFT_T) - controller.stick(RPDS3::RIGHT_T)) * 0.3;
+
+                        //std::cout << -right_distance <<"::"<< right_distance<< std::endl;
+                        //std::cout << right_front<< std::endl;
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, -right_distance * right_front * 0.4 * regulation + revolve);//左前
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  -right_distance * right_back  * 0.4 * regulation + revolve);//左後
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, right_distance * right_back  * 0.4 * regulation + revolve);//右前
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  right_distance * right_front * 0.4 * regulation + revolve);//右後 
+                //}else{
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,  -right_y * 0.5 * regulation);
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,   -right_y * 0.5 * regulation);
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, left_y * 0.5 * regulation);
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  left_y * 0.5 * regulation);
+                //}
+
+
+	
+>>>>>>> origin/master
 
 		if(controller.button(RPDS3::R1) == true){
 			regulation = 0.5;
