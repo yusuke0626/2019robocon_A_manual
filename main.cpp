@@ -51,13 +51,9 @@ int main(void){
 	gpioSetMode(16,PI_PUD_UP);
 
 	bool hanger_flag = true;
-
 	bool box_flag = true;
-
 	bool coat_flag = true;
-
 	bool towel_flag = true;
-
 	bool moving_flag = false;
 
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
@@ -132,11 +128,11 @@ int main(void){
 		//ハンガー昇降機構
 		if(controller.press(RPDS3::SQUARE)){
 			if(hanger_flag == true){
-				ms.send(MECHANISM_MDD_NUM,3,1);
-
+				ms.send(MECHANISM_MDD_NUM,6,1);
+				ms.send(MECHANISM_MDD_NUM,6,2);
 				hanger_flag = false;
 			}else{
-				ms.send(MECHANISM_MDD_NUM,3,2);
+				ms.send(MECHANISM_MDD_NUM,6,0);
 				hanger_flag = true;
 			}
 			std::cout << "sqrt" << std::endl;
