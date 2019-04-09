@@ -137,10 +137,11 @@ int main(void){
 		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, -left_distance * left_back  * 0.4 * regulation + revolve);
 		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  -left_distance * left_front * 0.4 * regulation + revolve); 
 
-		//ハンガー昇降機構
-		if(controller.press(RPDS3::SQUARE)){
+		//ハンガー昇降機（△　）
+		if(controller.press(RPDS3::TRIANGLE)){
 			if(hanger_flag == true){
 				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,263);
+			//	ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,262);
              
 				hanger_flag = false;
 			}else{
@@ -148,7 +149,7 @@ int main(void){
 				hanger_flag = true;
 			}
 		}
-		//コートチェンジ
+		//コートチェンジ（SELECT　＋　△　）
 		if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
 			if(coat_flag == true){
 				changer = -1;
@@ -160,7 +161,7 @@ int main(void){
 		}
 
 
-		//回収機構のアーム
+		//回収機構のアーム（右スティック）
 
                 right_theta = std::atan2(right_y,right_x) + M_PI;
 
@@ -182,7 +183,7 @@ int main(void){
 		ms.send(MECHANISM_MDD_NUM,Z_ARM,arms_y * 2 * regulation * -1);
 		
 		//回収機構の箱
-		if(controller.press(RPDS3::CROSS)){
+		if(controller.press(RPDS3::SQUARE)){
 			if(box_flag == true){
 				ms.send(MECHANISM_MDD_NUM,BOX,263);
 				box_flag = false;
