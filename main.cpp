@@ -19,13 +19,12 @@ int main(void){
 	constexpr short BOX = 2;
 	constexpr short Z_ARM = 5; 
 	constexpr short Y_ARM = 4;
-	constexpr short PWM_MAX_VALUE = 150;
+	constexpr short PWM_MAX_VALUE = 50;
 	constexpr short RIGHT_T_ARM = 2;
 	constexpr short LEFT_T_ARM = 3;
 	constexpr short TOWEL_SOLENOID = 4;
 	//constexpr short STICK_MAX_VALUE = 250;
-	constexpr short HANGER_LEFT_SOLENOID = 3;
-	constexpr short HANGER_RIGHT_SOLENOID = 3;
+	constexpr short HANGER_SOLENOID = 3;
 	//constexpr short POWER_WINDOW_MOTOR_NUM = 4;
 
 	double regulation = 0.3;
@@ -67,7 +66,6 @@ int main(void){
 
 	int right_moving_mode = 1;
 	int left_moving_mode = 1;
-
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
 		double left_distance = 0;
@@ -143,14 +141,13 @@ int main(void){
 		//ハンガー昇降機構
 		if(controller.press(RPDS3::SQUARE)){
 			if(hanger_flag == true){
-				ms.send(MECHANISM_MDD_NUM,3,1);
-
+				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,1);
+             
 				hanger_flag = false;
 			}else{
-				ms.send(MECHANISM_MDD_NUM,3,2);
+                                ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,2);
 				hanger_flag = true;
 			}
-			std::cout << "sqrt" << std::endl;
 		}
 		//コートチェンジ
 		if(controller.press(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
@@ -166,7 +163,7 @@ int main(void){
 
 		//回収機構のアーム
 
-		right_theta = std::atan2(right_y,right_x) + M_PI;
+                right_theta = std::atan2(right_y,right_x) + M_PI;
 
 		if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
                 	arms_x = 0;
@@ -194,7 +191,6 @@ int main(void){
 				ms.send(MECHANISM_MDD_NUM,BOX,0);
 				box_flag = true;	
 			}	
-		std::cout << "まるまる！"<< std::endl;
 		}
 
 		if(controller.button(RPDS3::R1) == true){
@@ -217,8 +213,8 @@ int main(void){
 
 		t_arm_limit_right_up = gpioRead(12);
 		t_arm_limit_right_down = gpioRead(16);
-                t_arm_limit_right_up = gpioRead(11);
-                t_arm_limit_right_down = gpioRead(22);
+                t_arm_limit_left_up = gpioRead(11);
+                t_arm_limit_left_down = gpioRead(22);
 
 		//バスタオルのアーム
 
@@ -250,10 +246,10 @@ int main(void){
 			} 
 
 			//右リミットスイッチの反応
-			if(right_moving_mode == 2 && t_arm_limit_right_up == 0){
+			if(right_moving_mode == 2 && t_arm_limit_right_up == 1){
                                 right_moving_mode = 1;
                                 ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
-			}else if(right_moving_mode == 3 && t_arm_limit_right_down == 0){
+			}else if(right_moving_mode == 3 && t_arm_limit_right_down == 1){
                                 right_moving_mode = 1;
                                 ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
 			}
@@ -268,7 +264,6 @@ int main(void){
                         }
 
 		}
-		std::cout << "-1" << std::endl;
 	}
 	ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
 	ms.send(MECHANISM_MDD_NUM,Z_ARM,0);
