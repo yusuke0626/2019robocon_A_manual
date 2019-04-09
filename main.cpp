@@ -255,10 +255,10 @@ int main(void){
 			}
 			
 			//左リミットスイッチの反応
-			if(left_moving_mode == 2 && t_arm_limit_left_up == 0){
+			if(left_moving_mode == 2 && t_arm_limit_left_up == 1){
                                 left_moving_mode = 1;
                                 ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
-                        }else if(left_moving_mode == 3 && t_arm_limit_left_down == 0){
+                        }else if(left_moving_mode == 3 && t_arm_limit_left_down == 1){
                                 left_moving_mode = 1;
                                 ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
                         }
