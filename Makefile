@@ -1,5 +1,7 @@
 Main: PigpioMS.o RasPiDS3.o main.o
 	g++ -Wall main.cpp -o Main RasPiDS3.o PigpioMS.o -lpigpio -std=c++11 -pthread -lrt
+Limit: 
+	g++ -Wall limit_test.cpp -o Limit -lpigpio -std=c++11 -pthread -lrt
 morizumi: PigpioMS.o RasPiDS3.o main_by_yootee.o
 	g++ -Wall main_by_yootee.cpp -o morizumi RasPiDS3.o PigpioMS.o -lpigpio -std=c++11 -pthread -lrt
 PigpioMS.o: ./PigpioMS/PigpioMS.cpp
