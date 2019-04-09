@@ -17,7 +17,7 @@ int main(void){
 	constexpr short RIGHT_BACK_MOTOR_NUM  = 2;//3
 	constexpr short LEFT_FRONT_MOTOR_NUM  = 5;//4
 	constexpr short LEFT_BACK_MOTOR_NUM   = 4;//5
-	constexpr short BOX = 2;
+	constexpr short BOX = 6;
 	constexpr short Z_ARM = 5;
 	constexpr short Y_ARM = 4;
 	//constexpr short PWM_MAX_VALUE = 180;
@@ -25,7 +25,7 @@ int main(void){
 	constexpr short LEFT_T_ARM = 3;
 	constexpr short TOWEL_SOLENOID = 8;
 	//constexpr short STICK_MAX_VALUE = 250;
-	constexpr short HANGER_SOLENOID = 3;
+	constexpr short HANGER_SOLENOID = 7;
 
 	//constexpr short POWER_WINDOW_MOTOR_NUM = 4;
 
@@ -60,8 +60,9 @@ int main(void){
 	int right_moving_mode = 1;
 	int left_moving_mode = 1;
 
+	std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
+	
 	UPDATELOOP(controller,!(controller.button(RPDS3::SELECT) && controller.button(RPDS3::START))){
-		std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
 	}
 
 	RPGY521::GY521 gyro;
@@ -133,12 +134,14 @@ int main(void){
 		//ハンガー昇降機（△　）
 		if(controller.press(RPDS3::TRIANGLE)){
 			if(hanger_flag == true){
-				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,263);
-				//	ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,262);
+				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,1);
+				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,2);
 				hanger_flag = false;
+				std::cout << "up" << std::endl;
 			}else{
 				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,0);
 				hanger_flag = true;
+				std::cout << "down" << std::endl;
 			}
 		}
 		//コートチェンジ（SELECT　＋　△　）
@@ -177,7 +180,7 @@ int main(void){
 		//回収機構の箱
 		if(controller.press(RPDS3::SQUARE)){
 			if(box_flag == true){
-				ms.send(MECHANISM_MDD_NUM,BOX,263);
+				ms.send(MECHANISM_MDD_NUM,BOX,2);
 				box_flag = false;
 			}else{
 				ms.send(MECHANISM_MDD_NUM,BOX,0);
@@ -243,22 +246,22 @@ int main(void){
 			if(right_moving_mode == 2 && t_arm_limit_right_down == 1){
 				right_moving_mode = 1;
 				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
-				std::cout << "r_limit\n";
+				std::cout << "r_limit up \n";
 			}else if(right_moving_mode == 3 && t_arm_limit_right_up == 1){
 				right_moving_mode = 1;
 				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
-				std::cout << "r_limit\n";
+				std::cout << "r_limit down \n";
 			}
 
 			//左リミットスイッチの反応
 			if(left_moving_mode == 2 && t_arm_limit_left_down == 1){
 				left_moving_mode = 1;
 				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
-				std::cout << "l_limit\n";
+				std::cout << "l_limit up \n";
 			}else if(left_moving_mode == 3 && t_arm_limit_left_up == 1){
 				left_moving_mode = 1;
 				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
-				std::cout << "l_limit\n";
+				std::cout << "l_limit down \n";
 			}
 
 			if(right_moving_mode == 2 && left_moving_mode == 2){
