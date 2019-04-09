@@ -29,6 +29,7 @@ int main(void){
 
 	//constexpr short POWER_WINDOW_MOTOR_NUM = 4;
 
+	bool sleep_flag = false;
 
 	double regulation = 0.3;
 	int changer = 1;
@@ -176,7 +177,7 @@ int main(void){
 		}
 
 		ms.send(MECHANISM_MDD_NUM,Y_ARM,arms_x * 2 * regulation);
-		ms.send(MECHANISM_MDD_NUM,Z_ARM,arms_y * 2 * regulation * -1);
+		ms.send(MECHANISM_MDD_NUM,Z_ARM,arms_y * 2 * regulation );
 
 		//回収機構の箱
 
@@ -283,6 +284,19 @@ int main(void){
 			}		
 
 		}
+		if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::SQUARE)){
+			if(sleep_flag == false){
+				sleep_flag = true;
+			}else{
+				sleep_flag = false;
+			}
+		}
+
+		if(sleep_flag == true){
+			ms.send(255,255,0);
+			std::cout << "zzzz" << std::endl;
+		}
+
 	}
 
 	ms.send(255,255,0);
