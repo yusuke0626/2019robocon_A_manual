@@ -96,10 +96,10 @@ int main(void){
 
 		//left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
 
-		int t_arm_limit_right_up;
-		int t_arm_limit_right_down;
-		int t_arm_limit_left_up;
-		int t_arm_limit_left_down;
+		bool t_arm_limit_right_up;
+		bool t_arm_limit_right_down;
+		bool t_arm_limit_left_up;
+		bool t_arm_limit_left_down;
 
 		double wheel_velocity[4];
 		gyro.updata();
@@ -133,7 +133,7 @@ int main(void){
 		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM, wheel_velocity[3] * 0.4 * regulation + rotation);
 
 		//ハンガー昇降機（△　）
-		if(controller.press(RPDS3::TRIANGLE)){
+		if(controller.press(RPDS3::SQUARE)){
 			if(hanger_flag == true){
 				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,1);
 				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,2);
@@ -185,16 +185,21 @@ int main(void){
 		t_arm_limit_left_up = gpioRead(11);
 		t_arm_limit_left_down = gpioRead(22);
 
-		if(t_arm_limit_right_down == 1 && t_arm_limit_left_down == 1){
-			if(controller.press(RPDS3::SQUARE)){
+		if(t_arm_limit_right_down == true && t_arm_limit_left_down == true){
+			if(controller.press(RPDS3::TRIANGLE)){
 				if(box_flag == true){
 					ms.send(MECHANISM_MDD_NUM,BOX,2);
 					box_flag = false;
+					std::cout << "on" << std::endl;
 				}else{
 					ms.send(MECHANISM_MDD_NUM,BOX,0);
 					box_flag = true;
+					std::cout << "off" << std::endl;
 				}
 			}
+		}else{
+			ms.send(MECHANISM_MDD_NUM,BOX,0);
+		
 		}
 
 		if(controller.button(RPDS3::R1) == true){
@@ -248,7 +253,7 @@ int main(void){
 			} 
 
 			//右リミットスイッチの反応
-			if(right_moving_mode == 2 && t_arm_limit_right_down == 1){
+			if(right_moving_mode == 2 && t_arm_limit_right_down == true){
                                 right_moving_mode = 1;
                                 ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
 				std::cout << "r_limit\n";
@@ -259,11 +264,11 @@ int main(void){
 			}
 			
 			//左リミットスイッチの反応
-			if(left_moving_mode == 2 && t_arm_limit_left_down == 1){
+			if(left_moving_mode == 2 && t_arm_limit_left_down == true){
                                 left_moving_mode = 1;
                                 ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
 				std::cout << "l_limit\n";
-                        }else if(left_moving_mode == 3 && t_arm_limit_left_up == 1){
+                        }else if(left_moving_mode == 3 && t_arm_limit_left_up == true){
                                 left_moving_mode = 1;
                                 ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
 				std::cout << "l_limit\n";
