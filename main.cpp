@@ -17,7 +17,7 @@ int main(void){
 	constexpr short LEFT_FRONT_MOTOR_NUM  = 5;//4
 	constexpr short LEFT_BACK_MOTOR_NUM   = 4;//5
 	constexpr short BOX = 2;
-	constexpr short Z_ARM = 5; 
+	constexpr short Z_ARM = 5;
 	constexpr short Y_ARM = 4;
 	constexpr short PWM_MAX_VALUE = 150;
 	constexpr short RIGHT_T_ARM = 2;
@@ -38,7 +38,7 @@ int main(void){
 		std::cout << "error" << std::endl;
 		return -1;
 	}
-	
+
 
 	gpioSetMode(13,PI_OUTPUT);
 	gpioWrite(13,true);
@@ -49,11 +49,11 @@ int main(void){
 	gpioSetMode(16,PI_INPUT);
 	gpioSetPullUpDown(16,PI_PUD_UP);
 
-        gpioSetMode(11,PI_INPUT);
-        gpioSetPullUpDown(11,PI_PUD_UP);
+	gpioSetMode(11,PI_INPUT);
+	gpioSetPullUpDown(11,PI_PUD_UP);
 
-        gpioSetMode(22,PI_INPUT);
-        gpioSetPullUpDown(22,PI_PUD_UP);
+	gpioSetMode(22,PI_INPUT);
+	gpioSetPullUpDown(22,PI_PUD_UP);
 
 
 	bool hanger_flag = true;
@@ -69,7 +69,7 @@ int main(void){
 
 		double left_distance = 0;
 		double left_theta = 0;
-	
+
 		//double right_distance = 0;
 		double right_theta = 0;
 
@@ -79,7 +79,7 @@ int main(void){
 
 		double left_x = controller.stick(RPDS3::LEFT_X);
 		double left_y = controller.stick(RPDS3::LEFT_Y);
-		
+
 		double arms_x;
 		double arms_y;
 
@@ -108,11 +108,11 @@ int main(void){
 				theta = 1;
 			}else if(left_theta >= (M_PI/4)*5 && left_theta <= (M_PI/4)*7){
 				theta = (M_PI/2) * 3;
-			}else{
+			}else if((left_theta > (M_PI/4)*7 && left_theta <= 2) || (left_theta >= 0 && left_theta < (M_PI/4))){
 				theta = 0;
 			}
 		}else{
-			theta = left_theta;		
+			theta = left_theta;
 		}
 
 		if(theta >= 0 && theta <= (M_PI/2)){
@@ -135,17 +135,16 @@ int main(void){
 		ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM,   left_distance * left_front * 0.4 * regulation + revolve);
 		ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,    left_distance * left_back  * 0.4 * regulation + revolve);
 		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, -left_distance * left_back  * 0.4 * regulation + revolve);
-		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  -left_distance * left_front * 0.4 * regulation + revolve); 
+		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  -left_distance * left_front * 0.4 * regulation + revolve);
 
 		//ハンガー昇降機（△　）
 		if(controller.press(RPDS3::TRIANGLE)){
 			if(hanger_flag == true){
 				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,263);
-			//	ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,262);
-             
+				//	ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,262);
 				hanger_flag = false;
 			}else{
-                                ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,0);
+				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,0);
 				hanger_flag = true;
 			}
 		}
@@ -163,25 +162,25 @@ int main(void){
 
 		//回収機構のアーム（右スティック）
 
-                right_theta = std::atan2(right_y,right_x) + M_PI;
+		right_theta = std::atan2(right_y,right_x) + M_PI;
 
 		if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
-                	arms_x = 0;
+			arms_x = 0;
 			arms_y = right_y;
-                }else if(right_theta > (M_PI/4)*3 && right_theta < (M_PI/4)*5){
-                        arms_x = right_x;
-                        arms_y = 0;
-                }else if(right_theta >= (M_PI/4)*5 && right_theta <= (M_PI/4)*7){
-                        arms_x = 0;
-                        arms_y = right_y;
-                }else{
-                        arms_x = right_x;
-                        arms_y = 0;
-                }
+		}else if(right_theta > (M_PI/4)*3 && right_theta < (M_PI/4)*5){
+			arms_x = right_x;
+			arms_y = 0;
+		}else if(right_theta >= (M_PI/4)*5 && right_theta <= (M_PI/4)*7){
+			arms_x = 0;
+			arms_y = right_y;
+		}else{
+			arms_x = right_x;
+			arms_y = 0;
+		}
 
-		ms.send(MECHANISM_MDD_NUM,Y_ARM,arms_x * 2 * regulation);
-		ms.send(MECHANISM_MDD_NUM,Z_ARM,arms_y * 2 * regulation * -1);
-		
+		ms.send(MECHANISM_MDD_NUM,Y_ARM,arms_x * 4 * regulation);
+		ms.send(MECHANISM_MDD_NUM,Z_ARM,arms_y * 4 * regulation * -1);
+
 		//回収機構の箱
 		if(controller.press(RPDS3::SQUARE)){
 			if(box_flag == true){
@@ -189,8 +188,8 @@ int main(void){
 				box_flag = false;
 			}else{
 				ms.send(MECHANISM_MDD_NUM,BOX,0);
-				box_flag = true;	
-			}	
+				box_flag = true;
+			}
 		}
 
 		if(controller.button(RPDS3::R1) == true){
@@ -212,16 +211,16 @@ int main(void){
 
 		t_arm_limit_right_up = gpioRead(12);
 		t_arm_limit_right_down = gpioRead(16);
-                t_arm_limit_left_up = gpioRead(11);
-                t_arm_limit_left_down = gpioRead(22);
+		t_arm_limit_left_up = gpioRead(11);
+		t_arm_limit_left_down = gpioRead(22);
 
 		//バスタオルのアーム
 
 		/*
-		mode 1 -> stop
-		mode 2 -> up
-		mode 3 -> down
-		*/
+		   mode 1 -> stop
+		   mode 2 -> up
+		   mode 3 -> down
+		   */
 
 		if(right_moving_mode == 1 && left_moving_mode == 1){
 			if((controller.press(RPDS3::CIRCLE)) && !(controller.button(RPDS3::L1))){
@@ -230,8 +229,8 @@ int main(void){
 				right_moving_mode = 2;
 				left_moving_mode = 2;
 			}else if(controller.press(RPDS3::CROSS)){
-                                ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
-                                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
+				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
+				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
 				right_moving_mode = 3;
 				left_moving_mode = 3;
 			}
@@ -243,36 +242,36 @@ int main(void){
 				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
 				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
 				std::cout << "stop\n";
-			} 
+			}
 
 			//右リミットスイッチの反応
 			if(right_moving_mode == 2 && t_arm_limit_right_down == 1){
-                                right_moving_mode = 1;
-                                ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
+				right_moving_mode = 1;
+				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
 				std::cout << "r_limit\n";
 			}else if(right_moving_mode == 3 && t_arm_limit_right_up == 1){
-                                right_moving_mode = 1;
-                                ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
+				right_moving_mode = 1;
+				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
 				std::cout << "r_limit\n";
 			}
-			
+
 			//左リミットスイッチの反応
 			if(left_moving_mode == 2 && t_arm_limit_left_down == 1){
-                                left_moving_mode = 1;
-                                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+				left_moving_mode = 1;
+				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
 				std::cout << "l_limit\n";
-                        }else if(left_moving_mode == 3 && t_arm_limit_left_up == 1){
-                                left_moving_mode = 1;
-                                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+			}else if(left_moving_mode == 3 && t_arm_limit_left_up == 1){
+				left_moving_mode = 1;
+				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
 				std::cout << "l_limit\n";
-                        }
+			}
 
 			if(right_moving_mode == 2 && left_moving_mode == 2){
-	                        ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
+				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
 				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);
 			}else if(right_moving_mode == 3 && left_moving_mode == 3){
-                                ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
- 			        ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);	
+				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
+				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
 			}
 
 		}
