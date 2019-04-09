@@ -107,8 +107,9 @@ int main(void){
 		//double theta = 0;
 		//left_theta = std::atan2(-left_y,left_x) + M_PI;
 
-		if(controller.button(RPDS3::L2)) {
+		if(controller.button(RPDS3::LEFT) && controller.press(RPDS3::SELECT)) {
 			gyro.resetYaw(0);
+			std::cout << "yaw" << std::endl;
 		}
 
 		//平行移動
@@ -118,7 +119,7 @@ int main(void){
 
 		double gyro_rad = gyro.yaw * M_PI / 180;
 
-		rotation = -(controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;//rotation component
+		rotation = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;//rotation component
 
 		wheel_velocity[0] = -std::sin(M_PI/4 + gyro_rad) * left_x + std::cos(M_PI/4 + gyro_rad) * left_y + rotation;
 		wheel_velocity[1] = -std::cos(M_PI/4 + gyro_rad) * left_x + -std::sin(M_PI/4 + gyro_rad) * left_y + rotation;
@@ -178,13 +179,21 @@ int main(void){
 		ms.send(MECHANISM_MDD_NUM,Z_ARM,arms_y * 2 * regulation * -1);
 
 		//回収機構の箱
-		if(controller.press(RPDS3::SQUARE)){
-			if(box_flag == true){
-				ms.send(MECHANISM_MDD_NUM,BOX,2);
-				box_flag = false;
-			}else{
-				ms.send(MECHANISM_MDD_NUM,BOX,0);
-				box_flag = true;
+
+		t_arm_limit_right_up = gpioRead(12);
+		t_arm_limit_right_down = gpioRead(16);
+		t_arm_limit_left_up = gpioRead(11);
+		t_arm_limit_left_down = gpioRead(22);
+
+		if(t_arm_limit_right_down == 1 && t_arm_limit_left_down == 1){
+			if(controller.press(RPDS3::SQUARE)){
+				if(box_flag == true){
+					ms.send(MECHANISM_MDD_NUM,BOX,2);
+					box_flag = false;
+				}else{
+					ms.send(MECHANISM_MDD_NUM,BOX,0);
+					box_flag = true;
+				}
 			}
 		}
 
@@ -204,11 +213,6 @@ int main(void){
 			ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,-1);
 			ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,-2);
 		}
-
-		t_arm_limit_right_up = gpioRead(12);
-		t_arm_limit_right_down = gpioRead(16);
-		t_arm_limit_left_up = gpioRead(11);
-		t_arm_limit_left_down = gpioRead(22);
 
 		//バスタオルのアーム
 
@@ -233,6 +237,7 @@ int main(void){
 				left_moving_mode = 3;
 			}
 		}else{
+
 			//アーム停止
 			if((controller.press(RPDS3::CIRCLE) || controller.press(RPDS3::CROSS)) && !(controller.button(RPDS3::L1))){
 				right_moving_mode = 1;
@@ -240,37 +245,37 @@ int main(void){
 				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
 				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
 				std::cout << "stop\n";
-			}
+			} 
 
 			//右リミットスイッチの反応
 			if(right_moving_mode == 2 && t_arm_limit_right_down == 1){
-				right_moving_mode = 1;
-				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
-				std::cout << "r_limit up \n";
+                                right_moving_mode = 1;
+                                ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
+				std::cout << "r_limit\n";
 			}else if(right_moving_mode == 3 && t_arm_limit_right_up == 1){
-				right_moving_mode = 1;
-				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
-				std::cout << "r_limit down \n";
+                                right_moving_mode = 1;
+                                ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
+				std::cout << "r_limit\n";
 			}
-
+			
 			//左リミットスイッチの反応
 			if(left_moving_mode == 2 && t_arm_limit_left_down == 1){
-				left_moving_mode = 1;
-				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
-				std::cout << "l_limit up \n";
-			}else if(left_moving_mode == 3 && t_arm_limit_left_up == 1){
-				left_moving_mode = 1;
-				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
-				std::cout << "l_limit down \n";
-			}
+                                left_moving_mode = 1;
+                                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+				std::cout << "l_limit\n";
+                        }else if(left_moving_mode == 3 && t_arm_limit_left_up == 1){
+                                left_moving_mode = 1;
+                                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+				std::cout << "l_limit\n";
+                        }
 
 			if(right_moving_mode == 2 && left_moving_mode == 2){
-				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
-				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);
-			}else if(right_moving_mode == 3 && left_moving_mode == 3){
-				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
+	                        ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
 				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
-			}
+			}else if(right_moving_mode == 3 && left_moving_mode == 3){
+                                ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
+ 			        ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);	
+			}		
 
 		}
 	}
