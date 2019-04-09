@@ -67,6 +67,7 @@ int main(void){
 
 	int right_moving_mode = 1;
 	int left_moving_mode = 1;
+
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
 		double left_distance = 0;
