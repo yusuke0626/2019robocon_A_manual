@@ -19,7 +19,7 @@ int main(void){
 	constexpr short BOX = 2;
 	constexpr short Z_ARM = 5; 
 	constexpr short Y_ARM = 4;
-	constexpr short PWM_MAX_VALUE = 50;
+	constexpr short PWM_MAX_VALUE = 150;
 	constexpr short RIGHT_T_ARM = 2;
 	constexpr short LEFT_T_ARM = 3;
 	constexpr short TOWEL_SOLENOID = 8;
@@ -132,10 +132,10 @@ int main(void){
 
 		revolve = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;
 
-		ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, -left_distance * left_front * 0.4 * regulation + revolve);
-		ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  -left_distance * left_back  * 0.4 * regulation + revolve);
-		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, left_distance * left_back  * 0.4 * regulation + revolve);
-		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  left_distance * left_front * 0.4 * regulation + revolve); 
+		ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM,  -left_distance * left_front * 0.4 * regulation + revolve);
+		ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,   -left_distance * left_back  * 0.4 * regulation + revolve);
+		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,  left_distance * left_back  * 0.4 * regulation + revolve);
+		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,   left_distance * left_front * 0.4 * regulation + revolve); 
 
 		//ハンガー昇降機構
 		if(controller.press(RPDS3::SQUARE)){
