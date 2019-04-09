@@ -199,7 +199,7 @@ int main(void){
 			}
 		}else{
 			ms.send(MECHANISM_MDD_NUM,BOX,0);
-		
+			box_flag = true;	
 		}
 
 		if(controller.button(RPDS3::R1) == true){
