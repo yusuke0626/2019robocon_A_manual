@@ -12,11 +12,11 @@ int main(void){
 	constexpr short BATH_TOWEL_MDD_NUM = 17;
 	constexpr short UNDERCARRIAGE_MDD_NUM = 16;
 	constexpr short MECHANISM_MDD_NUM = 10;
-	constexpr short RIGHT_FRONT_MOTOR_NUM = 2;
-	constexpr short RIGHT_BACK_MOTOR_NUM  = 3;
-	constexpr short LEFT_FRONT_MOTOR_NUM  = 4;
-	constexpr short LEFT_BACK_MOTOR_NUM   = 5;
-	constexpr short BOX = 2;
+	constexpr short RIGHT_FRONT_MOTOR_NUM = 3;
+	constexpr short RIGHT_BACK_MOTOR_NUM  = 2;
+	constexpr short LEFT_FRONT_MOTOR_NUM  = 5;
+	constexpr short LEFT_BACK_MOTOR_NUM   = 4;
+	constexpr short BOX = 3;
 	constexpr short Z_ARM = 5; 
 	constexpr short Y_ARM = 4;
 	constexpr short PWM_MAX_VALUE = 150;
@@ -56,6 +56,7 @@ int main(void){
         gpioSetPullUpDown(22,PI_PUD_UP);
 
 
+	bool sleep_flag = true;
 	bool hanger_flag = true;
 
 	bool box_flag = true;
@@ -66,6 +67,20 @@ int main(void){
 	int left_moving_mode = 1;
 
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
+
+/*		if (controller.press(RPDS3::SELECT) && controller.press(RPDS3::SQUARE)){
+			if(sleep_flag == true){
+				sleep_flag = false;
+			}else{
+				sleep_flag = true;
+			}
+		}
+
+		if(sleep_flag == false){
+			while(true){
+				ms.send(255,255,0);
+				if(sleep_flag = 
+*/
 
 		double left_distance = 0;
 		double left_theta = 0;
@@ -188,18 +203,24 @@ int main(void){
                 t_arm_limit_left_up = gpioRead(11);
                 t_arm_limit_left_down = gpioRead(22);
 
-		if(t_arm_limit_right_down == 1 && t_arm_limit_left_down == 1){	
-			if(controller.press(RPDS3::CROSS)){
-				if(box_flag == true){
-					ms.send(MECHANISM_MDD_NUM,BOX,263);
-					box_flag = false;
-				}else{
-					ms.send(MECHANISM_MDD_NUM,BOX,0);
-					box_flag = true;	
-				}	
+		if(controller.press(RPDS3::TRIANGLE)){
+			if(box_flag == false){
+				box_flag = true;
+			}else{
+				box_flag = false;
 			}
-		
+			
 		}
+
+		
+
+		if(box_flag == false){
+			ms.send(MECHANISM_MDD_NUM,BOX,263);
+			std::cout << "sol";
+		}else{
+			ms.send(MECHANISM_MDD_NUM,BOX,0);
+		}
+
 
 		if(controller.button(RPDS3::R1) == true){
 			regulation = 0.5;
