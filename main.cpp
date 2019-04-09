@@ -12,10 +12,10 @@ int main(void){
 	constexpr short BATH_TOWEL_MDD_NUM = 17;
 	constexpr short UNDERCARRIAGE_MDD_NUM = 16;
 	constexpr short MECHANISM_MDD_NUM = 10;
-	constexpr short RIGHT_FRONT_MOTOR_NUM = 2;
-	constexpr short RIGHT_BACK_MOTOR_NUM  = 3;
-	constexpr short LEFT_FRONT_MOTOR_NUM  = 4;
-	constexpr short LEFT_BACK_MOTOR_NUM   = 5;
+	constexpr short RIGHT_FRONT_MOTOR_NUM = 3;//2
+	constexpr short RIGHT_BACK_MOTOR_NUM  = 2;//3
+	constexpr short LEFT_FRONT_MOTOR_NUM  = 5;//4
+	constexpr short LEFT_BACK_MOTOR_NUM   = 4;//5
 	constexpr short BOX = 2;
 	constexpr short Z_ARM = 5; 
 	constexpr short Y_ARM = 4;
@@ -24,11 +24,7 @@ int main(void){
 	constexpr short LEFT_T_ARM = 3;
 	constexpr short TOWEL_SOLENOID = 8;
 	//constexpr short STICK_MAX_VALUE = 250;
-<<<<<<< HEAD
-	constexpr short HUNGER_SOLENOID = 6;
-=======
 	constexpr short HANGER_SOLENOID = 3;
->>>>>>> ito_custom
 	//constexpr short POWER_WINDOW_MOTOR_NUM = 4;
 
 	double regulation = 0.3;
@@ -44,7 +40,6 @@ int main(void){
 	}
 	
 
-	//gpioInitialise();
 	gpioSetMode(13,PI_OUTPUT);
 	gpioWrite(13,true);
 
@@ -62,19 +57,13 @@ int main(void){
 
 
 	bool hanger_flag = true;
+
 	bool box_flag = true;
+
 	bool coat_flag = true;
-<<<<<<< HEAD
-	bool towel_flag = true;
-	bool moving_flag = false;
-=======
 
 	int right_moving_mode = 1;
 	int left_moving_mode = 1;
->>>>>>> ito_custom
-
-	bool circle_flag = false;
-	bool cross_flag  = false;
 
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
@@ -151,19 +140,11 @@ int main(void){
 		//ハンガー昇降機構
 		if(controller.press(RPDS3::SQUARE)){
 			if(hanger_flag == true){
-<<<<<<< HEAD
-				ms.send(MECHANISM_MDD_NUM,HUNGER_SOLENOID,1);
-				ms.send(MECHANISM_MDD_NUM,HUNGER_SOLENOID,2);
-				hanger_flag = false;
-			}else{
-				ms.send(MECHANISM_MDD_NUM,HUNGER_SOLENOID,0);
-=======
 				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,1);
              
 				hanger_flag = false;
 			}else{
                                 ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,2);
->>>>>>> ito_custom
 				hanger_flag = true;
 			}
 		}
@@ -181,17 +162,9 @@ int main(void){
 
 		//回収機構のアーム
 
-<<<<<<< HEAD
-		right_theta = std::atan2(right_y,right_x) + M_PI;
-		if(right_x == 0 && right_y == 0){
-			arms_x = 0;
-			arms_y = 0;
-		}else if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
-=======
                 right_theta = std::atan2(right_y,right_x) + M_PI;
 
 		if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
->>>>>>> ito_custom
                 	arms_x = 0;
 			arms_y = right_y;
                 }else if(right_theta > (M_PI/4)*3 && right_theta < (M_PI/4)*5){
@@ -227,46 +200,6 @@ int main(void){
 		}
 
 		//バスタオルのソレノイド
-<<<<<<< HEAD
-		if(controller.button(RPDS3::L1) && controller.press(RPDS3::CIRCLE)){
-			if(towel_flag == true){
-				ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,1);
-				towel_flag = false;
-			}else{
-				ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,-1);
-				towel_flag = true;
-			}
-		}
-
-		t_arm_limit_1 = gpioRead(12);
-		t_arm_limit_2 = gpioRead(16);
-
-
-
-		if(moving_flag == false){
-			if(controller.press(RPDS3::CIRCLE)){
-				if(t_arm_limit_1 == 0){
-					std::cout << "pin12";
-					ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
-					ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
-					moving_flag = true;
-				}else{
-                                        ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
-                                        ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
-					moving_flag = false;
-				}
-			}else if(controller.press(RPDS3::CROSS)){
-				if(t_arm_limit_2 == 0){
-					std::cout << "pin16" << std::endl;
-                                        ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
-                                        ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);
-					moving_flag = true;
-				}else{
-				        ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
-                                        ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
-					moving_flag = false;
-				}
-=======
 		if(controller.button(RPDS3::L1) && controller.button(RPDS3::CIRCLE)){
 			ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,1);
 			ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,2);
@@ -292,7 +225,7 @@ int main(void){
 		if(right_moving_mode == 1 && left_moving_mode == 1){
 			if((controller.press(RPDS3::CIRCLE)) && !(controller.button(RPDS3::L1))){
 				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
-				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);
+				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);//モータのハンダ付けが違う向きのため同じ符号
 				right_moving_mode = 2;
 				left_moving_mode = 2;
 			}else if(controller.press(RPDS3::CROSS)){
@@ -300,7 +233,6 @@ int main(void){
                                 ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
 				right_moving_mode = 3;
 				left_moving_mode = 3;
->>>>>>> ito_custom
 			}
 		}else{
 			//アーム停止
