@@ -132,10 +132,10 @@ int main(void){
 
 		revolve = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;
 
-		ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM,  -left_distance * left_front * 0.4 * regulation + revolve);
-		ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,   -left_distance * left_back  * 0.4 * regulation + revolve);
-		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,  left_distance * left_back  * 0.4 * regulation + revolve);
-		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,   left_distance * left_front * 0.4 * regulation + revolve); 
+		ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM,   left_distance * left_front * 0.4 * regulation + revolve);
+		ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,    left_distance * left_back  * 0.4 * regulation + revolve);
+		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, -left_distance * left_back  * 0.4 * regulation + revolve);
+		ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  -left_distance * left_front * 0.4 * regulation + revolve); 
 
 		//ハンガー昇降機構
 		if(controller.press(RPDS3::SQUARE)){
@@ -225,12 +225,12 @@ int main(void){
 		if(right_moving_mode == 1 && left_moving_mode == 1){
 			if((controller.press(RPDS3::CIRCLE)) && !(controller.button(RPDS3::L1))){
 				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
-				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
+				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);
 				right_moving_mode = 2;
 				left_moving_mode = 2;
 			}else if(controller.press(RPDS3::CROSS)){
                                 ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
-                                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);
+                                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
 				right_moving_mode = 3;
 				left_moving_mode = 3;
 			}
@@ -268,10 +268,10 @@ int main(void){
 
 			if(right_moving_mode == 2 && left_moving_mode == 2){
 	                        ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
-				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
+				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);
 			}else if(right_moving_mode == 3 && left_moving_mode == 3){
                                 ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
- 			        ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);	
+ 			        ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);	
 			}
 
 		}
