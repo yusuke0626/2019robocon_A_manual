@@ -20,7 +20,7 @@ int main(void){
 	constexpr short BOX = 2;
 	constexpr short Z_ARM = 5;
 	constexpr short Y_ARM = 4;
-	constexpr short PWM_MAX_VALUE = 180;
+	//constexpr short PWM_MAX_VALUE = 180;
 	constexpr short RIGHT_T_ARM = 2;
 	constexpr short LEFT_T_ARM = 3;
 	constexpr short TOWEL_SOLENOID = 8;
@@ -30,12 +30,8 @@ int main(void){
 	//constexpr short POWER_WINDOW_MOTOR_NUM = 4;
 
 
-        revolve = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;
-
-        ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM,   left_distance * left_front * 0.4 * regulation + revolve);
-        ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,    left_distance * left_back  * 0.4 * regulation + revolve);
-        ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, -left_distance * left_back  * 0.4 * regulation + revolve);
-        ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  -left_distance * left_front * 0.4 * regulation + revolve);
+	double regulation = 0.3;
+	int changer = 1;
 
 	controller.update();
 	try{
@@ -52,46 +48,41 @@ int main(void){
 	gpioSetPullUpDown(12,PI_PUD_UP);
 	gpioSetMode(16,PI_INPUT);
 	gpioSetPullUpDown(16,PI_PUD_UP);
-    gpioSetMode(11,PI_INPUT);
-    gpioSetPullUpDown(11,PI_PUD_UP);
-    gpioSetMode(22,PI_INPUT);
-    gpioSetPullUpDown(22,PI_PUD_UP);
+	gpioSetMode(11,PI_INPUT);
+	gpioSetPullUpDown(11,PI_PUD_UP);
+	gpioSetMode(22,PI_INPUT);
+	gpioSetPullUpDown(22,PI_PUD_UP);
 
 
 	bool hanger_flag = true;
-
 	bool box_flag = true;
-
 	bool coat_flag = true;
-
 	int right_moving_mode = 1;
 	int left_moving_mode = 1;
 
-    UPDATELOOP(controller,!(controller.button(RPDS3::SELECT) && controller.button(RPDS3::START))){
-        std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
-    }
+	UPDATELOOP(controller,!(controller.button(RPDS3::SELECT) && controller.button(RPDS3::START))){
+		std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
+	}
 
-    RPGY521::GY521 gyro;
-    std::cout << "Calibration finished" << std::cout;
-    std::cout << "Start Main program" << std::cout;
+	RPGY521::GY521 gyro;
+	std::cout << "Calibration finished" << std::endl;
+	std::cout << "Start Main program" << std::endl;
 
-    gyro.start();
-    //gyro.resetYaw(0);
-    controller.yReverseSet(true);
+	gyro.start();
+	//gyro.resetYaw(0);
+	controller.yReverseSet(true);
 
-    //UPDATELOOP(controller,!(controller.button(RPDS3:: &&
 
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
-		double left_distance = 0;
-		double left_theta = 0;
-
+		//double left_distance = 0;
+		//double left_theta = 0;
 		//double right_distance = 0;
 		double right_theta = 0;
 
-		double left_front = 0;
-		double left_back  = 0;
-		//int rotation = 0;
+		//double left_front = 0;
+		//double left_back  = 0;
+		double rotation = 0;
 
 		double left_x = controller.stick(RPDS3::LEFT_X);
 		double left_y = controller.stick(RPDS3::LEFT_Y);
@@ -102,37 +93,36 @@ int main(void){
 		double right_x = controller.stick(RPDS3::RIGHT_X) * changer;
 		double right_y = controller.stick(RPDS3::RIGHT_Y) ;
 
-        left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
+		//left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
 
 		int t_arm_limit_right_up;
 		int t_arm_limit_right_down;
 		int t_arm_limit_left_up;
 		int t_arm_limit_left_down;
 
-        double wheel_velocity[4];
-        double lotation;
-        gyro.updata();
+		double wheel_velocity[4];
+		gyro.updata();
 
 		//double theta = 0;
-		left_theta = std::atan2(-left_y,left_x) + M_PI;
+		//left_theta = std::atan2(-left_y,left_x) + M_PI;
 
-        if(controller.button(RPDS3::L2) {
-            gyro.resetYaw(0);
-        }
-
-		//平行移動
-		if(left_distance > PWM_MAX_VALUE){
-			left_distance = PWM_MAX_VALUE;
+		if(controller.button(RPDS3::L2)) {
+			gyro.resetYaw(0);
 		}
 
-        double gyro_rad = gyro.yaw * M_PI / 180;
+		//平行移動
+		/*if(left_distance > PWM_MAX_VALUE){
+			left_distance = PWM_MAX_VALUE;
+		}*/
+
+		double gyro_rad = gyro.yaw * M_PI / 180;
 
 		rotation = -(controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;//rotation component
 
-        wheel_velocity[0] = -std::sin(M_PI/4 + gyro_rad) * left_x + std::cos(M_PI/4 + gyro_rad) * left_y + rotation;// 1/root2 = 0.707
-        wheel_velocity[1] = -std::cos(M_PI/4 + gyro_rad) * left_x + -std::sin(M_PI/4 + gyro_rad) * left_y + rotation;// 1/root2 = 0.707
-        wheel_velocity[2] = std::sin(M_PI/4 + gyro_rad) * left_x + -std::cos(M_PI/4 + gyro_rad) * left_y + rotation;// 1/root2 = 0.707
-        wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation;// 1/root2 = 0.707
+		wheel_velocity[0] = -std::sin(M_PI/4 + gyro_rad) * left_x + std::cos(M_PI/4 + gyro_rad) * left_y + rotation;
+		wheel_velocity[1] = -std::cos(M_PI/4 + gyro_rad) * left_x + -std::sin(M_PI/4 + gyro_rad) * left_y + rotation;
+		wheel_velocity[2] = std::sin(M_PI/4 + gyro_rad) * left_x + -std::cos(M_PI/4 + gyro_rad) * left_y + rotation;
+		wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation;
 
 
 		ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, wheel_velocity[1] * 0.4 * regulation + rotation);
@@ -144,10 +134,10 @@ int main(void){
 		if(controller.press(RPDS3::TRIANGLE)){
 			if(hanger_flag == true){
 				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,263);
-			//	ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,262);
+				//	ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,262);
 				hanger_flag = false;
 			}else{
-                ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,0);
+				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,0);
 				hanger_flag = true;
 			}
 		}
@@ -165,21 +155,21 @@ int main(void){
 
 		//回収機構のアーム（右スティック）
 
-        right_theta = std::atan2(right_y,right_x) + M_PI;
+		right_theta = std::atan2(right_y,right_x) + M_PI;
 
 		if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
-            arms_x = 0;
+			arms_x = 0;
 			arms_y = right_y;
-        }else if(right_theta > (M_PI/4)*3 && right_theta < (M_PI/4)*5){
-            arms_x = right_x;
-            arms_y = 0;
-        }else if(right_theta >= (M_PI/4)*5 && right_theta <= (M_PI/4)*7){
-            arms_x = 0;
-            arms_y = right_y;
-        }else{
-            arms_x = right_x;
-            arms_y = 0;
-        }
+		}else if(right_theta > (M_PI/4)*3 && right_theta < (M_PI/4)*5){
+			arms_x = right_x;
+			arms_y = 0;
+		}else if(right_theta >= (M_PI/4)*5 && right_theta <= (M_PI/4)*7){
+			arms_x = 0;
+			arms_y = right_y;
+		}else{
+			arms_x = right_x;
+			arms_y = 0;
+		}
 
 		ms.send(MECHANISM_MDD_NUM,Y_ARM,arms_x * 2 * regulation);
 		ms.send(MECHANISM_MDD_NUM,Z_ARM,arms_y * 2 * regulation * -1);
@@ -214,16 +204,16 @@ int main(void){
 
 		t_arm_limit_right_up = gpioRead(12);
 		t_arm_limit_right_down = gpioRead(16);
-        t_arm_limit_left_up = gpioRead(11);
-        t_arm_limit_left_down = gpioRead(22);
+		t_arm_limit_left_up = gpioRead(11);
+		t_arm_limit_left_down = gpioRead(22);
 
 		//バスタオルのアーム
 
 		/*
-		mode 1 -> stop
-		mode 2 -> up
-		mode 3 -> down
-		*/
+		   mode 1 -> stop
+		   mode 2 -> up
+		   mode 3 -> down
+		   */
 
 		if(right_moving_mode == 1 && left_moving_mode == 1){
 			if((controller.press(RPDS3::CIRCLE)) && !(controller.button(RPDS3::L1))){
@@ -233,9 +223,9 @@ int main(void){
 				left_moving_mode = 2;
 			}
 
-            if(controller.press(RPDS3::CROSS)){
-                ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
-                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
+			if(controller.press(RPDS3::CROSS)){
+				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
+				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
 				right_moving_mode = 3;
 				left_moving_mode = 3;
 			}
@@ -251,32 +241,32 @@ int main(void){
 
 			//右リミットスイッチの反応
 			if(right_moving_mode == 2 && t_arm_limit_right_down == 1){
-                right_moving_mode = 1;
-                ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
+				right_moving_mode = 1;
+				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
 				std::cout << "r_limit\n";
 			}else if(right_moving_mode == 3 && t_arm_limit_right_up == 1){
-                right_moving_mode = 1;
-                ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
+				right_moving_mode = 1;
+				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
 				std::cout << "r_limit\n";
 			}
 
 			//左リミットスイッチの反応
 			if(left_moving_mode == 2 && t_arm_limit_left_down == 1){
-                left_moving_mode = 1;
-                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+				left_moving_mode = 1;
+				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
 				std::cout << "l_limit\n";
-            }else if(left_moving_mode == 3 && t_arm_limit_left_up == 1){
-                left_moving_mode = 1;
-                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+			}else if(left_moving_mode == 3 && t_arm_limit_left_up == 1){
+				left_moving_mode = 1;
+				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
 				std::cout << "l_limit\n";
-            }
+			}
 
 			if(right_moving_mode == 2 && left_moving_mode == 2){
-	            ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
+				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
 				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);
 			}else if(right_moving_mode == 3 && left_moving_mode == 3){
-                ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
- 			    ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
+				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
+				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
 			}
 
 		}
