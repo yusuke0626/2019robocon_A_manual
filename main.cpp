@@ -22,9 +22,9 @@ int main(void){
 	constexpr short PWM_MAX_VALUE = 150;
 	constexpr short RIGHT_T_ARM = 2;
 	constexpr short LEFT_T_ARM = 3;
-	constexpr short TOWEL_SOLENOID = 4;
+	constexpr short TOWEL_SOLENOID = 8;
 	//constexpr short STICK_MAX_VALUE = 250;
-	constexpr short HANGER_SOLENOID = 6;
+	constexpr short HUNGER_SOLENOID = 6;
 	//constexpr short POWER_WINDOW_MOTOR_NUM = 4;
 
 	double regulation = 0.3;
@@ -40,6 +40,7 @@ int main(void){
 	}
 	
 
+	//gpioInitialise();
 	gpioSetMode(13,PI_OUTPUT);
 	gpioWrite(13,true);
 
@@ -50,14 +51,13 @@ int main(void){
 	gpioSetMode(16,PI_PUD_UP);
 
 	bool hanger_flag = true;
-
 	bool box_flag = true;
-
 	bool coat_flag = true;
-
 	bool towel_flag = true;
-
 	bool moving_flag = false;
+
+	bool circle_flag = false;
+	bool cross_flag  = false;
 
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
@@ -155,8 +155,10 @@ int main(void){
 		//回収機構のアーム
 
 		right_theta = std::atan2(right_y,right_x) + M_PI;
-
-		if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
+		if(right_x == 0 && right_y == 0){
+			arms_x = 0;
+			arms_y = 0;
+		}else if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
                 	arms_x = 0;
 			arms_y = right_y;
                 }else if(right_theta > (M_PI/4)*3 && right_theta < (M_PI/4)*5){
@@ -193,23 +195,25 @@ int main(void){
 		}
 
 		//バスタオルのソレノイド
-		if(controller.press(RPDS3::L1) && controller.press(RPDS3::CIRCLE)){
+		if(controller.button(RPDS3::L1) && controller.press(RPDS3::CIRCLE)){
 			if(towel_flag == true){
-				ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,264);
+				ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,1);
 				towel_flag = false;
 			}else{
-				ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,-264);
+				ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,-1);
 				towel_flag = true;
 			}
 		}
 
-		gpioInitialise();
 		t_arm_limit_1 = gpioRead(12);
 		t_arm_limit_2 = gpioRead(16);
+
+
 
 		if(moving_flag == false){
 			if(controller.press(RPDS3::CIRCLE)){
 				if(t_arm_limit_1 == 0){
+					std::cout << "pin12";
 					ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
 					ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
 					moving_flag = true;
@@ -220,6 +224,7 @@ int main(void){
 				}
 			}else if(controller.press(RPDS3::CROSS)){
 				if(t_arm_limit_2 == 0){
+					std::cout << "pin16" << std::endl;
                                         ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
                                         ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);
 					moving_flag = true;
@@ -236,7 +241,6 @@ int main(void){
 				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
 			}
 		}
-		std::cout << "-1" << std::endl;
 	}
 	ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
 	ms.send(MECHANISM_MDD_NUM,Z_ARM,0);
