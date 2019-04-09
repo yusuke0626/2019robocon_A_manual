@@ -40,7 +40,6 @@ int main(void){
 		return -1;
 	}
 	
-	gpioSetMode();
 
 	gpioSetMode(13,PI_OUTPUT);
 	gpioWrite(13,true);
@@ -90,8 +89,10 @@ int main(void){
 		double right_y = controller.stick(RPDS3::RIGHT_Y) ;
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
 
-		int t_arm_limit_1;
-		int t_arm_limit_2;
+		int t_arm_limit_right_up;
+		int t_arm_limit_right_down;
+		int t_arm_limit_left_up;
+		int t_arm_limit_left_down;
 
 		double theta = 0;
 
