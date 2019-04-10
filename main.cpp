@@ -197,67 +197,83 @@ int main(void){
 			pochama_limit_z_down  = gpioRead(Z_DOWN_TAIL_LIMIT);
 
 			/* z_tail_mode 及び　y_tail_modeは、モーターの動きが
-			 *mode 1 :　動いていない
-			 *mode 2 :　十字キーの自動操作モードに委ねられている
-			 *mode 3 :　ジョイスティックに委ねられている
 			 * */
-			right_theta = std::atan2(right_y,right_x) + M_PI;
+			right_theta = std::atan2(right_y,right_x);
+
 
 			if(right_distance >= 20){
 				if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
-					sent_y = 0;
-					sent_z = right_y;
-				}else if(right_theta > (M_PI/4)*3 && right_theta < (M_PI/4)*5){
+					sent_y = 0; 
+					sent_z = -right_y;
+				}else if(right_theta > (M_PI/4)*3 || right_theta < -(M_PI/4)*3){
 					sent_y = right_x;
 					sent_z = 0;
-				}else if(right_theta >= (M_PI/4)*5 && right_theta <= (M_PI/4)*7){
+				}else if(right_theta >= -(M_PI/4)*3 && right_theta <= -(M_PI/4)){
 					sent_y = 0;
-					sent_z = right_y;
-				}else if((right_theta > (M_PI/4) * 7 && right_theta < 2) || (right_theta >= 0 && right_theta < (M_PI/4))){
+					sent_z = -right_y;
+				}else if(right_theta > -(M_PI/4)  && right_theta < (M_PI/4)){
 					sent_y = right_x;
 					sent_z = 0;
 				}
-			}else{
+			}
+			if(right_distance < 20 && y_tail_mode == false){
 				sent_y = 0;
+			}
+
+			if(right_distance < 20 && z_tail_mode == false){
 				sent_z = 0;
 			}
 
-			if(z_tail_mode == false &&  right_y == 0){
-				if(controller.press(RPDS3::UP)){
-					sent_z =  128;
-					z_tail_mode = true;
-				}else if(controller.press(RPDS3::DOWN)){
-					sent_z = -128;
-					z_tail_mode = true;
-				}
-			}
-			
-			if(y_tail_mode = true){
+			if(y_tail_mode == true){
 				if(sent_y > 0){
 					sent_y = 50;
 				}else if(sent_y < 0){
 					sent_y = -50;
 				}
 			}
-			if(y_tail_mode == false &&  right_x == 0){
-				if(controller.press(RPDS3::RIGHT)){
-					sent_y =  128 * changer;
-					y_tail_mode = true;
-				}else if(controller.press(RPDS3::LEFT)){
-					sent_y = -128 * changer;
-					y_tail_mode = true;
+
+			if(z_tail_mode == true){
+				if(sent_z > 0){
+					sent_z = 50;
+				}else if(sent_z < 0){
+					sent_z = -50;
 				}
 			}
 
-			if(y_tail_mode == true && ((right_x != 0 || right_y != 0) || ((controller.press(RPDS3::UP)) || controller.press(RPDS3::DOWN)))){
-				sent_y = 0;
-				y_tail_mode = false;
-			}
-			if(z_tail_mode == true && ((right_x != 0 ||  right_y != 0) || ((controller.press(RPDS3:: RIGHT)) || controller.press(RPDS3::LEFT)))){
-				sent_z = 0;
-				y_tail_mode = false;
+			if(y_tail_mode == true){
+				if((right_x != 0 || right_y != 0) || ((controller.press(RPDS3::RIGHT)) || controller.press(RPDS3::LEFT))){
+					sent_y = 0;
+					y_tail_mode = false;
+				}
+			}else{
+				if(right_x == 0){
+					if(controller.press(RPDS3::RIGHT)){
+						sent_y =  50 * changer;
+						y_tail_mode = true;
+					}else if(controller.press(RPDS3::LEFT)){
+						sent_y = -50 * changer;
+						y_tail_mode = true;
+					}
+				}
 			}
 
+			if(z_tail_mode == true){
+				if((right_x != 0 || right_y != 0) || ((controller.press(RPDS3::UP)) || controller.press(RPDS3::DOWN))){
+					sent_z = 0;
+					z_tail_mode = false;
+				}
+			}else{
+				if(right_y == 0){
+					if(controller.press(RPDS3::UP)){
+						sent_z =  -50;
+						z_tail_mode = true;
+					}else if(controller.press(RPDS3::DOWN)){
+						sent_z = 50;
+						z_tail_mode = true;
+					}
+				}
+
+			}
 			if(pochama_limit_y_back == true && sent_y >= 0){
 				sent_y = 0;
 				y_tail_mode = false;
@@ -266,16 +282,16 @@ int main(void){
 				y_tail_mode = false;
 			}
 
-			if(pochama_limit_z_down == true && sent_z >= 0){
+			if(pochama_limit_z_down == true && sent_z <= 0){
 				sent_z = 0;
-				z_tail_mode = false;
+				std::cout << "limit" << std::endl;
 			}else if(pochama_limit_z_up == true && sent_z >= 0){
 				sent_z = 0;
 				z_tail_mode = false;
 			}
-			std::cout << sent_y << std::endl;
-			ms.send(MECHANISM_MDD_NUM,Y_ARM, sent_y * 4 * regulation);
-			ms.send(MECHANISM_MDD_NUM,Z_ARM, sent_z * 4 * regulation );
+
+			ms.send(MECHANISM_MDD_NUM,Y_ARM, sent_y * regulation);
+			ms.send(MECHANISM_MDD_NUM,Z_ARM, sent_z * regulation );
 
 			//回収機構の箱
 
