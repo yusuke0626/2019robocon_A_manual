@@ -32,10 +32,10 @@ int main(void){
     constexpr int LEFT_UP_T_ARM_LIMIT    = 11;
     constexpr int LEFT_DOWN_T_ARM_LIMIT  = 22;
 
-    constexpr int Y_FRONT_TAIL_LIMIT = ;
-    constexpr int Y_BACK_TAIL_LIMIT = ;
-    constexpr int Z_UP_TAIL_LIMIT = ;
-    constexpr int Z_DOWN_TAIL_LIMIT = ;
+    constexpr int Y_FRONT_TAIL_LIMIT = 26;
+    constexpr int Y_BACK_TAIL_LIMIT = 19;
+    constexpr int Z_UP_TAIL_LIMIT = 9;
+    constexpr int Z_DOWN_TAIL_LIMIT = 10;
     //constexpr short POWER_WINDOW_MOTOR_NUM = 4;
 
 
