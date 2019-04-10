@@ -81,6 +81,8 @@ int main(void){
 	bool coat_flag = true;
 	int right_moving_mode = 1;
 	int left_moving_mode = 1;
+	
+	int L1_count = 0;
 
 	std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
 
@@ -137,7 +139,6 @@ int main(void){
 			bool pochama_limit_z_up;
 			bool pochama_limit_z_down;
 
-
 			double wheel_velocity[4];
 			gyro.updata();
 
@@ -184,12 +185,23 @@ int main(void){
 			}
 			//コートチェンジ（L1長押し）
 			if(controller.button(RPDS3::L1)){
-				changer = -1;
-			}else{
-				changer = 1;
+				if(L1_count <= 15){
+					L1_count = L1_count + 1;
+				}else{
+					coat_flag = !(coat_flag);
+					L1_count = 0;
+				}
+			}else if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
+					coat_flag = !(coat_flag);
 			}
 
+			if(coat_flag == true){
+				changer = 1;
+			}else{
+				changer = -1;
+			}
 
+			//std::cout << changer << std::endl;
 			//回収機構のアーム（右ステ
 			pochama_limit_y_front = gpioRead(Y_FRONT_TAIL_LIMIT);
 			pochama_limit_y_back  = gpioRead(Y_BACK_TAIL_LIMIT);
