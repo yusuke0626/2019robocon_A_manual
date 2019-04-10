@@ -136,12 +136,18 @@ int main(void){
 			wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation;
 
 
-			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, wheel_velocity[1] * 0.55 * regulation + rotation);
-			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  wheel_velocity[2] * 0.55 * regulation + rotation);
-			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,wheel_velocity[0] * 0.55 * regulation + rotation);
-			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM, wheel_velocity[3] * 0.55 * regulation + rotation);
+			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, wheel_velocity[1] * 0.60 * regulation + rotation);
+			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  wheel_velocity[2] * 0.63 * regulation + rotation);
+			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,wheel_velocity[0] * 0.58 * regulation + rotation);
+			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM, wheel_velocity[3] * 0.59 * regulation + rotation);
 
 			//ハンガー昇降機（△　）
+			/*if(controller.button(RPDS3::SQUARE)){
+				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,1);
+				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,2);
+			}else{
+				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,0);
+			}*/		
 			if(controller.press(RPDS3::SQUARE)){
 				if(hanger_flag == true){
 					ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,1);
@@ -191,7 +197,12 @@ int main(void){
 			t_arm_limit_left_down = gpioRead(22);
 
 			if(t_arm_limit_right_down == true && t_arm_limit_left_down == true){
-				if(controller.press(RPDS3::TRIANGLE)){
+				if(controller.button(RPDS3::TRIANGLE)){
+					ms.send(MECHANISM_MDD_NUM,BOX,2);
+				}else{
+					ms.send(MECHANISM_MDD_NUM,BOX,0);
+				}
+				/*if(controller.press(RPDS3::TRIANGLE)){
 					if(box_flag == true){
 						ms.send(MECHANISM_MDD_NUM,BOX,2);
 						box_flag = false;
@@ -201,7 +212,7 @@ int main(void){
 						box_flag = true;
 						std::cout << "off" << std::endl;
 					}
-				}
+				}*/
 			}else{
 				ms.send(MECHANISM_MDD_NUM,BOX,0);
 				box_flag = true;	
