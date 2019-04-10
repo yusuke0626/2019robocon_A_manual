@@ -66,6 +66,7 @@ int main(){
 	cout << "ok,let`s go!" << endl;
 	sleep(1);
 	gyro.start();
+	std::system("clear");
 	while(1){
 		int i  = (gyro.yaw + 180)/4;
 		gyro.updata();
