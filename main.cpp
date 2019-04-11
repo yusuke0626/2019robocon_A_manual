@@ -159,10 +159,10 @@ int main(void){
 			if(controller.stick(RPDS3::RIGHT_T) > 0 || controller.stick(RPDS3::LEFT_T) > 0){
 				rotation = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;//rotation component
 				rotation_origin = gyro.yaw;
-				gy = gyro.yaw;
 
 			}
 
+			gy = gyro.yaw;
 			correct_deg = gy - rotation_origin;
 
 			if(correct_deg > 30){
@@ -172,15 +172,22 @@ int main(void){
 			}
 
 			//rotation_correction = correct_deg * std::sin(
+			//
+			/////////////////////////////
 
 
 
-			std::cout << "c:" << correct_deg  << "   g:" << gyro.yaw << "   o:" << rotation_origin << std::endl;
-			wheel_velocity[0] = -std::sin(M_PI/4 + gyro_rad) * left_x + std::cos(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg;
-			wheel_velocity[1] = -std::cos(M_PI/4 + gyro_rad) * left_x + -std::sin(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg;
-			wheel_velocity[2] = std::sin(M_PI/4 + gyro_rad) * left_x + -std::cos(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg;
-			wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg;
-
+			std::cout << "c:" << correct_deg  << "   g:" << gy << "   o:" << rotation_origin << std::endl;
+			wheel_velocity[0] = -std::sin(M_PI/4 + gyro_rad) * left_x + std::cos(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg * 1.5;
+			wheel_velocity[1] = -std::cos(M_PI/4 + gyro_rad) * left_x + -std::sin(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg * 1.5;
+			wheel_velocity[2] = std::sin(M_PI/4 + gyro_rad) * left_x + -std::cos(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg *1.5;
+			wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg *1.5;
+			
+			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, wheel_velocity[1] * 0.55 * regulation + rotation);
+			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  wheel_velocity[2] * 0.55 * regulation + rotation);
+			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,wheel_velocity[0] * 0.55 * regulation + rotation);
+			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM, wheel_velocity[3] * 0.55 * regulation + rotation);
+		
 
 			//-----------------------------------------ハンガー昇降機 ---------------------------------------------//
 			if(controller.press(RPDS3::SQUARE)){
@@ -402,18 +409,13 @@ int main(void){
 				}
 			}
 
-			//-------------------モータ動作関数--------------------------------------------------------------//
 			//ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,send_);
 			//ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,send_arm);
 			ms.send(MECHANISM_MDD_NUM,Y_ARM, sent_y * regulation);
 			ms.send(MECHANISM_MDD_NUM,Z_ARM, sent_z * regulation );
 			ms.send(MECHANISM_MDD_NUM,BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,send_arm_right);
 			ms.send(MECHANISM_MDD_NUM,BATH_TOWEL_MDD_NUM,LEFT_T_ARM,send_arm_left);
-			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, wheel_velocity[1] * 0.55 * regulation + rotation);
-			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  wheel_velocity[2] * 0.55 * regulation + rotation);
-			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,wheel_velocity[0] * 0.55 * regulation + rotation);
-			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM, wheel_velocity[3] * 0.55 * regulation + rotation);
-		}
+			}
 		ms.send(255,255,0);
 	}
 
