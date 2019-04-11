@@ -351,17 +351,18 @@ int main(void){
 				cross_flag = true;
 			}
 
-			std::cout << "cflag" << circle_flag << std::endl;
+			//std::cout << "cflag" << circle_flag << std::endl;
 
 
 			if(right_arm_run == true || left_arm_run == true){
-				if(circle_flag == true || cross_flag == true){
+				if(circle_flag == false || cross_flag == false){
 					send_arm_right = 0;
 					send_arm_left  = 0;
 					circle_flag = false;
 					cross_flag = false;
 					right_arm_run = false;
 					left_arm_run = false;
+					std::cout << "off" << std::endl;
 				}
 			}
 
@@ -369,21 +370,26 @@ int main(void){
 				if(arm_limit_right_up == false){
 					send_arm_right = 80;
 					right_arm_run = true;
+					std::cout << "a" << std::endl;
 				}else{
 					send_arm_right = 0;
 					right_arm_run = false;
+					std::cout << "b" << std::endl;
 				}
 
 				if(arm_limit_left_up == false){
 					send_arm_left = 80;
 					left_arm_run = true;
+					std::cout << "c" << std::endl;
 				}else{
 					send_arm_left = 0;
 					left_arm_run = false;
+					std::cout << "d" << std::endl;
 				}
 
 				if(right_arm_run == false && left_arm_run == false){
 					circle_flag = false;
+					std::cout << "e" << std::endl;
 				}
 			}
 
@@ -391,21 +397,26 @@ int main(void){
 				if(arm_limit_right_down == false){
 					send_arm_right = -80;
 					right_arm_run = true;
+					std::cout << "f" << std::endl;
 				}else{
 					send_arm_right = 0;
 					right_arm_run = false;
+					std::cout << "g" << std::endl;
 				}
 
 				if(arm_limit_left_down == false){
 					send_arm_left = -80;
 					right_arm_run = true;
+					std::cout << "h" << std::endl;
 				}else{
 					send_arm_left = 0;
 					right_arm_run = false;
+					std::cout << "i" << std::endl;
 				}
 
 				if(right_arm_run == false && left_arm_run == false){
 					cross_flag = false;
+					std::cout << "j" << std::endl;
 				}
 			}
 
