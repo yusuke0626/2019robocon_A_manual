@@ -153,7 +153,7 @@ int main(void){
 			//double theta = 0;
 			//left_theta = std::atan2(-left_y,left_x) + M_PI;
 
-			if(controller.button(RPDS3::LEFT) && controller.press(RPDS3::SELECT)) {
+			if(controller.press(RPDS3::LEFT) && controller.button(RPDS3::SELECT)) {
 				gyro.resetYaw(0);
 				std::cout << "yaw" << std::endl;
 			}
