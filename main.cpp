@@ -393,7 +393,7 @@ int main(void){
 					right_moving_mode = 1;
 					ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
 					std::cout << "r_limit\n";
-				}else if(right_moving_mode == 3 && t_arm_limit_right_up == 1){
+				}else if(right_moving_mode == 3 && t_arm_limit_right_up == true){
 					right_moving_mode = 1;
 					ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
 					std::cout << "r_limit\n";
