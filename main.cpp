@@ -77,7 +77,6 @@ int main(void){
 
 
 	bool hanger_flag = true;
-	bool box_flag = true;
 	bool coat_flag = true;
 	int right_moving_mode = 1;
 	int left_moving_mode = 1;
@@ -217,8 +216,6 @@ int main(void){
 			pochama_limit_z_up    = gpioRead(Z_UP_TAIL_LIMIT);
 			pochama_limit_z_down  = gpioRead(Z_DOWN_TAIL_LIMIT);
 
-			/* z_tail_mode 及び　y_tail_modeは、モーターの動きが
-			 * */
 			right_theta = std::atan2(right_y,right_x);
 
 
@@ -321,21 +318,14 @@ int main(void){
 			t_arm_limit_left_up = gpioRead(LEFT_UP_T_ARM_LIMIT);
 			t_arm_limit_left_down = gpioRead(LEFT_DOWN_T_ARM_LIMIT);
 
-			if(t_arm_limit_right_down == true && t_arm_limit_left_down == true){
+			if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && pochama_limit_z_up == true){
 				if(controller.press(RPDS3::TRIANGLE)){
-					if(box_flag == true){
-						ms.send(MECHANISM_MDD_NUM,BOX,2);
-						box_flag = false;
-						std::cout << "on" << std::endl;
-					}else{
-						ms.send(MECHANISM_MDD_NUM,BOX,0);
-						box_flag = true;
-						std::cout << "off" << std::endl;
-					}
+					ms.send(MECHANISM_MDD_NUM,BOX,2);
+				}else{
+					ms.send(MECHANISM_MDD_NUM,BOX,0);
 				}
 			}else{
 				ms.send(MECHANISM_MDD_NUM,BOX,0);
-				box_flag = true;
 			}
 
 			if(controller.button(RPDS3::R1) == true){
