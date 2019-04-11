@@ -82,7 +82,14 @@ int main(void){
 	int right_moving_mode = 1;
 	int left_moving_mode = 1;
 	
-	int L1_count = 0;
+	std::cout << "Your coat is :: RED -> SELECT and TRIANGLE BLUE -> SELECT and CROSS" << std::endl;
+	if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
+		coat_flag = true;
+		std::cout << "Red coat selected" << std::endl;
+	}else if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::CROSS)){
+		coat_flag = false;
+		std::cout << "Blue coat selected" << std::endl;
+	}
 
 	std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
 
@@ -184,21 +191,22 @@ int main(void){
 				}
 			}
 			//コートチェンジ（L1長押し）
-			if(controller.button(RPDS3::L1)){
-				if(L1_count <= 15){
-					L1_count = L1_count + 1;
-				}else{
-					coat_flag = !(coat_flag);
-					L1_count = 0;
-				}
-			}else if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
-					coat_flag = !(coat_flag);
+			if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
+				coat_flag = !(coat_flag);
 			}
 
 			if(coat_flag == true){
 				changer = 1;
 			}else{
 				changer = -1;
+			}
+
+			if(controller.button(RPDS3::L1)){
+				if(coat_flag == true){
+					changer = -1;
+				}else{
+					changer = 1;
+				}
 			}
 
 			//std::cout << changer << std::endl;
@@ -238,17 +246,17 @@ int main(void){
 
 			if(y_tail_mode == true){
 				if(sent_y > 0){
-					sent_y = 50;
+					sent_y = 200;
 				}else if(sent_y < 0){
-					sent_y = -50;
+					sent_y = -200;
 				}
 			}
 
 			if(z_tail_mode == true){
 				if(sent_z > 0){
-					sent_z = 50;
+					sent_z = 200;
 				}else if(sent_z < 0){
-					sent_z = -50;
+					sent_z = -200;
 				}
 			}
 
@@ -260,10 +268,10 @@ int main(void){
 			}else{
 				if(right_x == 0){
 					if(controller.press(RPDS3::RIGHT)){
-						sent_y =  50 * changer;
+						sent_y =  120 * changer;
 						y_tail_mode = true;
 					}else if(controller.press(RPDS3::LEFT)){
-						sent_y = -50 * changer;
+						sent_y = -150 * changer;
 						y_tail_mode = true;
 					}
 				}
@@ -277,10 +285,10 @@ int main(void){
 			}else{
 				if(right_y == 0){
 					if(controller.press(RPDS3::UP)){
-						sent_z =  -50;
+						sent_z =  -250;
 						z_tail_mode = true;
 					}else if(controller.press(RPDS3::DOWN)){
-						sent_z = 50;
+						sent_z = 200;
 						z_tail_mode = true;
 					}
 				}
