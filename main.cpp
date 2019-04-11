@@ -39,7 +39,7 @@ int main(void){
 	bool z_tail_mode = false;
 	bool sleep_flag = false;
 	double rotation_origin = 0;
-
+	double gy = 0;
 	double correct_deg = 0;
 	double regulation = 0.3;
 	// double rotation_correction = 0;
@@ -159,9 +159,11 @@ int main(void){
 			if(controller.stick(RPDS3::RIGHT_T) > 0 || controller.stick(RPDS3::LEFT_T) > 0){
 				rotation = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;//rotation component
 				rotation_origin = gyro.yaw;
+				gy = gyro.yaw;
+
 			}
 
-			correct_deg = gyro.yaw - rotation_origin;
+			correct_deg = gy - rotation_origin;
 
 			if(correct_deg > 30){
 				correct_deg = 30;
@@ -341,6 +343,9 @@ int main(void){
 			if(controller.press(RPDS3::CROSS)){
 				cross_flag = true;
 			}
+
+			std::cout << "cflag" << circle_flag << std::endl;
+
 
 			if(right_arm_run == true || left_arm_run == true){
 				if(circle_flag == true || cross_flag == true){

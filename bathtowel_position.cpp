@@ -38,6 +38,7 @@ int main(){
 	std::mt19937 returner1(val1());
 	position = val_dice1(val1);
 	cout << "-- " << position << endl;
+	cout << "|" ;
 	if(battle_mode == 1){
 		switch(position){
 			case 1:
