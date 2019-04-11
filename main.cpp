@@ -188,6 +188,9 @@ int main(void){
 			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,wheel_velocity[0] * 0.55 * regulation + rotation);
 			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM, wheel_velocity[3] * 0.55 * regulation + rotation);
 
+			//std::cout << "left_x:" << left_x << std::endl;
+			//std::cout << "rotation:" << rotation<< std::endl;
+
 			//ハンガー昇降機（△　）
 			if(controller.press(RPDS3::SQUARE)){
 				if(hanger_flag == true){
@@ -370,13 +373,14 @@ int main(void){
 			}
 
 			if(triangle_press == true && box_permission_flag == true){
-				if(solenoid_count <= 3){
+				if(solenoid_count <= 10){
 					ms.send(MECHANISM_MDD_NUM,BOX,2);
 					++solenoid_count;	
 				}else{
 					ms.send(MECHANISM_MDD_NUM,BOX,0);
 					solenoid_count = 0;
 					triangle_press =false;
+					box_permission_flag = false;
 				}		
 			}
 			/*if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && pochama_limit_z_up == true){
