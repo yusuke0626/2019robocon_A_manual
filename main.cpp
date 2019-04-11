@@ -41,7 +41,7 @@ int main(void){
 	bool y_tail_mode = false;
 	bool z_tail_mode = false;
 	bool sleep_flag = false;
-    bool rotation_lock = true;
+	bool rotation_lock = true;
 
 	double regulation = 0.3;
 	int changer = 1;
@@ -93,7 +93,7 @@ int main(void){
 			std::cout << "Blue coat selected" << std::endl;
 		}
 	}
-		std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
+	std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
 
 	UPDATELOOP(controller,!(controller.button(RPDS3::SELECT) && controller.button(RPDS3::START))){
 	}
@@ -165,21 +165,22 @@ int main(void){
 			  }*/
 
 			double gyro_rad = gyro.yaw * M_PI / 180;
+			//double correct_deg = 0;
 
-            if(controller.stick(RPDS3::RIGHT_T) > 5 || controller.stick(RPDS3::LEFT_T > 5){
-			    rotation = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;//rotation component
-                rotation_lock = false;
-            }else{
-                rotation_lock = true;
-            }
+			if(controller.stick(RPDS3::RIGHT_T) > 5 || controller.stick(RPDS3::LEFT_T) > 5){
+				rotation = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;//rotation component
+				rotation_lock = false;
+			}else{
+				rotation_lock = true;
+			}
 
-            double correct_deg;
+			double correct_deg = 0;
 
-            if(rotation_lock == true){
-                correct_deg = gyro_rad;
-            }else{
-                correct_deg = 0;
-            }
+			if(rotation_lock == true){
+				correct_deg = gyro_rad;
+			}else{
+				correct_deg = 0;
+			}
 
 			wheel_velocity[0] = -std::sin(M_PI/4 + gyro_rad) * left_x + std::cos(M_PI/4 + gyro_rad) * left_y + rotation -correct_deg * 0.5;
 			wheel_velocity[1] = -std::cos(M_PI/4 + gyro_rad) * left_x + -std::sin(M_PI/4 + gyro_rad) * left_y + rotation -correct_deg * 0.5;
