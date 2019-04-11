@@ -81,17 +81,18 @@ int main(void){
 	bool coat_flag = true;
 	int right_moving_mode = 1;
 	int left_moving_mode = 1;
-	
-	std::cout << "Your coat is :: RED -> SELECT and TRIANGLE BLUE -> SELECT and CROSS" << std::endl;
-	if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
-		coat_flag = true;
-		std::cout << "Red coat selected" << std::endl;
-	}else if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::CROSS)){
-		coat_flag = false;
-		std::cout << "Blue coat selected" << std::endl;
-	}
 
-	std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
+	std::cout << "Your coat is :: RED -> SELECT and TRIANGLE BLUE -> SELECT and CROSS" << std::endl;
+	UPDATELOOP(controller,controller.button(RPDS3::SELECT) && (controller.button(RPDS3::TRIANGLE) || controller.button(RPDS3::CROSS))){	
+		if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
+			coat_flag = true;
+			std::cout << "Red coat selected" << std::endl;
+		}else if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::CROSS)){
+			coat_flag = false;
+			std::cout << "Blue coat selected" << std::endl;
+		}
+	}
+		std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
 
 	UPDATELOOP(controller,!(controller.button(RPDS3::SELECT) && controller.button(RPDS3::START))){
 	}
@@ -196,16 +197,16 @@ int main(void){
 			}
 
 			if(coat_flag == true){
-				changer = 1;
-			}else{
 				changer = -1;
+			}else{
+				changer = 1;
 			}
 
 			if(controller.button(RPDS3::L1)){
 				if(coat_flag == true){
-					changer = -1;
-				}else{
 					changer = 1;
+				}else{
+					changer = -1;
 				}
 			}
 
@@ -304,7 +305,7 @@ int main(void){
 
 			if(pochama_limit_z_down == true && sent_z <= 0){
 				sent_z = 0;
-				std::cout << "limit" << std::endl;
+				z_tail_mode = false;
 			}else if(pochama_limit_z_up == true && sent_z >= 0){
 				sent_z = 0;
 				z_tail_mode = false;
