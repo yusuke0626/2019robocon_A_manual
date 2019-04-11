@@ -56,6 +56,7 @@ int main(void){
 
 	gpioSetMode(13,PI_OUTPUT);
 	gpioWrite(13,true);
+	gpioSetMode(27,PI_OUTPUT);
 
 	gpioSetMode(RIGHT_UP_T_ARM_LIMIT,PI_INPUT);
 	gpioSetPullUpDown(RIGHT_UP_T_ARM_LIMIT,PI_PUD_UP);
@@ -80,18 +81,27 @@ int main(void){
 	bool coat_flag = true;
 	int right_moving_mode = 1;
 	int left_moving_mode = 1;
+	bool box_permission_flag = false;
+	bool triangle_press = false;
+	int arm_count = 0;
+	bool y_arm_special_mode = false;
+	bool chosen = false;
+	int solenoid_count = 0;
 
 	std::cout << "Your coat is :: RED -> SELECT and TRIANGLE BLUE -> SELECT and CROSS" << std::endl;
-	UPDATELOOP(controller,controller.button(RPDS3::SELECT) && (controller.button(RPDS3::TRIANGLE) || controller.button(RPDS3::CROSS))){	
+	while(chosen == false){	
+		controller.update();
 		if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
 			coat_flag = true;
 			std::cout << "Red coat selected" << std::endl;
+			chosen = true;
 		}else if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::CROSS)){
 			coat_flag = false;
 			std::cout << "Blue coat selected" << std::endl;
+			chosen = true;
 		}
 	}
-		std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
+	std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
 
 	UPDATELOOP(controller,!(controller.button(RPDS3::SELECT) && controller.button(RPDS3::START))){
 	}
@@ -113,8 +123,9 @@ int main(void){
 				sleep_flag = true;
 				std::cout << "zzz" << std::endl;
 				break;
+			}else{
+				gpioWrite(27,true);
 			}
-
 			//double left_distance = 0;
 			//double left_theta = 0;
 			//double right_distance = 0;
@@ -318,7 +329,57 @@ int main(void){
 			t_arm_limit_left_up = gpioRead(LEFT_UP_T_ARM_LIMIT);
 			t_arm_limit_left_down = gpioRead(LEFT_DOWN_T_ARM_LIMIT);
 
-			if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && pochama_limit_z_up == true){
+			if(controller.press(RPDS3::TRIANGLE)){
+				if(t_arm_limit_right_down == false){
+					right_moving_mode = 2;
+				}
+					
+				if(t_arm_limit_left_down == false){
+					left_moving_mode = 2;
+				}
+
+				if(pochama_limit_z_down == false){
+					z_tail_mode = true;
+					sent_z = -200;
+				}		
+
+				if(arm_count < 5){
+					sent_y = 120;
+					y_tail_mode = true;
+					++arm_count;
+					y_arm_special_mode = true;
+				}
+
+				triangle_press = true;
+			}
+		
+			if(arm_count >= 5){
+				sent_y = 0;
+				y_tail_mode = false;
+			}
+
+			if(y_arm_special_mode == true){
+				++arm_count;
+			}
+
+
+			if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && (pochama_limit_z_down == true && arm_count >= 10)){
+					box_permission_flag = true;
+					arm_count = 0;
+					y_arm_special_mode = false;
+			}
+
+			if(triangle_press == true && box_permission_flag == true){
+				if(solenoid_count <= 3){
+					ms.send(MECHANISM_MDD_NUM,BOX,2);
+					++solenoid_count;	
+				}else{
+					ms.send(MECHANISM_MDD_NUM,BOX,0);
+					solenoid_count = 0;
+					triangle_press =false;
+				}		
+			}
+			/*if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && pochama_limit_z_up == true){
 				if(controller.press(RPDS3::TRIANGLE)){
 					ms.send(MECHANISM_MDD_NUM,BOX,2);
 				}else{
@@ -326,7 +387,7 @@ int main(void){
 				}
 			}else{
 				ms.send(MECHANISM_MDD_NUM,BOX,0);
-			}
+			}*/
 
 			if(controller.button(RPDS3::R1) == true){
 				regulation = 0.5;
@@ -401,18 +462,18 @@ int main(void){
 				}
 
 				if(right_moving_mode == 2 && left_moving_mode == 2){
-					ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
-					ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
+					ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-150);
+					ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-150);
 				}else if(right_moving_mode == 3 && left_moving_mode == 3){
-					ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
-					ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);
+					ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,150);
+					ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,150);
 				}
 
 			}
 		}
 		ms.send(255,255,0);
 	}
-
+	gpioWrite(27,false);
 	ms.send(255,255,0);
 	gpioWrite(13,false);
 	return 0;
