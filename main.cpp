@@ -192,7 +192,7 @@ int main(void){
 			//std::cout << "rotation:" << rotation<< std::endl;
 
 			//ハンガー昇降機（△　）
-			if(controller.press(RPDS3::SQUARE)){
+			if(controller.press(RPDS3::SQUARE) && !(controller.button(RPDS3::SELECT))){
 				if(hanger_flag == true){
 					ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,1);
 					ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,2);
@@ -332,7 +332,7 @@ int main(void){
 			t_arm_limit_left_up = gpioRead(LEFT_UP_T_ARM_LIMIT);
 			t_arm_limit_left_down = gpioRead(LEFT_DOWN_T_ARM_LIMIT);
 
-			if(controller.press(RPDS3::TRIANGLE)){
+			if(controller.press(RPDS3::TRIANGLE) && !(controller.button(RPDS3::SELECT))){
 				if(t_arm_limit_right_down == false){
 					right_moving_mode = 2;
 				}
@@ -346,7 +346,7 @@ int main(void){
 					sent_z = -200;
 				}		
 
-				if(arm_count < 5){
+				if(arm_count < 15){
 					sent_y = 120;
 					y_tail_mode = true;
 					++arm_count;
@@ -356,7 +356,7 @@ int main(void){
 				triangle_press = true;
 			}
 		
-			if(arm_count >= 5){
+			if(arm_count >= 15){
 				sent_y = 0;
 				y_tail_mode = false;
 			}
@@ -366,7 +366,7 @@ int main(void){
 			}
 
 
-			if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && (pochama_limit_z_down == true && arm_count >= 10)){
+			if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && (pochama_limit_z_down == true && arm_count >= 15)){
 					box_permission_flag = true;
 					arm_count = 0;
 					y_arm_special_mode = false;
