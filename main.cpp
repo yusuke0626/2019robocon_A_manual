@@ -28,6 +28,10 @@ int main(void){
 	//constexpr short STICK_MAX_VALUE = 250;
 	constexpr short HANGER_SOLENOID = 7;
 
+	constexpr short TAPE_LED_ARD_NUM = 84;
+	constexpr short LED_1 = 10;
+	constexpr short	LED_2 = 11;
+
 	constexpr int RIGHT_UP_T_ARM_LIMIT   = 12;
 	constexpr int RIGHT_DOWN_T_ARM_LIMIT = 16;
 	constexpr int LEFT_UP_T_ARM_LIMIT    = 11;
@@ -89,6 +93,7 @@ int main(void){
 	bool chosen = false;
 	int solenoid_count = 0;
 	bool limit_emergency_flag = false;
+	int led_lightning_mode = 0;
 
 	std::cout << "Your coat is :: RED -> SELECT and TRIANGLE BLUE -> SELECT and CROSS" << std::endl;
 	while(chosen == false){	
@@ -349,7 +354,7 @@ int main(void){
 				if(t_arm_limit_right_down == false){
 					right_moving_mode = 2;
 				}
-					
+
 				if(t_arm_limit_left_down == false){
 					left_moving_mode = 2;
 				}
@@ -368,7 +373,7 @@ int main(void){
 
 				triangle_press = true;
 			}
-		
+
 			if(arm_count >= 15){
 				sent_y = 0;
 				y_tail_mode = false;
@@ -380,9 +385,9 @@ int main(void){
 
 
 			if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && (pochama_limit_z_down == true && arm_count >= 15)){
-					box_permission_flag = true;
-					arm_count = 0;
-					y_arm_special_mode = false;
+				box_permission_flag = true;
+				arm_count = 0;
+				y_arm_special_mode = false;
 			}
 
 			if(triangle_press == true && box_permission_flag == true){
@@ -397,14 +402,14 @@ int main(void){
 				}		
 			}
 			/*if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && pochama_limit_z_up == true){
-				if(controller.press(RPDS3::TRIANGLE)){
-					ms.send(MECHANISM_MDD_NUM,BOX,2);
-				}else{
-					ms.send(MECHANISM_MDD_NUM,BOX,0);
-				}
-			}else{
-				ms.send(MECHANISM_MDD_NUM,BOX,0);
-			}*/
+			  if(controller.press(RPDS3::TRIANGLE)){
+			  ms.send(MECHANISM_MDD_NUM,BOX,2);
+			  }else{
+			  ms.send(MECHANISM_MDD_NUM,BOX,0);
+			  }
+			  }else{
+			  ms.send(MECHANISM_MDD_NUM,BOX,0);
+			  }*/
 
 			if(controller.button(RPDS3::R1) == true){
 				regulation = 0.5;
@@ -487,7 +492,12 @@ int main(void){
 				}
 
 			}
-			usleep(1000);
+			/*switch(led_lightning_mode){
+				case 1:
+				break;
+
+			}*/
+			usleep(10000);
 		}
 		ms.send(255,255,0);
 	}

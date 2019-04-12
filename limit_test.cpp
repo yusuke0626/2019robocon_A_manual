@@ -15,7 +15,7 @@ int main(){
 
 	gpioInitialise();
 	gpioSetMode(pin,PI_INPUT);
-	gpioSetPullUpDown(pin,PI_PUD_DOWN);
+	gpioSetPullUpDown(pin,PI_PUD_UP);
 
 	int x;
 	x = gpioRead(pin);
