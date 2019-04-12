@@ -4,6 +4,7 @@
 #include"Sensor-master/GY521/GY521.hpp"
 #include<iostream>
 #include<cmath>
+#include<unistd.h>
 
 RPMS::MotorSerial ms;
 RPDS3::DualShock3 controller;
@@ -87,6 +88,7 @@ int main(void){
 	bool y_arm_special_mode = false;
 	bool chosen = false;
 	int solenoid_count = 0;
+	bool limit_emergency_flag = false;
 
 	std::cout << "Your coat is :: RED -> SELECT and TRIANGLE BLUE -> SELECT and CROSS" << std::endl;
 	while(chosen == false){	
@@ -225,11 +227,20 @@ int main(void){
 
 			//std::cout << changer << std::endl;
 			//回収機構のアーム（右ステ
-			pochama_limit_y_front = gpioRead(Y_FRONT_TAIL_LIMIT);
-			pochama_limit_y_back  = gpioRead(Y_BACK_TAIL_LIMIT);
-			pochama_limit_z_up    = gpioRead(Z_UP_TAIL_LIMIT);
-			pochama_limit_z_down  = gpioRead(Z_DOWN_TAIL_LIMIT);
-
+			if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::CIRCLE)){
+				limit_emergency_flag = !(limit_emergency_flag);
+			}
+			if(limit_emergency_flag == true){
+				pochama_limit_y_front = true;
+				pochama_limit_y_back  = true;
+				pochama_limit_z_up    = true;
+				pochama_limit_z_down  = true;	
+			}else{
+				pochama_limit_y_front = gpioRead(Y_FRONT_TAIL_LIMIT);
+				pochama_limit_y_back  = gpioRead(Y_BACK_TAIL_LIMIT);
+				pochama_limit_z_up    = gpioRead(Z_UP_TAIL_LIMIT);
+				pochama_limit_z_down  = gpioRead(Z_DOWN_TAIL_LIMIT);
+			}
 			right_theta = std::atan2(right_y,right_x);
 
 
@@ -306,18 +317,20 @@ int main(void){
 				}
 
 			}
-			if(pochama_limit_y_back == true && sent_y >= 0){
+			if(pochama_limit_y_back == true && sent_y > 0){
 				sent_y = 0;
 				y_tail_mode = false;
-			}else if(pochama_limit_y_front == true && sent_y <= 0){
+				std::cout << "y_back" << std::endl;
+			}else if(pochama_limit_y_front == true && sent_y < 0){
 				sent_y = 0;
 				y_tail_mode = false;
+				std::cout << " y_front" << std::endl;
 			}
 
-			if(pochama_limit_z_down == true && sent_z <= 0){
+			if(pochama_limit_z_down == true && sent_z < 0){
 				sent_z = 0;
 				z_tail_mode = false;
-			}else if(pochama_limit_z_up == true && sent_z >= 0){
+			}else if(pochama_limit_z_up == true && sent_z > 0){
 				sent_z = 0;
 				z_tail_mode = false;
 			}
@@ -474,6 +487,7 @@ int main(void){
 				}
 
 			}
+			usleep(1000);
 		}
 		ms.send(255,255,0);
 	}
