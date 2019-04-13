@@ -88,7 +88,7 @@ int main(void){
 	bool limit_emergency_flag = false;
 	int led_lightning_mode = 0;
 	int past_led = 0;
-	int wait = 40;
+	constexpr int wait = 60;
 
 	std::cout << "Your coat is :: RED -> SELECT and TRIANGLE BLUE -> SELECT and CROSS" << std::endl;
 
@@ -99,10 +99,14 @@ int main(void){
 			std::cout << "Red coat selected" << std::endl;
 			coat_chosen = true;
 			ms.send(TAPELED,20,wait);
+			ms.send(TAPELED,20,wait);
+			ms.send(TAPELED,20,wait);
 		}else if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::CROSS)){
 			coat_flag = false;
 			std::cout << "Blue coat selected" << std::endl;
 			coat_chosen = true;
+			ms.send(TAPELED,30,wait);
+			ms.send(TAPELED,30,wait);
 			ms.send(TAPELED,30,wait);
 		}
 	}
@@ -125,6 +129,7 @@ int main(void){
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 		if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::SQUARE)){
 			sleep_flag = false;
+			led_lightning_mode = 10;
 			std::cout << "wake up" << std::endl;
 		}
 
@@ -133,6 +138,8 @@ int main(void){
 			if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::SQUARE)){
 				sleep_flag = true;
 				std::cout << "zzz" << std::endl;
+				ms.send(TAPELED,40,wait);
+				ms.send(TAPELED,40,wait);
 				ms.send(TAPELED,40,wait);
 				break;
 			}else{
@@ -371,7 +378,7 @@ int main(void){
 				triangle_press = true;
 			}
 
-			if(arm_count >= 15){
+			if(arm_count >= 30){
 				sent_y = 0;
 				y_tail_mode = false;
 				y_arm_special_mode = false;
@@ -397,7 +404,7 @@ int main(void){
 			//std::cout << "solenoid_count" << solenoid_count << std::endl;
 
 			if(triangle_press == true && box_permission_flag == true){
-				if(solenoid_count <= 10){
+				if(solenoid_count <= 15){
 					ms.send(TOP_MDD,SOLENOID_PORT,251);
 					++solenoid_count;
 					//std::cout << "やりますねぇ！" << std::endl;
@@ -499,32 +506,39 @@ int main(void){
 
 			//std::cout << led_lightning_mode << std::endl;
 			if(past_led != led_lightning_mode){
-				std::cout << led_lightning_mode << std::endl;
+				//std::cout << led_lightning_mode << std::endl;
 				switch(led_lightning_mode){
 					case 1:
+						ms.send(TAPELED,10,wait);
+						ms.send(TAPELED,10,wait);
 						ms.send(TAPELED,10,wait);
 						break;
 					case 2:
 						ms.send(TAPELED,20,wait);
+						ms.send(TAPELED,20,wait);
+						ms.send(TAPELED,20,wait);
 						break;
 					case 3:
+						ms.send(TAPELED,30,wait);
+						ms.send(TAPELED,30,wait);
 						ms.send(TAPELED,30,wait);
 						break;
 					case 4:
 						ms.send(TAPELED,40,wait);
+						ms.send(TAPELED,40,wait);
+						ms.send(TAPELED,40,wait);
 						break;
 					case 5:
+						ms.send(TAPELED,50,wait);
+						ms.send(TAPELED,50,wait);
 						ms.send(TAPELED,50,wait);
 						break;
 					case 6:
 						ms.send(TAPELED,60,wait);
 						ms.send(TAPELED,60,wait);
 						ms.send(TAPELED,60,wait);
-						ms.send(TAPELED,60,wait);
-						std::cout << "6mode" << std::endl;
 						break;
 					case 7:
-						ms.send(TAPELED,70,wait);
 						ms.send(TAPELED,70,wait);
 						ms.send(TAPELED,70,wait);
 						ms.send(TAPELED,70,wait);
@@ -533,18 +547,25 @@ int main(void){
 						ms.send(TAPELED,80,wait);
 						ms.send(TAPELED,80,wait);
 						ms.send(TAPELED,80,wait);
-						ms.send(TAPELED,80,wait);
 						break;
 					case 9:
+						ms.send(TAPELED,90,wait);
+						ms.send(TAPELED,90,wait);
 						ms.send(TAPELED,90,wait);
 						break;
 					case 10:
 						ms.send(TAPELED,100,wait);
+						ms.send(TAPELED,100,wait);
+						ms.send(TAPELED,100,wait);
 						break;
 					case 11:
 						ms.send(TAPELED,110,wait);
+						ms.send(TAPELED,110,wait);
+						ms.send(TAPELED,110,wait);
 						break;
 					case 12:
+						ms.send(TAPELED,120,wait);
+						ms.send(TAPELED,120,wait);
 						ms.send(TAPELED,120,wait);
 						break;
 						/*default:
