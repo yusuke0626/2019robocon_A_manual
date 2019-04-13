@@ -24,9 +24,7 @@ int main(void){
 	constexpr short SOLENOID_PORT   = 4;
 	constexpr short ARM_PORT        = 3;
 
-	/*constexpr short TAPELED = 84;
-	  constexpr short LED_1 = 10;
-	  constexpr short LED_2 = 11;*/
+	constexpr short TAPELED = 84;
 
 	constexpr int RIGHT_UP_T_ARM_LIMIT   = 12;
 	constexpr int RIGHT_DOWN_T_ARM_LIMIT = 16;
@@ -77,7 +75,6 @@ int main(void){
 	gpioSetMode(Z_DOWN_TAIL_LIMIT,PI_INPUT);
 	gpioSetPullUpDown(Z_DOWN_TAIL_LIMIT,PI_PUD_UP);
 
-
 	bool hanger_flag = true;
 	bool coat_flag = true;
 	int right_moving_mode = 1;
@@ -89,7 +86,9 @@ int main(void){
 	bool coat_chosen = false;
 	int solenoid_count = 0;
 	bool limit_emergency_flag = false;
-	//int tape_led = 0;
+	int led_lightning_mode = 0;
+	int past_led = 0;
+	int wait = 40;
 
 	std::cout << "Your coat is :: RED -> SELECT and TRIANGLE BLUE -> SELECT and CROSS" << std::endl;
 
@@ -99,10 +98,12 @@ int main(void){
 			coat_flag = true;
 			std::cout << "Red coat selected" << std::endl;
 			coat_chosen = true;
+			ms.send(TAPELED,20,wait);
 		}else if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::CROSS)){
 			coat_flag = false;
 			std::cout << "Blue coat selected" << std::endl;
 			coat_chosen = true;
+			ms.send(TAPELED,30,wait);
 		}
 	}
 
@@ -115,9 +116,12 @@ int main(void){
 	std::cout << "Calibration finished" << std::endl;
 	std::cout << "Start Main program" << std::endl;
 
+	ms.send(TAPELED,5,wait);
+
 	gyro.start();
 	//gyro.resetYaw(0);
 	controller.yReverseSet(true);
+
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 		if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::SQUARE)){
 			sleep_flag = false;
@@ -125,14 +129,15 @@ int main(void){
 		}
 
 		UPDATELOOP(controller, sleep_flag == false){
+			past_led = led_lightning_mode;
 			if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::SQUARE)){
 				sleep_flag = true;
 				std::cout << "zzz" << std::endl;
+				ms.send(TAPELED,40,wait);
 				break;
 			}else{
 				gpioWrite(27,true);
 			}
-
 
 			double left_x = controller.stick(RPDS3::LEFT_X);
 			double left_y = controller.stick(RPDS3::LEFT_Y);
@@ -142,6 +147,7 @@ int main(void){
 			if(controller.press(RPDS3::LEFT) && controller.button(RPDS3::SELECT)) {
 				gyro.resetYaw(0);
 				std::cout << "yaw" << std::endl;
+				led_lightning_mode = 5;
 			}
 
 			double gyro_rad = gyro.yaw * M_PI / 180;
@@ -153,10 +159,10 @@ int main(void){
 			wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation;
 
 
-			ms.send(BOTTOM_MDD, UNC_PORT , -wheel_velocity[1] * 0.55 * regulation + rotation);
-			ms.send(DOWN_MDD,   UNC_PORT , -wheel_velocity[2] * 0.55 * regulation + rotation);
-			ms.send(UP_MDD,     UNC_PORT  , -wheel_velocity[0] * 0.55 * regulation + rotation);
-			ms.send(TOP_MDD,    UNC_PORT , -wheel_velocity[3] * 0.55 * regulation + rotation);
+			ms.send(BOTTOM_MDD, UNC_PORT , -wheel_velocity[1] * 0.8 * regulation + rotation * 1.2);
+			ms.send(DOWN_MDD,   UNC_PORT , -wheel_velocity[2] * 0.8 * regulation + rotation * 1.2);
+			ms.send(UP_MDD,     UNC_PORT  , -wheel_velocity[0] * 0.8 * regulation + rotation * 1.2);
+			ms.send(TOP_MDD,    UNC_PORT , -wheel_velocity[3] * 0.8 * regulation + rotation * 1.2);
 
 
 			//---------------------ハンガー昇降機（▲　）----------------------------------------//
@@ -166,16 +172,23 @@ int main(void){
 					ms.send(UP_MDD, SOLENOID_PORT, 252);
 					hanger_flag = false;
 					std::cout << "up" << std::endl;
+					led_lightning_mode = 6;
 				}else{
 					ms.send(UP_MDD, SOLENOID_PORT, 0);
 					hanger_flag = true;
 					std::cout << "down" << std::endl;
+					led_lightning_mode = 7;
 				}
 			}
 
 			//---------------コートチェンジ-------------------------------//
 			if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
 				coat_flag = !(coat_flag);
+				if(coat_flag == true){
+					led_lightning_mode = 2;
+				}else{
+					led_lightning_mode = 3;
+				}
 			}
 
 			if(coat_flag == true){
@@ -280,9 +293,11 @@ int main(void){
 					if(controller.press(RPDS3::RIGHT)){
 						sent_y =  120 * changer;
 						y_tail_mode = true;
+						led_lightning_mode = 12;
 					}else if(controller.press(RPDS3::LEFT)){
 						sent_y = -150 * changer;
 						y_tail_mode = true;
+						led_lightning_mode = 12;
 					}
 				}
 			}
@@ -313,9 +328,11 @@ int main(void){
 					if(controller.press(RPDS3::UP)){
 						sent_z =  -250;
 						z_tail_mode = true;
+						led_lightning_mode = 11;
 					}else if(controller.press(RPDS3::DOWN)){
 						sent_z = 200;
 						z_tail_mode = true;
+						led_lightning_mode = 11;
 					}
 				}
 
@@ -346,9 +363,9 @@ int main(void){
 				}
 
 				//if(arm_count < 15){
-					sent_y = 120;
-					y_tail_mode = true;
-					y_arm_special_mode = true;
+				sent_y = 120;
+				y_tail_mode = true;
+				y_arm_special_mode = true;
 				//}
 
 				triangle_press = true;
@@ -357,32 +374,40 @@ int main(void){
 			if(arm_count >= 15){
 				sent_y = 0;
 				y_tail_mode = false;
-                y_arm_special_mode = false;
+				y_arm_special_mode = false;
+			}
+
+
+
+			//std::cout << arm_count << std::endl;
+
+
+			if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && (pochama_limit_z_down == true && arm_count >= 15)){
+				box_permission_flag = true;
+				std::cout << "ppppppppppppppppppppppp" << std::endl;
+				arm_count = 0;
+				y_arm_special_mode = false;
 			}
 
 			if(y_arm_special_mode == true){
 				++arm_count;
 			}
 
-            std::cout << arm_count << std::endl;
-
-
-			if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && (pochama_limit_z_down == true && arm_count >= 15)){
-				box_permission_flag = true;
-				arm_count = 0;
-				y_arm_special_mode = false;
-			}
+			//std::cout << "triangle_press:" << triangle_press << std::endl;
+			//std::cout << "solenoid_count" << solenoid_count << std::endl;
 
 			if(triangle_press == true && box_permission_flag == true){
 				if(solenoid_count <= 10){
 					ms.send(TOP_MDD,SOLENOID_PORT,251);
 					++solenoid_count;
+					//std::cout << "やりますねぇ！" << std::endl;
+					led_lightning_mode = 10;
 				}else{
 					ms.send(TOP_MDD,SOLENOID_PORT,0);
 					solenoid_count = 0;
 					triangle_press = false;
 					box_permission_flag = false;
-                    arm_count = 0;
+					arm_count = 0;
 				}
 			}
 
@@ -415,13 +440,16 @@ int main(void){
 				if((controller.press(RPDS3::CIRCLE)) && !(controller.button(RPDS3::L1))){
 					ms.send(DOWN_MDD,   ARM_PORT,50);//右
 					ms.send(BOTTOM_MDD, ARM_PORT,50);//モータのハンダ付けが違う向きのため同じ符号
+					led_lightning_mode = 8;
 					right_moving_mode = 2;
 					left_moving_mode = 2;
+
 				}
 
 				if(controller.press(RPDS3::CROSS)){
 					ms.send(DOWN_MDD   ,ARM_PORT,-50);
 					ms.send(BOTTOM_MDD ,ARM_PORT,-50);
+					led_lightning_mode = 9;
 					right_moving_mode = 3;
 					left_moving_mode = 3;
 				}
@@ -444,7 +472,7 @@ int main(void){
 				}else if(right_moving_mode == 3 && t_arm_limit_right_up == true){
 					right_moving_mode = 1;
 					ms.send(DOWN_MDD,ARM_PORT,0);
-					std::cout << "r_limit\n";
+					std::cout << "rrr_limit\n";
 				}
 
 				//左リミットスイッチの反応
@@ -455,7 +483,7 @@ int main(void){
 				}else if(left_moving_mode == 3 && t_arm_limit_left_up == true){
 					left_moving_mode = 1;
 					ms.send(BOTTOM_MDD,ARM_PORT,0);
-					std::cout << "l_limit\n";
+					std::cout << "lll_limit\n";
 				}
 
 				if(right_moving_mode == 2 && left_moving_mode == 2){
@@ -468,63 +496,71 @@ int main(void){
 
 			}
 
-			/*switch(led_lightning_mode){
-				case 1:
-					ms.send(TAPE_LED_ARD_NUM,10,wait);
-					++led_count = 0;
-					break;
-				case 2:
-					ms.send(TAPE_LED_ARD_NUM,20,wait);
-					++led_count;
-					break;
-				case 3:
-					ms.send(TAPE_LED_ARD_NUM,30,wait);
-					++led_count;
-					break;
-				case 4:
-					ms.send(TAPE_LED_ARD_NUM,40,wait);
-					++led_count;
-					break;
-				case 5:
-					ms.send(TAPE_LED_ARD_NUM,50,wait);
-					++led_count;
-					break;
-				case 6:
-					ms.send(TAPE_LED_ARD_NUM,60,wait);
-					++led_count;
-					break;
-				case 7:
-					ms.send(TAPE_LED_ARD_NUM,70,wait);
-					++led_count;
-					break;
-				case 8:
-					ms.send(TAPE_LED_ARD_NUM,80,wait);
-					++led_count;
-					break;
-				case 9:
-					ms.send(TAPE_LED_ARD_NUM,90,wait);
-					++led_count;
-					break;
-				case 10:
-					ms.send(TAPE_LED_ARD_NUM,100,wait);
-					++led_count;
-					break;
-				case 11:
-					ms.send(TAPE_LED_ARD_NUM,110,wait);
-					++led_count;
-					break;
-				case 12:
-					ms.send(TAPE_LED_ARD_NUM,120,wait);
-					++led_count;
-					break;
-			}*/
-			//usleep(1000);
+
+			//std::cout << led_lightning_mode << std::endl;
+			if(past_led != led_lightning_mode){
+				std::cout << led_lightning_mode << std::endl;
+				switch(led_lightning_mode){
+					case 1:
+						ms.send(TAPELED,10,wait);
+						break;
+					case 2:
+						ms.send(TAPELED,20,wait);
+						break;
+					case 3:
+						ms.send(TAPELED,30,wait);
+						break;
+					case 4:
+						ms.send(TAPELED,40,wait);
+						break;
+					case 5:
+						ms.send(TAPELED,50,wait);
+						break;
+					case 6:
+						ms.send(TAPELED,60,wait);
+						ms.send(TAPELED,60,wait);
+						ms.send(TAPELED,60,wait);
+						ms.send(TAPELED,60,wait);
+						std::cout << "6mode" << std::endl;
+						break;
+					case 7:
+						ms.send(TAPELED,70,wait);
+						ms.send(TAPELED,70,wait);
+						ms.send(TAPELED,70,wait);
+						ms.send(TAPELED,70,wait);
+						break;
+					case 8:
+						ms.send(TAPELED,80,wait);
+						ms.send(TAPELED,80,wait);
+						ms.send(TAPELED,80,wait);
+						ms.send(TAPELED,80,wait);
+						break;
+					case 9:
+						ms.send(TAPELED,90,wait);
+						break;
+					case 10:
+						ms.send(TAPELED,100,wait);
+						break;
+					case 11:
+						ms.send(TAPELED,110,wait);
+						break;
+					case 12:
+						ms.send(TAPELED,120,wait);
+						break;
+						/*default:
+						  ms.send(TAPELED,120,wait);
+						  break;*/
+				}
+			}
+			//usleep(100);
 		}
+		//usleep(10000);
 		ms.send(255,255,0);
 	}
 	gpioWrite(27,false);
 	ms.send(255,255,0);
 	gpioWrite(13,false);
+	ms.send(TAPELED,200,40);
 	return 0;
 }
 
