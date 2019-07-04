@@ -1,12 +1,12 @@
 #include<iostream>
 #include<cmath>
 #include<pigpio.h>
-#include"PigpioMS/PigpioMS.hpp"
+#include"PigpioMS/ngPigpioMS.hpp"
 #include"RasPiDS3/RasPiDS3.hpp"
 
 RPMS::MotorSerial ms;
 RPDS3::DualShock3 controller;
-//
+
 
 int main(void){
 	constexpr short UNDERCARRIAGE_MDD_NUM = 16;
@@ -84,7 +84,7 @@ int main(void){
 		if(controller.press(RPDS3::CIRCLE)){
 			if(left_hanger_flag == true){
 				ms.send(MECHANISM_MDD_NUM,HANGER_RIGHT_SOLENOID,262);
-				left_hanger_flag = false;
+				left_hanger_flag = true;
 			}else{
 				ms.send(MECHANISM_MDD_NUM,HANGER_RIGHT_SOLENOID,-262);
 				left_hanger_flag = true;
@@ -92,25 +92,43 @@ int main(void){
 		}
 
 		if(controller.button(RPDS3::UP)){
-			ms.send(MECHANISM_MDD_NUM,BOX,50);
+			for(int x==0;x<=50;x++){
+				int y=1/2*x
+			}
+			ms.send(MECHANISM_MDD_NUM,BOX,y);
 		}else if(controller.button(RPDS3::DOWN)){
-			ms.send(MECHANISM_MDD_NUM,BOX,-50);
+			for(int i==0;i<=50;i++){
+				int k=1/2*i
+			}
+			ms.send(MECHANISM_MDD_NUM,BOX,-k);
 		}else{
 			ms.send(MECHANISM_MDD_NUM,BOX,0);
 		}
 
 		if(controller.button(RPDS3::RIGHT)){
-			ms.send(MECHANISM_MDD_NUM,Y_ARM,50);
+			for(int p==0;p<=50;p++){
+				int q=1/2*p
+			}
+			ms.send(MECHANISM_MDD_NUM,Y_ARM,q);
 		}else if(controller.button(RPDS3::LEFT)){
-			ms.send(MECHANISM_MDD_NUM,Y_ARM,-50);
+			for(int b==0;b<=50;b++){
+				int d=2/1*b
+			}
+			ms.send(MECHANISM_MDD_NUM,Y_ARM,-d);
 		}else{
 			ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
 		}
 
 		if(controller.button(RPDS3::TRIANGLE)){
-			ms.send(MECHANISM_MDD_NUM,Z_ARM,50);
+			for(int n==0;n<=50;n++){
+				int m=2/1*m
+			}
+			ms.send(MECHANISM_MDD_NUM,Z_ARM,m);
 		}else if(controller.button(RPDS3::CROSS)){
-			ms.send(MECHANISM_MDD_NUM,Z_ARM,-50);
+			for(int c==0;c<=50;c++){
+				int g=2/1*c
+			}
+			ms.send(MECHANISM_MDD_NUM,Z_ARM,-g);
 		}else{
 			ms.send(MECHANISM_MDD_NUM,Z_ARM,0);
 		}
@@ -153,6 +171,23 @@ int main(void){
 		      	ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, right_y * 0.5 * regulation);
 		      	ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  right_y * 0.5 * regulation);
 		}
+
+		revolve = (controller.stick(RPDS3::LEFT_T) - controller.stick(RPDS3::RIGHT_T)) * 0.3;
+
+                        //std::cout << -right_distance <<"::"<< right_distance<< std::endl;
+                        std::cout << right_front<< std::endl;
+                        ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, -right_distance * right_front * 0.4 * regulation + revolve);//左前
+                        ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  -right_distance * right_back  * 0.4 * regulation + revolve);//左後
+                        ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, right_distance * right_back  * 0.4 * regulation + revolve);//右前
+                        ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  right_distance * right_front * 0.4 * regulation + revolve);//右後 
+                }else{
+                        ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,  -right_y * 0.5 * regulation);
+                        ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,   -right_y * 0.5 * regulation);
+                        ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, left_y * 0.5 * regulation);
+                        ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  left_y * 0.5 * regulation);
+                }
+
+
 	
 
 		if(controller.button(RPDS3::R1) == true){
