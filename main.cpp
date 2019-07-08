@@ -8,7 +8,7 @@ RPMS::MotorSerial ms;
 RPDS3::DualShock3 controller;
 
 int main(){
-	constexpr int undercarriage_mdd_num = 13;
+	constexpr int undercarriage_mdd_num = 16;
 	constexpr int mechanism_mdd_num = 14;
 	constexpr int right_front_motor_num = 2;
 	constexpr int right_back_motor_num  = 3;
@@ -49,6 +49,15 @@ int main(){
 		left_y = controller.stick(RPDS3::LEFT_Y);
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
 
+		if(controller.press(R1) == true && controller.press(L1) == true){
+			if(control_mode_flag == true){ 
+				control_mode_flag == false;
+			}else{
+				control_mode_flag == true;
+			}
+		}
+
+
 		if(control_mode_flag == true){
 			if(left_distance > stick_max_value){
 				left_distance = pwm_max_value;
@@ -71,7 +80,18 @@ int main(){
 			}	
 
 			revolve = controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T);
+			ms.send(undercarriage_mdd_num, left_front_motor_num, -left_distance * left_front * regulation + revolve);//左前
+			ms.send(undercarriage_mdd_num, left_back_motor_num,  -left_distance * left_back  * regulation + revolve);//左後
+			ms.send(undercarriage_mdd_num, right_front_motor_num, left_distance * left_back  * regulation - revolve);//右前
+			ms.send(undercarriage_mdd_num, right_back_motor_num,  left_distance * left_front * regulation - revolve);//右後
+		}else{
+			ms.send(undercarriage_mdd_num, left_front_motor_num, -left_distance * regulation);
+		      	ms.send(undercarriage_mdd_num, left_back_motor_num,  -left_distance * regulation);
+		      	ms.send(undercarriage_mdd_num, right_front_motor_num, left_distance * regulation);	
+		      	ms.send(undercarriage_mdd_num, right_back_motor_num,  left_distance * regulation);
 		}	
+
+				
 
 		if(controller.button(RPDS3::R1) == true){
 			regulation = 0.5;
@@ -79,9 +99,5 @@ int main(){
 			regulation = 1.0;
 		}
 
-		ms.send(undercarriage_mdd_num, left_front_motor_num, -left_distance * left_front * regulation + revolve);//左前
-		ms.send(undercarriage_mdd_num, left_back_motor_num, -left_distance * left_back  * regulation + revolve);//左後
-		ms.send(undercarriage_mdd_num, right_front_motor_num, left_distance  * left_back  * regulation - revolve);//右前
-		ms.send(undercarriage_mdd_num, right_back_motor_num,  left_distance  * left_front * regulation - revolve);//右後
-	}
+
 }	
