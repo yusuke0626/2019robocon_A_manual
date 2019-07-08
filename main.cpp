@@ -1,11 +1,11 @@
 #include<iostream>
 #include<cmath>
-//#include<pigpio.h>
+#include<pigpio.h>
 #include"PigpioMS/PigpioMS.hpp"
 #include"RasPiDS3/RasPiDS3.hpp"
 
 RPMS::MotorSerial ms;
-RPDS3::DualShock3 Controller;
+RPDS3::DualShock3 controller;
 
 int main(){
 	constexpr int undercarriage_mdd_num = 13;
@@ -14,25 +14,26 @@ int main(){
 	constexpr int right_back_motor_num  = 3;
 	constexpr int left_front_motor_num  = 4;
 	constexpr int left_back_motor_num   = 5;
-
 	constexpr int pwm_max_value = 150;
-	constexpr double regulation = 0.5;
+	constexpr int stick_max_value = 250;
+
+	double regulation = 0.5;
 
 	bool control_mode_flag = true; 
 
-	RPDS3::Controller.update();
+	controller.update();
 	try{
 		ms.init();
-	}catch(runtime_error exception){
+	}catch(std::runtime_error exception){
 		std::cout << "error" << std::endl;
 		return -1;
 	}
 
-	RPDS3::UPDATELOOP(Controller, !(Controller.button(RPDS3::START) && Contoroller.button(RPDS3::RIGHT))){
+	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
 		double left_x = 0;
 		double left_y = 0;
-		double left_distnce = 0;
+		double left_distance = 0;
 		double left_theta = 0;
 
 		double right_x = 0;
@@ -42,9 +43,10 @@ int main(){
 
 		int left_front = 0;
 		int left_back  = 0;
+		int revolve = 0;
 
-		left_x = Contoroller.stick(RPDS3::LEFT_X);
-		left_y = Contoroller.stick(RPDS3::LEFT_Y);
+		left_x = controller.stick(RPDS3::LEFT_X);
+		left_y = controller.stick(RPDS3::LEFT_Y);
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
 
 		if(control_mode_flag == true){
@@ -68,18 +70,18 @@ int main(){
 				left_front = (left_theta * 4 / M_PI) - 7;
 			}	
 
-			revolve = Controller.stick(RPDS3:RIGHT_T) - Controller.stick(RPDS3::LEFT_T);
+			revolve = controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T);
 		}	
 
-		if(Controller.button(RPDS3::R1) == true){
+		if(controller.button(RPDS3::R1) == true){
 			regulation = 0.5;
 		}else{
 			regulation = 1.0;
 		}
 
-		ms.send(undercarriage_mdd_num, left_front_motor_num, -left_distance * left_front * regulation);//左前
-		ms.send(undercarriage_mdd_num, left_back_motor_num, -left_distance * left_back  * regulation);//左後
-		ms.send(undercarriage_mdd_num, right_front_motor_num, left_distance  * left_back  * regulation);//右前
-		ms.send(undercarriage_mdd_num, right_back_motor_num,  left_distance  * left_front * regulation);//右後
+		ms.send(undercarriage_mdd_num, left_front_motor_num, -left_distance * left_front * regulation + revolve);//左前
+		ms.send(undercarriage_mdd_num, left_back_motor_num, -left_distance * left_back  * regulation + revolve);//左後
+		ms.send(undercarriage_mdd_num, right_front_motor_num, left_distance  * left_back  * regulation - revolve);//右前
+		ms.send(undercarriage_mdd_num, right_back_motor_num,  left_distance  * left_front * regulation - revolve);//右後
 	}
 }	
