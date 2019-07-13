@@ -16,8 +16,8 @@ int main(int argc,char **argv){
 	constexpr short LEFT_BACK_MOTOR_NUM   = 5;
 	constexpr short PWM_MAX_VALUE = 150;
 	constexpr short STICK_MAX_VALUE = 250;
-	constexpr short HANGER_LEFT_SOLENOID_RASPI = 2;
-	constexpr short HANGER_RIGHT_SOLENOID_RASPI = 3;
+	constexpr short HANGER_LEFT_SOLENOID_RASPI = 25;
+	constexpr short HANGER_RIGHT_SOLENOID_RASPI = 6;
 	constexpr short POWER_WINDOW_MOTOR_NUM = 4;
 
 	double regulation = 0.5;
@@ -36,6 +36,9 @@ int main(int argc,char **argv){
 	gpioWrite(13,true);
 
 
+
+	bool right_hanger_flag = true;
+	bool left_hanger_flag = true;
 
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
@@ -64,6 +67,30 @@ int main(int argc,char **argv){
 				control_mode_flag == true;
 			}
 		}
+
+		if(controller.press(RPDS3::SQUARE)){
+			if(right_hanger_flag = true){
+				gpioWrite(25,true);
+				right_hanger_flag = false;
+			}else{
+				gpioWrite(25,false);
+				right_hanger_flag = true;
+			}
+		}
+
+		if(controller.press(RPDS3::CIRCLE)){
+			if(left_hanger_flag = true){
+				gpioWrite(6,true);
+				left_hanger_flag = false;
+			}else{
+				gpioWrite(6,false);
+				left_hanger_flag = true;
+			}
+		}
+
+
+
+	
 
 
 		if(control_mode_flag == true){
@@ -103,9 +130,11 @@ int main(int argc,char **argv){
 
 		if(controller.button(RPDS3::R1) == true){
 			regulation = 0.5;
+			std::cout << "reg" << std::endl;
 		}else{
 			regulation = 1.0;
 		}
 
 	}
+	gpioWrite(13,false);
 }
