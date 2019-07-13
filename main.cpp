@@ -6,7 +6,8 @@
 RPMS::MotorSerial ms;
 RPDS3::DualShock3 controller;
 
-int main(){
+
+int main(int argc,char **argv){
 	constexpr short UNDERCARRIAGE_MDD_NUM = 16;
 	constexpr short MECHANISM_MDD_NUM = 14;
 	constexpr short RIGHT_FRONT_MOTOR_NUM = 2;
@@ -31,6 +32,11 @@ int main(){
 		return -1;
 	}
 
+	gpioSetMode(13,PI_OUTPUT);
+	gpioWrite(13,true);
+
+
+
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
 		double left_x = 0;
@@ -51,7 +57,7 @@ int main(){
 		left_y = controller.stick(RPDS3::LEFT_Y);
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
 
-		if(controller.press(R1) == true && controller.press(L1) == true){
+		if(controller.press(RPDS3::R1) == true && controller.press(RPDS3::L1) == true){
 			if(control_mode_flag == true){
 				control_mode_flag == false;
 			}else{
@@ -101,5 +107,5 @@ int main(){
 			regulation = 1.0;
 		}
 
-
+	}
 }
