@@ -197,6 +197,8 @@ int main(void){
 			//追加部おわり}1
 
 		}
+			ms.send(MECHANISM_MDD_NUM,Y_ARM,right_y);
+			ms.send(MECHANISM_MDD_NUM,Z_ARM,right_x);
 
 
 		if(controller.button(RPDS3::R1) == true){
