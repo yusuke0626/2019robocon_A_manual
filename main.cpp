@@ -66,16 +66,17 @@ int main(void){
 		double right_back_motor_pwm;
 		double left_front_motor_pwm;
 		double left_back_motor_pwm;
+		double accelaration = 5;
 		if(controller.button(RPDS3::UP)){
 			right_front_motor_pwm = -20;
 			right_back_motor_pwm = -20;
 			left_front_motor_pwm = 20;
 			left_back_motor_pwm = 20;
 
-			--right_front_motor_pwm;
-			--right_back_motor_pwm;
-			++left_front_motor_pwm;
-			++left_back_motor_pwm;
+			right_front_motor_pwm = right_front_motor_pwm - accelaration;
+			right_back_motor_pwm = right_back_motor_pwm - accelaration;
+			left_front_motor_pwm = left_front_motor_pwm + accelaration;
+			left_back_motor_pwm = left_back_motor_pwm  + accelaration;
 
 		}else if(controller.button(RPDS3::DOWN)){
 			right_front_motor_pwm = 20;
@@ -83,21 +84,21 @@ int main(void){
 			left_front_motor_pwm = -20;
 			left_back_motor_pwm = -20;
 
-			++right_front_motor_pwm;
-			++right_back_motor_pwm;
-			--left_front_motor_pwm;
-			--left_back_motor_pwm;
-
+			right_front_motor_pwm = right_front_motor_pwm + accelaration;
+			right_back_motor_pwm = right_back_motor_pwm + accelaration;
+			left_front_motor_pwm = left_front_motor_pwm - accelaration;
+			left_back_motor_pwm = left_back_motor_pwm - accelaration;
+		
 		}else if(controller.button(RPDS3::RIGHT)){
 			right_front_motor_pwm = 20;
 			right_back_motor_pwm = -20;
 			left_front_motor_pwm = 20;
 			left_back_motor_pwm = -20;
 
-			++right_front_motor_pwm;
-			--right_back_motor_pwm;
-			++left_front_motor_pwm;
-			--left_back_motor_pwm;
+			right_front_motor_pwm = right_front_motor_pwm + accelaration;
+			right_back_motor_pwm = right_back_motor_pwm - accelaration;
+			left_front_motor_pwm = left_front_motor_pwm + accelaration;
+			left_back_motor_pwm = left_back_motor_pwm - accelaration;
 
 		}else if(controller.button(RPDS3::LEFT)){
 			right_front_motor_pwm = -20;
@@ -105,10 +106,10 @@ int main(void){
 			left_front_motor_pwm = -20;
 			left_back_motor_pwm = 20;
 
-			--right_front_motor_pwm;
-			++right_back_motor_pwm;
-			--left_front_motor_pwm;
-			++left_back_motor_pwm;
+			right_front_motor_pwm = right_front_motor_pwm - accelaration;
+			right_back_motor_pwm = right_back_motor_pwm + accelaration;
+			left_front_motor_pwm = left_front_motor_pwm - accelaration;
+			left_back_motor_pwm = left_back_motor_pwm + accelaration;
 		
 		}else{
 			right_front_motor_pwm = 0;
