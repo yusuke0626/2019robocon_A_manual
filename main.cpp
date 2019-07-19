@@ -71,11 +71,16 @@ int main(void){
 				right_back_motor_pwm = -10;
 				left_front_motor_pwm = 10;
 				left_back_motor_pwm = 10;
-			}else{
+			}else if((right_front_motor_pwm < 128 && right_back_motor_pwm < 128) && (left_front_motor_pwm < 128 && left_back_motor_pwm < 128)){
 				right_front_motor_pwm = right_front_motor_pwm - accelaration;
 				right_back_motor_pwm = right_back_motor_pwm - accelaration;
 				left_front_motor_pwm = left_front_motor_pwm + accelaration;
 				left_back_motor_pwm = left_back_motor_pwm  + accelaration;
+			}else{
+				right_front_motor_pwm = -128;	
+				right_back_motor_pwm = -128;
+				left_front_motor_pwm = 128;
+				left_back_motor_pwm = 128;
 			}
 		}else if(controller.button(RPDS3::DOWN)){
 			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
@@ -83,11 +88,16 @@ int main(void){
 				right_back_motor_pwm = 10;
 				left_front_motor_pwm = -10;
 				left_back_motor_pwm = -10;
-			}else{
+			}else if((right_front_motor_pwm <= 128 && right_back_motor_pwm <= 128) && (left_front_motor_pwm <= 128 && left_back_motor_pwm <= 128)){
 				right_front_motor_pwm = right_front_motor_pwm + accelaration;
 				right_back_motor_pwm = right_back_motor_pwm + accelaration;
 				left_front_motor_pwm = left_front_motor_pwm - accelaration;
 				left_back_motor_pwm = left_back_motor_pwm - accelaration;
+			}else{
+				right_front_motor_pwm = 128;	
+				right_back_motor_pwm = 128;
+				left_front_motor_pwm = -128;
+				left_back_motor_pwm = -128;		
 			}
 		}else if(controller.button(RPDS3::RIGHT)){
 			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
@@ -95,11 +105,16 @@ int main(void){
 				right_back_motor_pwm = -10;
 				left_front_motor_pwm = 10;
 				left_back_motor_pwm = -10;
-			}else{
+			}else if((right_front_motor_pwm <= 128 && right_back_motor_pwm <= 128) && (left_front_motor_pwm <= 128 && left_back_motor_pwm <= 128)){
 				right_front_motor_pwm = right_front_motor_pwm + accelaration;
 				right_back_motor_pwm = right_back_motor_pwm - accelaration;
 				left_front_motor_pwm = left_front_motor_pwm + accelaration;
 				left_back_motor_pwm = left_back_motor_pwm - accelaration;
+			}else{
+				right_front_motor_pwm = 128;	
+				right_back_motor_pwm = -128;
+				left_front_motor_pwm = 128;
+				left_back_motor_pwm = -128;
 			}
 		}else if(controller.button(RPDS3::LEFT)){
 			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
@@ -107,11 +122,16 @@ int main(void){
 				right_back_motor_pwm = 10;
 				left_front_motor_pwm = -10;
 				left_back_motor_pwm = 10;
-			}else{
+				}else if((right_front_motor_pwm <= 128 && right_back_motor_pwm <= 128) && (left_front_motor_pwm <= 128 && left_back_motor_pwm <= 128)){
 				right_front_motor_pwm = right_front_motor_pwm - accelaration;
 				right_back_motor_pwm = right_back_motor_pwm + accelaration;
 				left_front_motor_pwm = left_front_motor_pwm - accelaration;
 				left_back_motor_pwm = left_back_motor_pwm + accelaration;
+			}else{
+				right_front_motor_pwm = -128;	
+				right_back_motor_pwm = 128;
+				left_front_motor_pwm = -128;
+				left_back_motor_pwm = 128;
 			}
 		}else{
 			right_front_motor_pwm = 0;
