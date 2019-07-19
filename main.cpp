@@ -67,13 +67,60 @@ int main(void){
 		double left_front_motor_pwm;
 		double left_back_motor_pwm;
 		if(controller.button(RPDS3::UP)){
-			right_front_motor_pwm =50;
+			right_front_motor_pwm = -20;
+			right_back_motor_pwm = -20;
+			left_front_motor_pwm = 20;
+			left_back_motor_pwm = 20;
+
+			--right_front_motor_pwm;
+			--right_back_motor_pwm;
+			++left_front_motor_pwm;
+			++left_back_motor_pwm;
+
+		}else if(controller.button(RPDS3::DOWN)){
+			right_front_motor_pwm = 20;
+			right_back_motor_pwm = 20;
+			left_front_motor_pwm = -20;
+			left_back_motor_pwm = -20;
+
+			++right_front_motor_pwm;
+			++right_back_motor_pwm;
+			--left_front_motor_pwm;
+			--left_back_motor_pwm;
+
+		}else if(controller.button(RPDS3::RIGHT)){
+			right_front_motor_pwm = 20;
+			right_back_motor_pwm = -20;
+			left_front_motor_pwm = 20;
+			left_back_motor_pwm = -20;
+
+			++right_front_motor_pwm;
+			--right_back_motor_pwm;
+			++left_front_motor_pwm;
+			--left_back_motor_pwm;
+
+		}else if(controller.button(RPDS3::LEFT)){
+			right_front_motor_pwm = -20;
+			right_back_motor_pwm = 20;
+			left_front_motor_pwm = -20;
+			left_back_motor_pwm = 20;
+
+			--right_front_motor_pwm;
+			++right_back_motor_pwm;
+			--left_front_motor_pwm;
+			++left_back_motor_pwm;
+		
+		}else{
+			right_front_motor_pwm = 0;
+			right_back_motor_pwm = 0;
+			left_front_motor_pwm = 0;
+			left_back_motor_pwm = 0;
 		}
 		
 		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,right_front_motor_pwm*regulation);
-		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,right_back_motor_pwm*20);
-		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,left_front_motor_pwm*20);
-		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,left_back_motor_pwm*20);
+		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,right_back_motor_pwm*regulation);
+		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,left_front_motor_pwm*regulation);
+		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,left_back_motor_pwm*regulation);
 		//追加部おわり｝
 		if(controller.press(RPDS3::R1) == true && controller.press(RPDS3::L1) == true){
 			if(control_mode_flag == true){
