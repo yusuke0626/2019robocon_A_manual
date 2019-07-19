@@ -9,9 +9,6 @@ RPDS3::DualShock3 controller;
 
 
 int main(void){
-	constexpr short acc;
-	std::cin >> acc; 
-
 	constexpr short UNDERCARRIAGE_MDD_NUM = 16;
 	constexpr short MECHANISM_MDD_NUM = 10;
 	constexpr short RIGHT_FRONT_MOTOR_NUM = 2;
@@ -69,7 +66,7 @@ int main(void){
 		double right_back_motor_pwm;
 		double left_front_motor_pwm;
 		double left_back_motor_pwm;
-		double accelaration = acc;
+		double accelaration = 25;
 		if(controller.button(RPDS3::UP)){
 			right_front_motor_pwm = -20;
 			right_back_motor_pwm = -20;
