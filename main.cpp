@@ -164,13 +164,6 @@ int main(void){
 			}
 		}
 
-		if(controller.button(RPDS3::RIGHT)){
-			ms.send(MECHANISM_MDD_NUM,Y_ARM,50);
-		}else if(controller.button(RPDS3::LEFT)){
-			ms.send(MECHANISM_MDD_NUM,Y_ARM,-50);
-		}else{
-			ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
-		}
 
 		if(controller.button(RPDS3::TRIANGLE)){
 			ms.send(MECHANISM_MDD_NUM,Z_ARM,50);
