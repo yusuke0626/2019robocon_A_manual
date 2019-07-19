@@ -65,88 +65,131 @@ int main(void){
 		double left_front_motor_pwm;
 		double left_back_motor_pwm;
 		double accelaration = 1;
-	
-		if(controller.button(RPDS3::UP)){
-			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
-				right_front_motor_pwm = -10;
-				right_back_motor_pwm = -10;
-				left_front_motor_pwm = 10;
-				left_back_motor_pwm = 10;
-			}else if((right_front_motor_pwm < 128 && right_back_motor_pwm < 128) && (left_front_motor_pwm < 128 && left_back_motor_pwm < 128)){
-				right_front_motor_pwm = right_front_motor_pwm - accelaration;
-				right_back_motor_pwm = right_back_motor_pwm - accelaration;
-				left_front_motor_pwm = left_front_motor_pwm + accelaration;
-				left_back_motor_pwm = left_back_motor_pwm  + accelaration;
-			}else{
-				right_front_motor_pwm = -128;	
-				right_back_motor_pwm = -128;
-				left_front_motor_pwm = 128;
-				left_back_motor_pwm = 128;
-			}
-		}else if(controller.button(RPDS3::DOWN)){
-			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
-				right_front_motor_pwm = 10;
-				right_back_motor_pwm = 10;
-				left_front_motor_pwm = -10;
-				left_back_motor_pwm = -10;
-			}else if((right_front_motor_pwm < 128 && right_back_motor_pwm < 128) && (left_front_motor_pwm < 128 && left_back_motor_pwm < 128)){
-				right_front_motor_pwm = right_front_motor_pwm + accelaration;
-				right_back_motor_pwm = right_back_motor_pwm + accelaration;
-				left_front_motor_pwm = left_front_motor_pwm - accelaration;
-				left_back_motor_pwm = left_back_motor_pwm - accelaration;
-			}else{
-				right_front_motor_pwm = 128;	
-				right_back_motor_pwm = 128;
-				left_front_motor_pwm = -128;
-				left_back_motor_pwm = -128;
+		if(controller, (controller.button(RPDS3::UP) || controller.button(RPDS3::DOWN)) || (controller.button(RPDS3::RIGHT) || controller.button(RPDS3::LEFT))){
+			if(controller.button(RPDS3::UP)){
+				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
+					right_front_motor_pwm = -10;
+					right_back_motor_pwm = -10;
+					left_front_motor_pwm = 10;
+					left_back_motor_pwm = 10;
+				}else if((right_front_motor_pwm < 128 && right_back_motor_pwm < 128) && (left_front_motor_pwm < 128 && left_back_motor_pwm < 128)){
+					right_front_motor_pwm = right_front_motor_pwm - accelaration;
+					right_back_motor_pwm = right_back_motor_pwm - accelaration;
+					left_front_motor_pwm = left_front_motor_pwm + accelaration;
+					left_back_motor_pwm = left_back_motor_pwm  + accelaration;
+				}else{
+					right_front_motor_pwm = -128;	
+					right_back_motor_pwm = -128;
+					left_front_motor_pwm = 128;
+					left_back_motor_pwm = 128;
+				}
+			}else if(controller.button(RPDS3::DOWN)){
+				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
+					right_front_motor_pwm = 10;
+					right_back_motor_pwm = 10;
+					left_front_motor_pwm = -10;
+					left_back_motor_pwm = -10;
+				}else if((right_front_motor_pwm < 128 && right_back_motor_pwm < 128) && (left_front_motor_pwm < 128 && left_back_motor_pwm < 128)){
+					right_front_motor_pwm = right_front_motor_pwm + accelaration;
+					right_back_motor_pwm = right_back_motor_pwm + accelaration;
+					left_front_motor_pwm = left_front_motor_pwm - accelaration;
+					left_back_motor_pwm = left_back_motor_pwm - accelaration;
+				}else{
+					right_front_motor_pwm = 128;	
+					right_back_motor_pwm = 128;
+					left_front_motor_pwm = -128;
+					left_back_motor_pwm = -128;
 
-			}			
-		}else if(controller.button(RPDS3::RIGHT)){
-			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
-				right_front_motor_pwm = 10;
-				right_back_motor_pwm = -10;
-				left_front_motor_pwm = 10;
-				left_back_motor_pwm = -10;
-			}else if((right_front_motor_pwm < 128 && right_back_motor_pwm < 128) && (left_front_motor_pwm < 128 && left_back_motor_pwm < 128)){
-				right_front_motor_pwm = right_front_motor_pwm + accelaration;
-				right_back_motor_pwm = right_back_motor_pwm - accelaration;
-				left_front_motor_pwm = left_front_motor_pwm + accelaration;
-				left_back_motor_pwm = left_back_motor_pwm - accelaration;			
+				}			
+			}else if(controller.button(RPDS3::RIGHT)){
+				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
+					right_front_motor_pwm = 10;
+					right_back_motor_pwm = -10;
+					left_front_motor_pwm = 10;
+					left_back_motor_pwm = -10;
+				}else if((right_front_motor_pwm < 128 && right_back_motor_pwm < 128) && (left_front_motor_pwm < 128 && left_back_motor_pwm < 128)){
+					right_front_motor_pwm = right_front_motor_pwm + accelaration;
+					right_back_motor_pwm = right_back_motor_pwm - accelaration;
+					left_front_motor_pwm = left_front_motor_pwm + accelaration;
+					left_back_motor_pwm = left_back_motor_pwm - accelaration;			
+				}else{
+					right_front_motor_pwm = 128;	
+					right_back_motor_pwm = -128;
+					left_front_motor_pwm = 128;
+					left_back_motor_pwm = -128;				
+				}
+			}else if(controller.button(RPDS3::LEFT)){
+				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
+					right_front_motor_pwm = -10;
+					right_back_motor_pwm = 10;
+					left_front_motor_pwm = -10;
+					left_back_motor_pwm = 10;
+				}else if((right_front_motor_pwm < 128 && right_back_motor_pwm < 128) && (left_front_motor_pwm < 128 && left_back_motor_pwm < 128)){
+					right_front_motor_pwm = right_front_motor_pwm - accelaration;
+					right_back_motor_pwm = right_back_motor_pwm + accelaration;
+					left_front_motor_pwm = left_front_motor_pwm - accelaration;
+					left_back_motor_pwm = left_back_motor_pwm + accelaration;
+				}else{
+					right_front_motor_pwm = -128;	
+					right_back_motor_pwm = 128;
+					left_front_motor_pwm = -128;
+					left_back_motor_pwm = 128;
+				}
 			}else{
-				right_front_motor_pwm = 128;	
-				right_back_motor_pwm = -128;
-				left_front_motor_pwm = 128;
-				left_back_motor_pwm = -128;				
+				right_front_motor_pwm = 0;
+				right_back_motor_pwm = 0;
+				left_front_motor_pwm = 0;
+				left_back_motor_pwm = 0;
 			}
-		}else if(controller.button(RPDS3::LEFT)){
-			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
-				right_front_motor_pwm = -10;
-				right_back_motor_pwm = 10;
-				left_front_motor_pwm = -10;
-				left_back_motor_pwm = 10;
-			}else if((right_front_motor_pwm < 128 && right_back_motor_pwm < 128) && (left_front_motor_pwm < 128 && left_back_motor_pwm < 128)){
-				right_front_motor_pwm = right_front_motor_pwm - accelaration;
-				right_back_motor_pwm = right_back_motor_pwm + accelaration;
-				left_front_motor_pwm = left_front_motor_pwm - accelaration;
-				left_back_motor_pwm = left_back_motor_pwm + accelaration;
-			}else{
-				right_front_motor_pwm = -128;	
-				right_back_motor_pwm = 128;
-				left_front_motor_pwm = -128;
-				left_back_motor_pwm = 128;
-			}
+
+			ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,right_front_motor_pwm*regulation);
+			ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,right_back_motor_pwm*regulation);
+			ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,left_front_motor_pwm*regulation);
+			ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,left_back_motor_pwm*regulation);
+			//追加部おわり｝
 		}else{
-			right_front_motor_pwm = 0;
-			right_back_motor_pwm = 0;
-			left_front_motor_pwm = 0;
-			left_back_motor_pwm = 0;
-		}
+			if(control_mode_flag == true){
 
-		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,right_front_motor_pwm*regulation);
-		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,right_back_motor_pwm*regulation);
-		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,left_front_motor_pwm*regulation);
-		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,left_back_motor_pwm*regulation);
-		//追加部おわり｝
+				if(left_distance > PWM_MAX_VALUE){
+					left_distance = PWM_MAX_VALUE;
+				}
+
+
+				left_theta = std::atan2(-left_y,left_x) + M_PI;
+
+				if(left_theta >= 0 && left_theta <= (M_PI/2)){
+					left_back = (left_theta * 4 / M_PI) - 1;
+					left_front = 1;
+				}else if(left_theta > (M_PI / 2) && left_theta <= (M_PI)){
+					left_back = 1;
+					left_front = -(left_theta * 4/M_PI) + 3;
+				}else if(left_theta > (M_PI) && left_theta <= (3* M_PI /2)){
+					left_back = -(left_theta * 4 / M_PI) + 5;
+					left_front = -1;
+				}else if(left_theta > (3* M_PI /2) && left_theta <= (2* M_PI )){
+					left_back = -1;
+					left_front = (left_theta * 4 / M_PI ) - 7;
+				}
+
+
+				revolve = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T))*0.3;
+
+				//std::cout << -left_distance < "::" << left_distance << std::endl;
+				std::cout << left_front <<std::endl;
+
+				ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, -left_distance * left_front  * 0.4 * regulation + revolve);//左前
+				ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  -left_distance * left_back  * 0.4 * regulation + revolve);//左後
+				ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, left_distance * left_back  * 0.4 * regulation + revolve);//右前
+				ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  left_distance * left_front * 0.4 * regulation + revolve);//右後 
+			}else{
+				ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM,  -left_y * 0.5 * regulation);
+				ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,   -left_y * 0.5 * regulation);
+				ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, right_y * 0.5 * regulation);
+				ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  right_y * 0.5 * regulation);
+
+			}
+
+		}
 		if(controller.press(RPDS3::R1) == true && controller.press(RPDS3::L1) == true){
 			if(control_mode_flag == true){
 				control_mode_flag = false;
@@ -177,46 +220,6 @@ int main(void){
 		}
 
 
-		if(control_mode_flag == true){
-
-			if(left_distance > PWM_MAX_VALUE){
-				left_distance = PWM_MAX_VALUE;
-			}
-
-
-			left_theta = std::atan2(-left_y,left_x) + M_PI;
-
-			if(left_theta >= 0 && left_theta <= (M_PI/2)){
-				left_back = (left_theta * 4 / M_PI) - 1;
-				left_front = 1;
-			}else if(left_theta > (M_PI / 2) && left_theta <= (M_PI)){
-				left_back = 1;
-				left_front = -(left_theta * 4/M_PI) + 3;
-			}else if(left_theta > (M_PI) && left_theta <= (3* M_PI /2)){
-				left_back = -(left_theta * 4 / M_PI) + 5;
-				left_front = -1;
-			}else if(left_theta > (3* M_PI /2) && left_theta <= (2* M_PI )){
-				left_back = -1;
-				left_front = (left_theta * 4 / M_PI ) - 7;
-			}
-
-
-			revolve = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T))*0.3;
-
-			//std::cout << -left_distance < "::" << left_distance << std::endl;
-			std::cout << left_front <<std::endl;
-			
-			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, -left_distance * left_front  * 0.4 * regulation + revolve);//左前
-			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  -left_distance * left_back  * 0.4 * regulation + revolve);//左後
-			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, left_distance * left_back  * 0.4 * regulation + revolve);//右前
-			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  left_distance * left_front * 0.4 * regulation + revolve);//右後 
-		}else{
-			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM,  -left_y * 0.5 * regulation);
-			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,   -left_y * 0.5 * regulation);
-			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, right_y * 0.5 * regulation);
-			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  right_y * 0.5 * regulation);
-
-		}
 		ms.send(MECHANISM_MDD_NUM,Y_ARM,right_x);
 		ms.send(MECHANISM_MDD_NUM,Z_ARM,right_y);
 
