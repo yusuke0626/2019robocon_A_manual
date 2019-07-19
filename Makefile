@@ -1,5 +1,7 @@
 Main: PigpioMS.o RasPiDS3.o main.o
-	g++ -Wall main.cpp -o Main  RasPiDS3.o PigpioMS.o -lpigpio -std=c++11 -pthread -lrt
+	g++ -Wall main.cpp -o Main RasPiDS3.o PigpioMS.o -lpigpio -std=c++11 -pthread -lrt
+morizumi: PigpioMS.o RasPiDS3.o main_by_yootee.o
+	g++ -Wall main_by_yootee.cpp -o morizumi RasPiDS3.o PigpioMS.o -lpigpio -std=c++11 -pthread -lrt
 PigpioMS.o: ./PigpioMS/PigpioMS.cpp
 	g++ -Wall -c ./PigpioMS/PigpioMS.cpp -lpigpio -std=c++11 -pthread
 RasPiDS3.o: ./RasPiDS3/RasPiDS3.cpp

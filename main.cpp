@@ -39,6 +39,8 @@ int main(void){
 	gpioSetMode(13,PI_OUTPUT);
 	gpioWrite(13,true);
 
+
+
 	bool right_hanger_flag = true;
 	bool left_hanger_flag = true;
 
@@ -64,86 +66,74 @@ int main(void){
 		double right_back_motor_pwm;
 		double left_front_motor_pwm;
 		double left_back_motor_pwm;
-		double accelaration = 1;
-		if(controller.button(RPDS3::UP)){
-			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
-				right_front_motor_pwm = -10;
-				right_back_motor_pwm = -10;
-				left_front_motor_pwm = 10;
-				left_back_motor_pwm = 10;
-			}else if((right_front_motor_pwm < 128 && right_back_motor_pwm < 128) && (left_front_motor_pwm < 128 && left_back_motor_pwm < 128)){
-				right_front_motor_pwm = right_front_motor_pwm - accelaration;
-				right_back_motor_pwm = right_back_motor_pwm - accelaration;
-				left_front_motor_pwm = left_front_motor_pwm + accelaration;
-				left_back_motor_pwm = left_back_motor_pwm  + accelaration;
-			}else{
-				right_front_motor_pwm = -128;	
-				right_back_motor_pwm = -128;
-				left_front_motor_pwm = 128;
-				left_back_motor_pwm = 128;
-			}
-		}else if(controller.button(RPDS3::DOWN)){
-			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
-				right_front_motor_pwm = 10;
-				right_back_motor_pwm = 10;
-				left_front_motor_pwm = -10;
-				left_back_motor_pwm = -10;
-			}else if((right_front_motor_pwm <= 128 && right_back_motor_pwm <= 128) && (left_front_motor_pwm <= 128 && left_back_motor_pwm <= 128)){
-				right_front_motor_pwm = right_front_motor_pwm + accelaration;
-				right_back_motor_pwm = right_back_motor_pwm + accelaration;
-				left_front_motor_pwm = left_front_motor_pwm - accelaration;
-				left_back_motor_pwm = left_back_motor_pwm - accelaration;
-			}else{
-				right_front_motor_pwm = 128;	
-				right_back_motor_pwm = 128;
-				left_front_motor_pwm = -128;
-				left_back_motor_pwm = -128;		
-			}
-		}else if(controller.button(RPDS3::RIGHT)){
-			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
-				right_front_motor_pwm = 10;
-				right_back_motor_pwm = -10;
-				left_front_motor_pwm = 10;
-				left_back_motor_pwm = -10;
-			}else if((right_front_motor_pwm <= 128 && right_back_motor_pwm <= 128) && (left_front_motor_pwm <= 128 && left_back_motor_pwm <= 128)){
-				right_front_motor_pwm = right_front_motor_pwm + accelaration;
-				right_back_motor_pwm = right_back_motor_pwm - accelaration;
-				left_front_motor_pwm = left_front_motor_pwm + accelaration;
-				left_back_motor_pwm = left_back_motor_pwm - accelaration;
-			}else{
-				right_front_motor_pwm = 128;	
-				right_back_motor_pwm = -128;
-				left_front_motor_pwm = 128;
-				left_back_motor_pwm = -128;
-			}
-		}else if(controller.button(RPDS3::LEFT)){
-			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
-				right_front_motor_pwm = -10;
-				right_back_motor_pwm = 10;
-				left_front_motor_pwm = -10;
-				left_back_motor_pwm = 10;
-				}else if((right_front_motor_pwm <= 128 && right_back_motor_pwm <= 128) && (left_front_motor_pwm <= 128 && left_back_motor_pwm <= 128)){
-				right_front_motor_pwm = right_front_motor_pwm - accelaration;
-				right_back_motor_pwm = right_back_motor_pwm + accelaration;
-				left_front_motor_pwm = left_front_motor_pwm - accelaration;
-				left_back_motor_pwm = left_back_motor_pwm + accelaration;
-			}else{
-				right_front_motor_pwm = -128;	
-				right_back_motor_pwm = 128;
-				left_front_motor_pwm = -128;
-				left_back_motor_pwm = 128;
-			}
+		if(controller.button(RPDS3::UP)){ 
+			right_front_motor_pwm=1;
+			right_back_motor_pwm=1;
+			left_front_motor_pwm=1;
+			left_back_motor_pwm=1;
 		}else{
 			right_front_motor_pwm = 0;
 			right_back_motor_pwm = 0;
 			left_front_motor_pwm = 0;
 			left_back_motor_pwm = 0;
 		}
-
-		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,right_front_motor_pwm*regulation);
-		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,right_back_motor_pwm*regulation);
-		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,left_front_motor_pwm*regulation);
-		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,left_back_motor_pwm*regulation);
+		if(controller.button(RPDS3::DOWN)){
+			right_front_motor_pwm=-1;
+			right_back_motor_pwm=-1;
+			left_front_motor_pwm=-1;
+			left_back_motor_pwm=-1;
+		}else{
+			right_front_motor_pwm = 0;
+			right_back_motor_pwm = 0;
+			left_front_motor_pwm = 0;
+			left_back_motor_pwm = 0;
+		}
+		if(controller.button(RPDS3::RIGHT)){
+			right_front_motor_pwm=-1;
+			right_back_motor_pwm=1;
+			left_front_motor_pwm=1;
+			left_back_motor_pwm=-1;
+		}else{
+			right_front_motor_pwm = 0;
+			right_back_motor_pwm = 0;
+			left_front_motor_pwm = 0;
+			left_back_motor_pwm = 0;
+		}
+		if(controller.button(RPDS3::LEFT)){
+			right_front_motor_pwm=1;
+			right_back_motor_pwm=-1;
+			left_front_motor_pwm=-1;
+			left_back_motor_pwm=1;
+		}else{
+			right_front_motor_pwm = 0;
+			right_back_motor_pwm = 0;
+			left_front_motor_pwm = 0;
+			left_back_motor_pwm = 0;
+		}      
+		if(0 < right_front_motor_pwm && right_front_motor_pwm< 128 ){
+			right_front_motor_pwm = right_front_motor_pwm + 0.1;
+		}else if(-128 < right_front_motor_pwm && right_front_motor_pwm<0){
+			right_front_motor_pwm = right_front_motor_pwm - 0.1;
+		}
+		if(0 < right_back_motor_pwm && right_back_motor_pwm< 128){
+			right_back_motor_pwm = right_back_motor_pwm + 0.1;
+		}else if(-128 < right_back_motor_pwm && right_back_motor_pwm < 0){
+			right_back_motor_pwm = right_back_motor_pwm - 0.1;
+		}
+		if(0 < left_front_motor_pwm && left_front_motor_pwm < 128){
+			left_front_motor_pwm = left_front_motor_pwm + 0.1;
+		}else if(-128 < left_front_motor_pwm && left_front_motor_pwm< 0){
+			left_front_motor_pwm = left_front_motor_pwm - 0.1;
+		}
+		if(0 < left_back_motor_pwm && left_back_motor_pwm< 128){
+			left_back_motor_pwm = left_back_motor_pwm + 0.1;
+		}else if(-128 < left_back_motor_pwm && left_back_motor_pwm< 0){
+			left_back_motor_pwm = left_back_motor_pwm - 0.1;
+		}
+		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,right_front_motor_pwm*20);
+		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,right_back_motor_pwm*20);
+		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,left_front_motor_pwm*20);
+		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,left_back_motor_pwm*20);
 		//追加部おわり｝
 		if(controller.press(RPDS3::R1) == true && controller.press(RPDS3::L1) == true){
 			if(control_mode_flag == true){
@@ -211,23 +201,21 @@ int main(void){
 
 			//std::cout << -left_distance <<"::"<< left_distance<< std::endl;
 			std::cout << left_front<< std::endl;
-			//ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, -left_distance * left_front * 0.4 * regulation + revolve);//左前
-			//ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  -left_distance * left_back  * 0.4 * regulation + revolve);//左後
-			//ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, left_distance * left_back  * 0.4 * regulation + revolve);//右前
-			//ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  left_distance * left_front * 0.4 * regulation + revolve);//右後 
+			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, -left_distance * left_front * 0.4 * regulation + revolve);//左前
+			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  -left_distance * left_back  * 0.4 * regulation + revolve);//左後
+			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, left_distance * left_back  * 0.4 * regulation + revolve);//右前
+			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  left_distance * left_front * 0.4 * regulation + revolve);//右後 
 		}else{
-			//ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM,  -left_y * 0.5 * regulation);
-			//ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,   -left_y * 0.5 * regulation);
+			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM,  -left_y * 0.5 * regulation);
+			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,   -left_y * 0.5 * regulation);
 			//ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, right_y * 0.5 * regulation);
 			//ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  right_y * 0.5 * regulation);
 			//追加しました1{
-			//ms.send(MECHANISM_MDD_NUM,Y_ARM,right_y);
-			//ms.send(MECHANISM_MDD_NUM,Z_ARM,right_x);
+			ms.send(MECHANISM_MDD_NUM,Y_ARM,right_y);
+			ms.send(MECHANISM_MDD_NUM,Z_ARM,right_x);
 			//追加部おわり}1
 
 		}
-		ms.send(MECHANISM_MDD_NUM,Y_ARM,right_y);
-		ms.send(MECHANISM_MDD_NUM,Z_ARM,right_x);
 
 
 		if(controller.button(RPDS3::R1) == true){
