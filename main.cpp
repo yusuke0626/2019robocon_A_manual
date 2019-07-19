@@ -66,7 +66,7 @@ int main(void){
 		double right_back_motor_pwm;
 		double left_front_motor_pwm;
 		double left_back_motor_pwm;
-		double accelaration = 25;
+		double accelaration = 0.01;
 		if(controller.button(RPDS3::UP)){
 			right_front_motor_pwm = -20;
 			right_back_motor_pwm = -20;
