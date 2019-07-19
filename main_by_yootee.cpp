@@ -64,7 +64,7 @@ int main(void){
 		double right_back_motor_pwm;
 		double left_front_motor_pwm;
 		double left_back_motor_pwm;
-		double accelaration = 1;
+		double accelaration = 0.01;
 		if(controller, (controller.button(RPDS3::UP) || controller.button(RPDS3::DOWN)) || (controller.button(RPDS3::RIGHT) || controller.button(RPDS3::LEFT))){
 			if(controller.button(RPDS3::UP)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
