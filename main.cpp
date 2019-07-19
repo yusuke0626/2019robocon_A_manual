@@ -110,26 +110,7 @@ int main(void){
 			left_front_motor_pwm = 0;
 			left_back_motor_pwm = 0;
 		}      
-		if(0 < right_front_motor_pwm && right_front_motor_pwm< 128 ){
-			right_front_motor_pwm = right_front_motor_pwm +1;
-		}else if(-128 < right_front_motor_pwm && right_front_motor_pwm<0){
-			right_front_motor_pwm = right_front_motor_pwm - 1;
-		}
-		if(0 < right_back_motor_pwm && right_back_motor_pwm< 128){
-			right_back_motor_pwm = right_back_motor_pwm + 1;
-		}else if(-128 < right_back_motor_pwm && right_back_motor_pwm < 0){
-			right_back_motor_pwm = right_back_motor_pwm - 1;
-		}
-		if(0 < left_front_motor_pwm && left_front_motor_pwm < 128){
-			left_front_motor_pwm = left_front_motor_pwm + 1;
-		}else if(-128 < left_front_motor_pwm && left_front_motor_pwm< 0){
-			left_front_motor_pwm = left_front_motor_pwm - 1;
-		}
-		if(0 < left_back_motor_pwm && left_back_motor_pwm< 128){
-			left_back_motor_pwm = left_back_motor_pwm + 1;
-		}else if(-128 < left_back_motor_pwm && left_back_motor_pwm< 0){
-			left_back_motor_pwm = left_back_motor_pwm - 1;
-		}
+		
 		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,right_front_motor_pwm*20);
 		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,right_back_motor_pwm*20);
 		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,left_front_motor_pwm*20);
