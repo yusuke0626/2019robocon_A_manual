@@ -66,7 +66,7 @@ int main(void){
 		double left_back_motor_pwm;
 		double accelaration = 1;
 		if(controller.button(RPDS3::UP)){
-			if(right_front_motor_pwm = 0 && right_back_motor_pwm = 0 && left_front_motor_pwm = 0 && left_back_motor_pwm = 0){
+			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
 				right_front_motor_pwm = -10;
 				right_back_motor_pwm = -10;
 				left_front_motor_pwm = 10;
@@ -78,7 +78,7 @@ int main(void){
 				left_back_motor_pwm = left_back_motor_pwm  + accelaration;
 			}
 		}else if(controller.button(RPDS3::DOWN)){
-			if(right_front_motor_pwm = 0 && right_back_motor_pwm = 0 && left_front_motor_pwm = 0 && left_back_motor_pwm = 0){
+			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
 				right_front_motor_pwm = 10;
 				right_back_motor_pwm = 10;
 				left_front_motor_pwm = -10;
@@ -90,7 +90,7 @@ int main(void){
 				left_back_motor_pwm = left_back_motor_pwm - accelaration;
 			}
 		}else if(controller.button(RPDS3::RIGHT)){
-			if(right_front_motor_pwm = 0 && right_back_motor_pwm = 0 && left_front_motor_pwm = 0 && left_back_motor_pwm = 0){
+			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
 				right_front_motor_pwm = 10;
 				right_back_motor_pwm = -10;
 				left_front_motor_pwm = 10;
@@ -102,7 +102,7 @@ int main(void){
 				left_back_motor_pwm = left_back_motor_pwm - accelaration;
 			}
 		}else if(controller.button(RPDS3::LEFT)){
-			if(right_front_motor_pwm = 0 && right_back_motor_pwm = 0 && left_front_motor_pwm = 0 && left_back_motor_pwm = 0;){
+			if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
 				right_front_motor_pwm = -10;
 				right_back_motor_pwm = 10;
 				left_front_motor_pwm = -10;
