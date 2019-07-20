@@ -1,7 +1,7 @@
 #include<iostream>
 #include<cmath>
 #include<pigpio.h>
-#include"PigpioMS/ngPigpioMS.hpp"
+#include"PigpioMS/PigpioMS.hpp"
 #include"RasPiDS3/RasPiDS3.hpp"
 
 RPMS::MotorSerial ms;
@@ -43,7 +43,7 @@ int main(void){
 
 	bool right_hanger_flag = true;
 	bool left_hanger_flag = true;
-	int x==0,<100;
+	int x=0;
 	int y;
 	int a;
 
@@ -95,30 +95,62 @@ int main(void){
 		}
 
 		if(controller.button(RPDS3::UP)){
-			y=1/2*x;
-			ms.send(MECHANISM_MDD_NUM,BOX,y);
+            if(x<100){
+                y=1/2*x;
+            }else{
+                y=50;
+            }
+			ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,y);
 		}else if(controller.button(RPDS3::DOWN)){
-			y=1/2*x;
-			ms.send(MECHANISM_MDD_NUM,BOX,-y);
+			if(x<100){
+                y=1/2*x;
+            }else{
+                y=50;
+            }
+			ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
 		}else{
-			ms.send(MECHANISM_MDD_NUM,BOX,0);
+			ms.send(UNDERCARRIAGE_MDD_NUM,,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,0);
 		}
 
 		if(controller.button(RPDS3::RIGHT)){
-			y=1/2*x
-			ms.send(MECHANISM_MDD_NUM,Y_ARM,y);
+			if(x<100){
+                y=1/2*x;
+            }else{
+                y=50;
+            }
+			ms.send(UNDERCARRIAGE_MDD_NUM,,y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,y);
 		}else if(controller.button(RPDS3::LEFT)){
-			y=1/2*x
-			ms.send(MECHANISM_MDD_NUM,Y_ARM,-y);
+			if(x<100){
+                y=1/2*x;
+            }else{
+                y=50;
+            }
+			ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
 		}else{
-			ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
-		}
+			ms.send(UNDERCARRIAGE_MDD_NUM,,0);
+		    ms.send(UNDERCARRIAGE_MDD_NUM,,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,,0);
+        }
 
 		if(controller.button(RPDS3::TRIANGLE)){
-			y=1/2*x
 			ms.send(MECHANISM_MDD_NUM,Z_ARM,y);
 		}else if(controller.button(RPDS3::CROSS)){
-			y=1/2*x
 			ms.send(MECHANISM_MDD_NUM,Z_ARM,-y);
 		}else{
 			ms.send(MECHANISM_MDD_NUM,Z_ARM,0);
