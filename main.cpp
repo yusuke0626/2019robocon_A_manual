@@ -7,7 +7,6 @@
 RPMS::MotorSerial ms;
 RPDS3::DualShock3 controller;
 
-
 int main(void){
 	constexpr short UNDERCARRIAGE_MDD_NUM = 16;
 	constexpr short MECHANISM_MDD_NUM = 10;
@@ -16,7 +15,7 @@ int main(void){
 	constexpr short LEFT_FRONT_MOTOR_NUM  = 4;
 	constexpr short LEFT_BACK_MOTOR_NUM   = 5;
 	constexpr short BOX = 2;
-	constexpr short Z_ARM = 5; 
+	constexpr short Z_ARM = 5;
 	constexpr short Y_ARM = 4;
 	constexpr short PWM_MAX_VALUE = 150;
 	//constexpr short STICK_MAX_VALUE = 250;
