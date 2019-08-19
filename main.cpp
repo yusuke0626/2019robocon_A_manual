@@ -61,7 +61,82 @@ int main(void){
 		//double right_x = controller.stick(RPDS3::RIGHT_X);
 		double right_y = controller.stick(RPDS3::RIGHT_Y);
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
-
+		//｛追加しました（十字キーで平行移動）
+		double RIGHT_FRONT_MOTOR_PWM;
+		double RIGHT_BACK_MOTOR_PWM;
+		double LEFT_FRONT_MOTOR_PWM;
+		double LEFT_BACK_MOTOR_PWM;
+		if(controller.button(RPDS3::UP)){ 
+			++RIGHT_FRONT_MOTOR_PWM;
+                	++RIGHT_BACK_MOTOR_PWM;
+      	        	++LEFT_FRONT_MOTOR_PWM;
+          		++LEFT_BACK_MOTOR_PWM;
+		}else{
+                	RIGHT_FRONT_MOTOR_PWM = 0;
+                	RIGHT_BACK_MOTOR_PWM = 0;
+                	LEFT_FRONT_MOTOR_PWM = 0;
+                	LEFT_BACK_MOTOR_PWM = 0;
+		}
+		if(controller.button(RPDS::DOWN)){
+                        --RIGHT_FRONT_MOTOR_PWM;
+                        --RIGHT_BACK_MOTOR_PWM;
+                        --LEFT_FRONT_MOTOR_PWM;
+                        --LEFT_BACK_MOTOR_PWM;
+                }else{
+                        RIGHT_FRONT_MOTOR_PWM = 0;
+                        RIGHT_BACK_MOTOR_PWM = 0;
+                        LEFT_FRONT_MOTOR_PWM = 0;
+                        LEFT_BACK_MOTOR_PWM = 0;
+		}
+		if(controller.button(RPDS::RIGHT)){
+                        --RIGHT_FRONT_MOTOR_PWM;
+                        ++RIGHT_BACK_MOTOR_PWM;
+                        ++LEFT_FRONT_MOTOR_PWM;
+                        --LEFT_BACK_MOTOR_PWM;
+                }else{
+                        RIGHT_FRONT_MOTOR_PWM = 0;
+                        RIGHT_BACK_MOTOR_PWM = 0;
+                        LEFT_FRONT_MOTOR_PWM = 0;
+                        LEFT_BACK_MOTOR_PWM = 0;
+		}
+		if(controller.button(RPDS::LEFT)){
+		        ++RIGHT_FRONT_MOTOR_PWM;
+                        --RIGHT_BACK_MOTOR_PWM;
+                        --LEFT_FRONT_MOTOR_PWM;
+                        ++LEFT_BACK_MOTOR_PWM;
+                }else{
+                        RIGHT_FRONT_MOTOR_PWM = 0;
+                        RIGHT_BACK_MOTOR_PWM = 0;
+                        LEFT_FRONT_MOTOR_PWM = 0;
+                        LEFT_BACK_MOTOR_PWM = 0;
+		}      
+		while(RIGHT_FRONT_MOTOR_PWM < 128 && RIGHT_BACK_MOTOR_PWM < 128 && LEFT_FRONT_MOTOR_PWM && < 128 && LEFT_BACK_MOTOR_PWM <128){
+			if(RIGHT_FRONT_MOTOR_PWM > 0){
+				RIGHT_FRONT_MOTOR_PWM = RIGHT_FRONT_MOTOR_PWM + 0.1
+			}else if(RIGHT_FRONT_MOTOR_PWM < 0){
+                                RIGHT_FRONT_MOTOR_PWM = RIGHT_FRONT_MOTOR_PWM - 0.1
+			}
+                        if(RIGHT_BACK_MOTOR_PWM > 0){
+                                RIGHT_BACK_MOTOR_PWM = RIGHT_BACK_MOTOR_PWM + 0.1
+                        }else if(RIGHT_BACK_MOTOR_PWM < 0){
+                                RIGHT_BACK_MOTOR_PWM = RIGHT_BACK_MOTOR_PWM - 0.1
+			}
+                        if(LEFT_FRONT_MOTOR_PWM > 0){
+                                LEFT_FRONT_MOTOR_PWM = LEFT_FRONT_MOTOR_PWM + 0.1
+                        }else if(LEFT_FRONT_MOTOR_PWM < 0){
+                                LEFT_FRONT_MOTOR_PWM = LEFT_FRONT_MOTOR_PWM - 0.1
+			}
+                        if(LEFT_BACK_MOTOR_PWM > 0){
+                                LEFT_FRONT_MOTOR_PWM = LEFT_BACK_MOTOR_PWM + 0.1
+                        }else if(LEFT_FRONT_MOTOR_PWM < 0){
+                               LEFT_FRONT_MOTOR_PWM = LEFT_BACK_MOTOR_PWM - 0.1
+			}
+			ms.send(UNDRECARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,RIGHT_FRONT_MOTOR_PWM*regulation/2);
+			ms.send(UNDRECARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,RIGHT_BACK_MOTOR_PWM*regulation/2);
+			ms.send(UNDRECARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,LEFT_FRONT_MOTOR_PWM*regulation/2);
+			ms.send(UNDRECARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,LEFT_BACK_MOTOR_PWM*regulation/2);
+		}
+		//追加部おわり｝
 		if(controller.press(RPDS3::R1) == true && controller.press(RPDS3::L1) == true){
 			if(control_mode_flag == true){
 				control_mode_flag = false;
@@ -115,7 +190,6 @@ int main(void){
 			ms.send(MECHANISM_MDD_NUM,Z_ARM,0);
 		}
 
-
 		if(control_mode_flag == true){
 			if(left_distance > PWM_MAX_VALUE){
 				left_distance = PWM_MAX_VALUE;
@@ -150,8 +224,13 @@ int main(void){
 		}else{
 			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM,  -left_y * 0.5 * regulation);
 		      	ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,   -left_y * 0.5 * regulation);
-		      	ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, right_y * 0.5 * regulation);
-		      	ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  right_y * 0.5 * regulation);
+		      	//ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, right_y * 0.5 * regulation);
+		      	//ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  right_y * 0.5 * regulation);
+	                //追加しました1{
+        	        ms.send(MECHANISM_MOD_NUM,Y_ARM,right_y);
+                	ms.send(MECHANISM_MOD_NUM,Z_ARM,right_x);
+                	//追加部おわり}1
+
 		}
 	
 
