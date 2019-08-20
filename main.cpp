@@ -1,5 +1,3 @@
-#include<iostream>
-#include<cmath>
 #include<pigpio.h>
 #include"PigpioMS/PigpioMS.hpp"
 #include"RasPiDS3/RasPiDS3.hpp"
@@ -27,7 +25,7 @@ int main(void){
 	double regulation = 0.3;
 
 	bool control_mode_flag = true;
-
+		
 	controller.update();
 	try{
 		ms.init();
@@ -41,7 +39,7 @@ int main(void){
 
 	bool right_hanger_flag = true;
 	bool left_hanger_flag = true;
-
+	bool box_flag = true;
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
 		double left_distance = 0;
@@ -59,7 +57,6 @@ int main(void){
 		double right_x = controller.stick(RPDS3::RIGHT_X) * -1;
 		double right_y = controller.stick(RPDS3::RIGHT_Y) * -1;
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
-		//｛追加しました（十字キーで平行移動）
 		double right_front_motor_pwm;
 		double right_back_motor_pwm;
 		double left_front_motor_pwm;
@@ -146,7 +143,7 @@ int main(void){
 			ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,right_back_motor_pwm*regulation);
 			ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,left_front_motor_pwm*regulation);
 			ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,left_back_motor_pwm*regulation);
-			//追加部おわり｝
+
 		}else{
 			if(control_mode_flag == true){
 
@@ -223,6 +220,23 @@ int main(void){
 		ms.send(MECHANISM_MDD_NUM,Y_ARM,right_x);
 		ms.send(MECHANISM_MDD_NUM,Z_ARM,right_y);
 
+		if(controller.button(RPDS3::TRIANGLE)){
+			ms.send(MECHANISM_MDD_NUM,BOX,50);
+		}else if(controller.button(RPDS3::CROSS)){
+			ms.send(MECHANISM_MDD_NUM,BOX,-50);
+		//}else if(controller.press(RPDS3::TRIANGLE)){
+		//	if(box_flag == true){
+		//		ms.send(MECHANISM_MDD_NUM,BOX,263);
+		//		box_flag == false;
+		//	}else{
+		//		ms.send(MECHANISM_MDD_NUM,BOX,0);
+		//		box_flag == true	
+		//	}
+		
+				
+		}else{
+			ms.send(MECHANISM_MDD_NUM,BOX,0);
+		}
 
 		if(controller.button(RPDS3::R1) == true){
 			regulation = 0.5;
