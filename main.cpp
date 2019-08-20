@@ -1,6 +1,8 @@
 #include<pigpio.h>
 #include"PigpioMS/PigpioMS.hpp"
 #include"RasPiDS3/RasPiDS3.hpp"
+#include<iostream>
+#include<cmath>
 
 RPMS::MotorSerial ms;
 RPDS3::DualShock3 controller;
@@ -16,13 +18,15 @@ int main(void){
 	constexpr short BOX = 2;
 	constexpr short Z_ARM = 5; 
 	constexpr short Y_ARM = 4;
-	constexpr short PWM_MAX_VALUE = 150;
+	constexpr short PWM_MAX_VALUE = 50;
 	//constexpr short STICK_MAX_VALUE = 250;
 	constexpr short HANGER_LEFT_SOLENOID = 3;
 	constexpr short HANGER_RIGHT_SOLENOID = 3;
 	//constexpr short POWER_WINDOW_MOTOR_NUM = 4;
 
 	double regulation = 0.3;
+
+	constexpr short limiter = 4;
 
 	controller.update();
 	try{
@@ -44,21 +48,21 @@ int main(void){
 
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
-		double left_distance = 0;
-		double left_theta = 0;
+		//double left_distance = 0;
+		//double left_theta = 0;
 
 		//double right_distance = 0;
 		//double right_theta = 0;
 
-		double left_front = 0;
-		double left_back  = 0;
-		int revolve = 0;
+		//double left_front = 0;
+		//double left_back  = 0;
+		//int revolve = 0;
 
-		double left_x = controller.stick(RPDS3::LEFT_X);
-		double left_y = controller.stick(RPDS3::LEFT_Y);
+		//double left_x = controller.stick(RPDS3::LEFT_X);
+		//double left_y = controller.stick(RPDS3::LEFT_Y);
 		double right_x = controller.stick(RPDS3::RIGHT_X) * -1;
 		double right_y = controller.stick(RPDS3::RIGHT_Y) ;
-		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
+		//left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
 
 		double sum_turn = controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T);
 
@@ -67,7 +71,7 @@ int main(void){
 		double left_front_motor_pwm;
 		double left_back_motor_pwm;
 		double accelaration = 1;
-		
+
 		if(sum_turn == 0){
 			if(controller.button(RPDS3::UP)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
@@ -75,16 +79,16 @@ int main(void){
 					right_back_motor_pwm = -10;
 					left_front_motor_pwm = 10;
 					left_back_motor_pwm = 10;
-				}else if((right_front_motor_pwm > -128 && right_back_motor_pwm > -128) && (left_front_motor_pwm < 128 && left_back_motor_pwm < 128)){
+				}else if((right_front_motor_pwm > -PWM_MAX_VALUE && right_back_motor_pwm > -PWM_MAX_VALUE) && (left_front_motor_pwm < PWM_MAX_VALUE && left_back_motor_pwm < PWM_MAX_VALUE)){
 					right_front_motor_pwm = right_front_motor_pwm - accelaration;
 					right_back_motor_pwm = right_back_motor_pwm - accelaration;
 					left_front_motor_pwm = left_front_motor_pwm + accelaration;
 					left_back_motor_pwm = left_back_motor_pwm  + accelaration;
 				}else{
-					right_front_motor_pwm = -128;	
-					right_back_motor_pwm = -128;
-					left_front_motor_pwm = 128;
-					left_back_motor_pwm = 128;
+					right_front_motor_pwm = -PWM_MAX_VALUE;	
+					right_back_motor_pwm = -PWM_MAX_VALUE;
+					left_front_motor_pwm = PWM_MAX_VALUE;
+					left_back_motor_pwm = PWM_MAX_VALUE;
 				}
 			}else if(controller.button(RPDS3::DOWN)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
@@ -92,16 +96,16 @@ int main(void){
 					right_back_motor_pwm = 10;
 					left_front_motor_pwm = -10;
 					left_back_motor_pwm = -10;
-				}else if((right_front_motor_pwm < 128 && right_back_motor_pwm < 128) && (left_front_motor_pwm > -128 && left_back_motor_pwm > -128)){
+				}else if((right_front_motor_pwm < PWM_MAX_VALUE && right_back_motor_pwm < PWM_MAX_VALUE) && (left_front_motor_pwm > -PWM_MAX_VALUE && left_back_motor_pwm > -PWM_MAX_VALUE)){
 					right_front_motor_pwm = right_front_motor_pwm + accelaration;
 					right_back_motor_pwm = right_back_motor_pwm + accelaration;
 					left_front_motor_pwm = left_front_motor_pwm - accelaration;
 					left_back_motor_pwm = left_back_motor_pwm - accelaration;
 				}else{
-					right_front_motor_pwm = 128;	
-					right_back_motor_pwm = 128;
-					left_front_motor_pwm = -128;
-					left_back_motor_pwm = -128;
+					right_front_motor_pwm = PWM_MAX_VALUE;	
+					right_back_motor_pwm = PWM_MAX_VALUE;
+					left_front_motor_pwm = -PWM_MAX_VALUE;
+					left_back_motor_pwm = -PWM_MAX_VALUE;
 
 				}			
 			}else if(controller.button(RPDS3::RIGHT)){
@@ -110,16 +114,16 @@ int main(void){
 					right_back_motor_pwm = -10;
 					left_front_motor_pwm = 10;
 					left_back_motor_pwm = -10;
-				}else if((right_front_motor_pwm < 128 && right_back_motor_pwm > -128) && (left_front_motor_pwm < 128 && left_back_motor_pwm > -128)){
+				}else if((right_front_motor_pwm < PWM_MAX_VALUE && right_back_motor_pwm > -PWM_MAX_VALUE) && (left_front_motor_pwm < PWM_MAX_VALUE && left_back_motor_pwm > -PWM_MAX_VALUE)){
 					right_front_motor_pwm = right_front_motor_pwm + accelaration;
 					right_back_motor_pwm = right_back_motor_pwm - accelaration;
 					left_front_motor_pwm = left_front_motor_pwm + accelaration;
 					left_back_motor_pwm = left_back_motor_pwm - accelaration;			
 				}else{
-					right_front_motor_pwm = 128;	
-					right_back_motor_pwm = -128;
-					left_front_motor_pwm = 128;
-					left_back_motor_pwm = -128;				
+					right_front_motor_pwm = PWM_MAX_VALUE;	
+					right_back_motor_pwm = -PWM_MAX_VALUE;
+					left_front_motor_pwm = PWM_MAX_VALUE;
+					left_back_motor_pwm = -PWM_MAX_VALUE;				
 				}
 			}else if(controller.button(RPDS3::LEFT)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
@@ -127,16 +131,16 @@ int main(void){
 					right_back_motor_pwm = 10;
 					left_front_motor_pwm = -10;
 					left_back_motor_pwm = 10;
-				}else if((right_front_motor_pwm > -128 && right_back_motor_pwm < 128) && (left_front_motor_pwm > -128 && left_back_motor_pwm < 128)){
+				}else if((right_front_motor_pwm > -PWM_MAX_VALUE && right_back_motor_pwm < PWM_MAX_VALUE) && (left_front_motor_pwm > -PWM_MAX_VALUE && left_back_motor_pwm < PWM_MAX_VALUE)){
 					right_front_motor_pwm = right_front_motor_pwm - accelaration;
 					right_back_motor_pwm = right_back_motor_pwm + accelaration;
 					left_front_motor_pwm = left_front_motor_pwm - accelaration;
 					left_back_motor_pwm = left_back_motor_pwm + accelaration;
 				}else{
-					right_front_motor_pwm = -128;	
-					right_back_motor_pwm = 128;
-					left_front_motor_pwm = -128;
-					left_back_motor_pwm = 128;
+					right_front_motor_pwm = -PWM_MAX_VALUE;	
+					right_back_motor_pwm = PWM_MAX_VALUE;
+					left_front_motor_pwm = -PWM_MAX_VALUE;
+					left_back_motor_pwm = PWM_MAX_VALUE;
 				}
 			}else{
 				right_front_motor_pwm = 0;
@@ -145,10 +149,10 @@ int main(void){
 				left_back_motor_pwm = 0;
 			}
 		}else{
-			right_front_motor_pwm = sum_turn;
-                        right_back_motor_pwm = sum_turn;
-                        left_front_motor_pwm = sum_turn;
-                        left_back_motor_pwm = sum_turn;
+			right_front_motor_pwm = sum_turn / limiter * regulation;
+			right_back_motor_pwm = sum_turn / limiter* regulation;
+			left_front_motor_pwm = sum_turn / limiter* regulation;
+			left_back_motor_pwm = sum_turn / limiter* regulation;
 		}
 		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,right_front_motor_pwm*regulation);
 		ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,right_back_motor_pwm*regulation);
@@ -181,10 +185,10 @@ int main(void){
 		ms.send(MECHANISM_MDD_NUM,Z_ARM,right_y * 2 * regulation);
 
 		if(controller.press(RPDS3::CROSS)){
-			if(y_arm_flag = true){
+			if(y_arm_flag == true){
 				right_x = controller.stick(RPDS3::RIGHT_X);
 				y_arm_flag = false;
-			}else if(y_arm_flag = false){
+			}else if(y_arm_flag == false){
 				right_x = controller.stick(RPDS3::RIGHT_X) * -1;
 				y_arm_flag = true;
 			}
@@ -197,10 +201,10 @@ int main(void){
 		if(controller.press(RPDS3::TRIANGLE)){
 			if(box_flag == true){
 				ms.send(MECHANISM_MDD_NUM,BOX,263);
-				box_flag == false;
+				box_flag = false;
 			}else{
 				ms.send(MECHANISM_MDD_NUM,BOX,0);
-				box_flag == true	
+				box_flag = true;	
 			}
 
 
