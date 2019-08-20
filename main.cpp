@@ -1,7 +1,7 @@
 #include<iostream>
 #include<cmath>
 #include<pigpio.h>
-#include"PigpioMS/ngPigpioMS.hpp"
+#include"PigpioMS/PigpioMS.hpp"
 #include"RasPiDS3/RasPiDS3.hpp"
 
 RPMS::MotorSerial ms;
