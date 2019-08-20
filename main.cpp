@@ -3,7 +3,7 @@
 #include<pigpio.h>
 #include"PigpioMS/PigpioMS.hpp"
 #include"RasPiDS3/RasPiDS3.hpp"
-
+//aaaa
 RPMS::MotorSerial ms;
 RPDS3::DualShock3 controller;
 
@@ -64,7 +64,7 @@ int main(void){
 
 		if(controller.press(RPDS3::R1) == true && controller.press(RPDS3::L1) == true){
 			if(control_mode_flag == true){
-				control_mode_flag = false;
+				control_mode_flag = true;
 			}else{
 				control_mode_flag = true;
 				std::cout << "mode" << std::endl;
