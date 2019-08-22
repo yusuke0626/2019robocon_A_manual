@@ -4,7 +4,8 @@
 
 RPMS::MotorSerial ms;
 RPDS3::DualShock3 controller;
-
+#define red  true
+#define blue false
 
 int main(void){
 	constexpr short UNDERCARRIAGE_MDD_NUM = 16;
@@ -21,7 +22,7 @@ int main(void){
 	constexpr short HANGER_LEFT_SOLENOID = 3;
 	constexpr short HANGER_RIGHT_SOLENOID = 3;
 	//constexpr short POWER_WINDOW_MOTOR_NUM = 4;
-
+	
 	double regulation = 0.3;
 
 	bool control_mode_flag = true;
@@ -39,7 +40,11 @@ int main(void){
 
 	bool right_hanger_flag = true;
 	bool left_hanger_flag = true;
+
 	bool box_flag = true;
+
+	bool y_arm_flag = true;
+	
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
 		double left_distance = 0;
@@ -55,7 +60,7 @@ int main(void){
 		double left_x = controller.stick(RPDS3::LEFT_X);
 		double left_y = controller.stick(RPDS3::LEFT_Y);
 		double right_x = controller.stick(RPDS3::RIGHT_X) * -1;
-		double right_y = controller.stick(RPDS3::RIGHT_Y) * -1;
+		double right_y = controller.stick(RPDS3::RIGHT_Y) ;
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
 		double right_front_motor_pwm;
 		double right_back_motor_pwm;
@@ -220,6 +225,15 @@ int main(void){
 		ms.send(MECHANISM_MDD_NUM,Y_ARM,right_x);
 		ms.send(MECHANISM_MDD_NUM,Z_ARM,right_y);
 
+		if(controller.button(RPDS3::CROSS)){
+			if(y_arm_flag = red){
+				right_x = controller.stick(RPDS3::RIGHT_X);
+				y_arm_flag = blue;
+			}else if(y_arm_flag = blue){
+				right_x = controller.stick(RPDS3::RIGHT_X) * -1;
+				y_arm_flag = red;
+			}
+		}
 		if(controller.button(RPDS3::TRIANGLE)){
 			ms.send(MECHANISM_MDD_NUM,BOX,50);
 		}else if(controller.button(RPDS3::CROSS)){
