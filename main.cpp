@@ -224,7 +224,7 @@ int main(void){
 		ms.send(MECHANISM_MDD_NUM,Y_ARM,right_x * 2 * regulation);
 		ms.send(MECHANISM_MDD_NUM,Z_ARM,right_y * 2 * regulation);
 
-		if(controller.button(RPDS3::CROSS)){
+		if(controller.press(RPDS3::CROSS)){
 			if(y_arm_flag = true){
 				right_x = controller.stick(RPDS3::RIGHT_X);
 				y_arm_flag = false;
