@@ -60,7 +60,8 @@ int main(void){
 
 		//double left_x = controller.stick(RPDS3::LEFT_X);
 		//double left_y = controller.stick(RPDS3::LEFT_Y);
-		double right_x = controller.stick(RPDS3::RIGHT_X) * -1;
+		int changer;
+		double right_x = controller.stick(RPDS3::RIGHT_X) * changer;
 		double right_y = controller.stick(RPDS3::RIGHT_Y) ;
 		//left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
 
@@ -70,8 +71,9 @@ int main(void){
 		double right_back_motor_pwm;
 		double left_front_motor_pwm;
 		double left_back_motor_pwm;
-		double accelaration = 1;
 
+		double accelaration = 1;
+		int accel_mode = 1;
 		if(sum_turn == 0){
 			if(controller.button(RPDS3::UP)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
@@ -159,7 +161,20 @@ int main(void){
 		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,left_front_motor_pwm*regulation);
 		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,left_back_motor_pwm*regulation);
 
-
+		if(controller.button(RPDS3::L1) == true){
+			if(accel_mode == 1){
+				accelaration = 0;
+				accel_mode = 2;
+			}else if(accel_mode == 2){
+				accelaration = 1;
+				accel_mode = 3;
+			}else if()accel_mode == 3{
+				accelaration = 2;
+				accel_mode = 1;
+			}		
+		}else{
+			accelaration = 1;
+		}
 		if(controller.press(RPDS3::SQUARE)){
 			if(right_hanger_flag == true){
 				ms.send(MECHANISM_MDD_NUM,HANGER_LEFT_SOLENOID,261);
@@ -186,10 +201,10 @@ int main(void){
 
 		if(controller.press(RPDS3::CROSS)){
 			if(y_arm_flag == true){
-				right_x = controller.stick(RPDS3::RIGHT_X);
+				changer = 1;
 				y_arm_flag = false;
 			}else if(y_arm_flag == false){
-				right_x = controller.stick(RPDS3::RIGHT_X) * -1;
+				changer = -1;
 				y_arm_flag = true;
 			}
 		}
@@ -216,9 +231,6 @@ int main(void){
 		if(controller.button(RPDS3::R1) == true){
 			regulation = 0.5;
 			std::cout << "reg" << std::endl;
-		}else if(controller.button(RPDS3::L1) == true){
-			regulation = 1.2;
-			std::cout << "quick" << endl;
 		}else{
 			regulation = 1.0;
 		}
