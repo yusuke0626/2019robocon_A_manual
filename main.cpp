@@ -168,13 +168,15 @@ int main(void){
 			}else if(accel_mode == 2){
 				accelaration = 1;
 				accel_mode = 3;
-			}else if()accel_mode == 3{
+			}else if(accel_mode == 3){
 				accelaration = 2;
+				accel_mode = 4;
+			}else if(accel_mode == 4){
+				accelaration = 1;
 				accel_mode = 1;
-			}		
-		}else{
-			accelaration = 1;
+			}
 		}
+
 		if(controller.press(RPDS3::SQUARE)){
 			if(right_hanger_flag == true){
 				ms.send(MECHANISM_MDD_NUM,HANGER_LEFT_SOLENOID,261);
