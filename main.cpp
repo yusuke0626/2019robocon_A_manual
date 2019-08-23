@@ -216,6 +216,9 @@ int main(void){
 		if(controller.button(RPDS3::R1) == true){
 			regulation = 0.5;
 			std::cout << "reg" << std::endl;
+		}else if(controller.button(RPDS3::L1) == true){
+			regulation = 1.2;
+			std::cout << "quick" << endl;
 		}else{
 			regulation = 1.0;
 		}
