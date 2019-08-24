@@ -45,7 +45,10 @@ int main(void){
 	bool box_flag = true;
 
 	bool y_arm_flag = true;
+		
+	double accelaration = 1;
 
+	std::cout << "携行型通信操縦、命令移動システム、dualshock3,起動しました"
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
 		//double left_distance = 0;
@@ -72,8 +75,6 @@ int main(void){
 		double left_front_motor_pwm;
 		double left_back_motor_pwm;
 
-		double accelaration = 1;
-		int accel_mode = 1;
 		if(sum_turn == 0){
 			if(controller.button(RPDS3::UP)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
@@ -92,6 +93,7 @@ int main(void){
 					left_front_motor_pwm = PWM_MAX_VALUE;
 					left_back_motor_pwm = PWM_MAX_VALUE;
 				}
+				std::cout << "forward" << std::endl;
 			}else if(controller.button(RPDS3::DOWN)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
 					right_front_motor_pwm = 10;
@@ -109,7 +111,8 @@ int main(void){
 					left_front_motor_pwm = -PWM_MAX_VALUE;
 					left_back_motor_pwm = -PWM_MAX_VALUE;
 
-				}			
+				}		
+				std::cout << "back" <<std::endl;	
 			}else if(controller.button(RPDS3::RIGHT)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
 					right_front_motor_pwm = 10;
@@ -127,6 +130,7 @@ int main(void){
 					left_front_motor_pwm = PWM_MAX_VALUE;
 					left_back_motor_pwm = -PWM_MAX_VALUE;				
 				}
+				std::cout << "right" << std::endl;
 			}else if(controller.button(RPDS3::LEFT)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
 					right_front_motor_pwm = -10;
@@ -144,11 +148,13 @@ int main(void){
 					left_front_motor_pwm = -PWM_MAX_VALUE;
 					left_back_motor_pwm = PWM_MAX_VALUE;
 				}
+				std::cout << "left" << std::endl;
 			}else{
 				right_front_motor_pwm = 0;
 				right_back_motor_pwm = 0;
 				left_front_motor_pwm = 0;
 				left_back_motor_pwm = 0;
+				std::cout << "はようごかせやおらああああ！ " << std::endl;
 			}
 		}else{
 			right_front_motor_pwm = sum_turn / limiter * regulation;
@@ -161,20 +167,10 @@ int main(void){
 		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,left_front_motor_pwm*regulation);
 		ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,left_back_motor_pwm*regulation);
 
-		if(controller.button(RPDS3::L1) == true){
-			if(accel_mode == 1){
-				accelaration = 0;
-				accel_mode = 2;
-			}else if(accel_mode == 2){
-				accelaration = 1;
-				accel_mode = 3;
-			}else if(accel_mode == 3){
-				accelaration = 2;
-				accel_mode = 4;
-			}else if(accel_mode == 4){
-				accelaration = 1;
-				accel_mode = 1;
-			}
+		if(controller.button(RPDS3::L1) ){
+			accelaration = 0;
+		}else{
+			accelaration = 1;
 		}
 
 		if(controller.press(RPDS3::SQUARE)){
@@ -238,6 +234,14 @@ int main(void){
 		}
 
 	}
+        ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
+        ms.send(MECHANISM_MDD_NUM,Z_ARM,0);
+
+        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,0);
+        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,0);
+        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,0);
+        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,0);
+
 	gpioWrite(13,false);
 	return 0;
 }
