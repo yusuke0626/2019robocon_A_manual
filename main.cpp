@@ -46,7 +46,7 @@ int main(void){
 
 	bool y_arm_flag = true;
 		
-	double accelaration = 1;
+	double accelaration = 2;
 
 	std::cout << "携行型通信操縦、命令移動システム、dualshock3,起動しました"
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
@@ -170,7 +170,7 @@ int main(void){
 		if(controller.button(RPDS3::L1) ){
 			accelaration = 0;
 		}else{
-			accelaration = 1;
+			accelaration = 2;
 		}
 
 		if(controller.press(RPDS3::SQUARE)){
