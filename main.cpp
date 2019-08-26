@@ -79,10 +79,10 @@ int main(void){
 		if(sum_turn == 0){
 			if(controller.button(RPDS3::UP)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
-					right_front_motor_pwm = -10;
-					right_back_motor_pwm = -10;
-					left_front_motor_pwm = 10;
-					left_back_motor_pwm = 10;
+					right_front_motor_pwm = -20;
+					right_back_motor_pwm = -20;
+					left_front_motor_pwm = 20;
+					left_back_motor_pwm = 20;
 				}else if((right_front_motor_pwm > -PWM_MAX_VALUE && right_back_motor_pwm > -PWM_MAX_VALUE) && (left_front_motor_pwm < PWM_MAX_VALUE && left_back_motor_pwm < PWM_MAX_VALUE)){
 					right_front_motor_pwm = right_front_motor_pwm - accelaration;
 					right_back_motor_pwm = right_back_motor_pwm - accelaration;
@@ -97,10 +97,10 @@ int main(void){
 				std::cout << "forward" << std::endl;
 			}else if(controller.button(RPDS3::DOWN)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
-					right_front_motor_pwm = 10;
-					right_back_motor_pwm = 10;
-					left_front_motor_pwm = -10;
-					left_back_motor_pwm = -10;
+					right_front_motor_pwm = 20;
+					right_back_motor_pwm = 20;
+					left_front_motor_pwm = -20;
+					left_back_motor_pwm = -20;
 				}else if((right_front_motor_pwm < PWM_MAX_VALUE && right_back_motor_pwm < PWM_MAX_VALUE) && (left_front_motor_pwm > -PWM_MAX_VALUE && left_back_motor_pwm > -PWM_MAX_VALUE)){
 					right_front_motor_pwm = right_front_motor_pwm + accelaration;
 					right_back_motor_pwm = right_back_motor_pwm + accelaration;
@@ -116,10 +116,10 @@ int main(void){
 				std::cout << "back" <<std::endl;	
 			}else if(controller.button(RPDS3::RIGHT)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
-					right_front_motor_pwm = 10;
-					right_back_motor_pwm = -10;
-					left_front_motor_pwm = 10;
-					left_back_motor_pwm = -10;
+					right_front_motor_pwm = 20;
+					right_back_motor_pwm = -20;
+					left_front_motor_pwm = 20;
+					left_back_motor_pwm = -20;
 				}else if((right_front_motor_pwm < PWM_MAX_VALUE && right_back_motor_pwm > -PWM_MAX_VALUE) && (left_front_motor_pwm < PWM_MAX_VALUE && left_back_motor_pwm > -PWM_MAX_VALUE)){
 					right_front_motor_pwm = right_front_motor_pwm + accelaration;
 					right_back_motor_pwm = right_back_motor_pwm - accelaration;
@@ -134,10 +134,10 @@ int main(void){
 				std::cout << "right" << std::endl;
 			}else if(controller.button(RPDS3::LEFT)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
-					right_front_motor_pwm = -10;
-					right_back_motor_pwm = 10;
-					left_front_motor_pwm = -10;
-					left_back_motor_pwm = 10;
+					right_front_motor_pwm = -20;
+					right_back_motor_pwm = 20;
+					left_front_motor_pwm = -20;
+					left_back_motor_pwm = 20;
 				}else if((right_front_motor_pwm > -PWM_MAX_VALUE && right_back_motor_pwm < PWM_MAX_VALUE) && (left_front_motor_pwm > -PWM_MAX_VALUE && left_back_motor_pwm < PWM_MAX_VALUE)){
 					right_front_motor_pwm = right_front_motor_pwm - accelaration;
 					right_back_motor_pwm = right_back_motor_pwm + accelaration;
