@@ -94,29 +94,17 @@ int main(void){
 		}
 
 		if(controller.button(RPDS3::UP)){
-			while(x<100){
-				y=2/1*x
-			ms.send(MECHANISM_MDD_NUM,BOX,y);
-			}
+			ms.send(MECHANISM_MDD_NUM,BOX,50);
 		}else if(controller.button(RPDS3::DOWN)){
-			while(x<100){
-				y=2/1*x
-			ms.send(MECHANISM_MDD_NUM,BOX,-k);
-			}
+			ms.send(MECHANISM_MDD_NUM,BOX,-50);
 		}else{
 			ms.send(MECHANISM_MDD_NUM,BOX,0);
 		}
 
 		if(controller.button(RPDS3::RIGHT)){
-			while(x<100){
-				y=2/1*x
-			ms.send(MECHANISM_MDD_NUM,Y_ARM,q);
-			}
+			ms.send(MECHANISM_MDD_NUM,Y_ARM,50);
 		}else if(controller.button(RPDS3::LEFT)){
-			while(x<100){
-				y=2/1*x
-			ms.send(MECHANISM_MDD_NUM,Y_ARM,-d);
-			}
+			ms.send(MECHANISM_MDD_NUM,Y_ARM,-50);
 		}else{
 			ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
 		}
