@@ -45,6 +45,7 @@ int main(void){
 	bool left_hanger_flag = true;
 	int x==0,<100;
 	int y;
+	int a;
 
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
