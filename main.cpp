@@ -61,6 +61,8 @@ int main(void){
 		//double right_x = controller.stick(RPDS3::RIGHT_X);
 		double right_y = controller.stick(RPDS3::RIGHT_Y);
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
+		int y;
+		int x==1;
 
 		if(controller.press(RPDS3::R1) == true && controller.press(RPDS3::L1) == true){
 			if(control_mode_flag == true){
@@ -92,43 +94,37 @@ int main(void){
 		}
 
 		if(controller.button(RPDS3::UP)){
-			for(int x==0;x<=50;x++){
-				int y=1/2*x
-			}
+			while(x<100){
+				y=2/1*x
 			ms.send(MECHANISM_MDD_NUM,BOX,y);
-		}else if(controller.button(RPDS3::DOWN)){
-			for(int i==0;i<=50;i++){
-				int k=1/2*i
 			}
+		}else if(controller.button(RPDS3::DOWN)){
+			while(x<100){
+				y=2/1*x
 			ms.send(MECHANISM_MDD_NUM,BOX,-k);
+			}
 		}else{
 			ms.send(MECHANISM_MDD_NUM,BOX,0);
 		}
 
 		if(controller.button(RPDS3::RIGHT)){
-			for(int p==0;p<=50;p++){
-				int q=1/2*p
-			}
+			while(x<100){
+				y=2/1*x
 			ms.send(MECHANISM_MDD_NUM,Y_ARM,q);
-		}else if(controller.button(RPDS3::LEFT)){
-			for(int b==0;b<=50;b++){
-				int d=2/1*b
 			}
+		}else if(controller.button(RPDS3::LEFT)){
+			while(x<100){
+				y=2/1*x
 			ms.send(MECHANISM_MDD_NUM,Y_ARM,-d);
+			}
 		}else{
 			ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
 		}
 
 		if(controller.button(RPDS3::TRIANGLE)){
-			for(int n==0;n<=50;n++){
-				int m=2/1*m
-			}
-			ms.send(MECHANISM_MDD_NUM,Z_ARM,m);
+			ms.send(MECHANISM_MDD_NUM,Z_ARM,50);
 		}else if(controller.button(RPDS3::CROSS)){
-			for(int c==0;c<=50;c++){
-				int g=2/1*c
-			}
-			ms.send(MECHANISM_MDD_NUM,Z_ARM,-g);
+			ms.send(MECHANISM_MDD_NUM,Z_ARM,-50);
 		}else{
 			ms.send(MECHANISM_MDD_NUM,Z_ARM,0);
 		}
@@ -172,20 +168,20 @@ int main(void){
 		      	ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  right_y * 0.5 * regulation);
 		}
 
-		revolve = (controller.stick(RPDS3::LEFT_T) - controller.stick(RPDS3::RIGHT_T)) * 0.3;
+		//revolve = (controller.stick(RPDS3::LEFT_T) - controller.stick(RPDS3::RIGHT_T)) * 0.3;
 
                         //std::cout << -right_distance <<"::"<< right_distance<< std::endl;
-                        std::cout << right_front<< std::endl;
-                        ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, -right_distance * right_front * 0.4 * regulation + revolve);//左前
-                        ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  -right_distance * right_back  * 0.4 * regulation + revolve);//左後
-                        ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, right_distance * right_back  * 0.4 * regulation + revolve);//右前
-                        ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  right_distance * right_front * 0.4 * regulation + revolve);//右後 
-                }else{
-                        ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,  -right_y * 0.5 * regulation);
-                        ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,   -right_y * 0.5 * regulation);
-                        ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, left_y * 0.5 * regulation);
-                        ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  left_y * 0.5 * regulation);
-                }
+                        //std::cout << right_front<< std::endl;
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM, -right_distance * right_front * 0.4 * regulation + revolve);//左前
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,  -right_distance * right_back  * 0.4 * regulation + revolve);//左後
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, right_distance * right_back  * 0.4 * regulation + revolve);//右前
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  right_distance * right_front * 0.4 * regulation + revolve);//右後 
+                //}else{
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,  -right_y * 0.5 * regulation);
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM,   -right_y * 0.5 * regulation);
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, left_y * 0.5 * regulation);
+                        //ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  left_y * 0.5 * regulation);
+                //}
 
 
 	
