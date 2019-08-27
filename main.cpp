@@ -101,23 +101,28 @@ int main(void){
             }
 			ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,y);
             ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,y);
-            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,y);
-            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,-y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,-y);
+		}else{
+			ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,0);
 		}else if(controller.button(RPDS3::DOWN)){
 			if(x<100){
                 y=1/2*x;
             }else{
                 y=50;
             }
-			ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
+			ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,-y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,-y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,y);
 		}else{
-			ms.send(UNDERCARRIAGE_MDD_NUM,,0);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,0);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,0);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,0);
+			ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,0);
 		}
 
 		if(controller.button(RPDS3::RIGHT)){
@@ -126,25 +131,32 @@ int main(void){
             }else{
                 y=50;
             }
-			ms.send(UNDERCARRIAGE_MDD_NUM,,y);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,y);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,y);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,y);
+			ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,-y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,-y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,y);
+		}else{
+	    ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,0);
+			
+			
 		}else if(controller.button(RPDS3::LEFT)){
 			if(x<100){
                 y=1/2*x;
             }else{
                 y=50;
             }
-			ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,-y);
+			ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,-y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,y);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,-y);
 		}else{
-			ms.send(UNDERCARRIAGE_MDD_NUM,,0);
-		    ms.send(UNDERCARRIAGE_MDD_NUM,,0);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,0);
-            ms.send(UNDERCARRIAGE_MDD_NUM,,0);
+			ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,0);
+		    ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,0);
+            ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,0);
         }
 
 		if(controller.button(RPDS3::TRIANGLE)){
