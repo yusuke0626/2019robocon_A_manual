@@ -53,7 +53,7 @@ int main(void){
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
 		//double left_distance = 0;
-		//double left_theta = 0;
+		double left_theta = 0;
 
 		//double right_distance = 0;
 		//double right_theta = 0;
@@ -62,8 +62,8 @@ int main(void){
 		//double left_back  = 0;
 		//int revolve = 0;
 
-		//double left_x = controller.stick(RPDS3::LEFT_X);
-		//double left_y = controller.stick(RPDS3::LEFT_Y);
+		double left_x = controller.stick(RPDS3::LEFT_X);
+		double left_y = controller.stick(RPDS3::LEFT_Y);
 
 		double right_x = controller.stick(RPDS3::RIGHT_X) * changer;
 		double right_y = controller.stick(RPDS3::RIGHT_Y) ;
@@ -207,6 +207,21 @@ int main(void){
 				y_arm_flag = true;
 			}
 		}
+		//追加
+		left_theta = std::atan(left_x,left_y)/M_PI;
+		if( left_theta => 0 && left_theta < 1/4){
+
+		}else if( left_theta => 1/4 && left_theta <= 3/4){
+
+		}else if( left_theta > 3/4 && left_theta <= 1){
+
+		}else if( left_theta >1 && left_theta < 5/4){
+
+		}else if(){
+
+		}
+		
+		//終わり
 		//if(controller.button(RPDS3::TRIANGLE)){
 		//	ms.send(MECHANISM_MDD_NUM,BOX,50);
 		//}else if(controller.button(RPDS3::CROSS)){
