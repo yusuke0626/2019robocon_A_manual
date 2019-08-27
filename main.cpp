@@ -86,7 +86,7 @@ int main(void){
 		if(controller.press(RPDS3::CIRCLE)){
 			if(left_hanger_flag == true){
 				ms.send(MECHANISM_MDD_NUM,HANGER_RIGHT_SOLENOID,262);
-				left_hanger_flag = true;
+				left_hanger_flag = false;
 			}else{
 				ms.send(MECHANISM_MDD_NUM,HANGER_RIGHT_SOLENOID,-262);
 				left_hanger_flag = true;
@@ -200,13 +200,13 @@ int main(void){
 			//std::cout << -left_distance <<"::"<< left_distance<< std::endl;
 			std::cout << left_front<< std::endl;
 			if(controller.stick(RPD3::RIGHT_T,UP)){
-			        ms.send(MECHANISM_MDD_NUM, Z_ARM, -left_distance * left_front * 0.4 * regulation + revolve);
+			        ms.send(MECHANISM_MDD_NUM, Z_ARM,50);
 			}else if(controller.stick(RPD3::RIGHT,DOWN)){
-			        ms.send(MECHANISM_MDD_NUM, Z_ARM,  -left_distance * left_back  * 0.4 * regulation + revolve);
-			}else if(controller.stick(RPD3::LEFT,UP)){
-			        ms.send(MECHANISM_MDD_NUM, Z_ARM, left_distance * left_back  * 0.4 * regulation + revolve);
-			}else if(controller.stick(RPD::LEFT,DOWN)){
-			        ms.send(MECHANISM_MDD_NUM, Z_ARM,  left_distance * left_front * 0.4 * regulation + revolve);
+			        ms.send(MECHANISM_MDD_NUM, Z_ARM,-50);
+			}else if(controller.stick(RPD3::RIGHT,RIGHT)){
+			        ms.send(MECHANISM_MDD_NUM, Y_ARM,50);
+			}else if(controller.stick(RPD::RIGHT,LEFT)){
+			        ms.send(MECHANISM_MDD_NUM, Y_ARM,-50);
 			}
 		
 		}
