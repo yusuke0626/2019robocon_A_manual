@@ -49,7 +49,6 @@ int main(void){
 		
 	double accelaration = 2;
 
-	std::cout << "携行型通信操縦、命令移動システム、dualshock3,起動しました"
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
 		//double left_distance = 0;
