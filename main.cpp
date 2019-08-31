@@ -92,7 +92,10 @@ int main(void){
 				left_hanger_flag = true;
 			}
 		}
-
+                
+		ms.send(MECHANISM_MDD_NUM,Y_ARM,right_x*2*regulation);
+		ms.send(MECHANISM_MDD_NUM,Z_ARM,right_y*2*regulation);
+		
 		if(controller.button(RPDS3::UP)){
             if(x<100){
                 y=1/2*x;
