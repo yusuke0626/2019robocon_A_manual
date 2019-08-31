@@ -106,6 +106,9 @@ int main(void){
                         ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,y);
                         ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,-y);
                         ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,-y);
+			
+			std::cout<<"front"<<std::endl;
+			
                 }else if(controller.button(RPDS3::BACK)){
                         if(x<25){
                                 y = 2*x;
@@ -116,6 +119,9 @@ int main(void){
                         ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,-y);
                         ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,y);
                         ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,y);
+			
+			std::cout<<"back"<<std::endl;
+			
                 }else if(controller.button(RPDS3::RIGHT)){
                         if(x<25){
                                 y = 2*x;
@@ -126,6 +132,9 @@ int main(void){
                         ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,y);
                         ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,-y);
                         ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,y);
+			
+			std::cout<<"right"<<std::endl;
+			
                 }else if(controller.button(RPDS3::LEFT)){
                         if(x<25){
                                 y = 2*x;
@@ -136,11 +145,15 @@ int main(void){
                         ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,-y);
                         ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,y);
                         ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,-y);
+			
+			std::cout<<"left"<<std::endl
+			
                 }                }else{
                         ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,0);
                         ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,0);
                         ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,0);
                         ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,0);
+		
                 }
 
 		if(controller.button(RPDS3::TRIANGLE)){
