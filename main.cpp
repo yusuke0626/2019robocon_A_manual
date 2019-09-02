@@ -28,7 +28,6 @@ int main(void){
 
 	double regulation = 0.3;
 
-	int changer = -1;
 	constexpr short limiter = 4;
 
 	controller.update();
@@ -47,11 +46,10 @@ int main(void){
 
 	bool box_flag = true;
 
-	bool y_arm_flag = true;
-		
+	bool cross_flag = true;
+
 	double accelaration = 2;
 
-	std::cout << "携行型通信操縦、命令移動システム、dualshock3,起動しました"
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
 		double left_distance = 0;
@@ -60,19 +58,18 @@ int main(void){
 		//double right_distance = 0;
 		//double right_theta = 0;
 
-		//double left_front = 0;
-		//double left_back  = 0;
-		//int revolve = 0;
+		double left_front = 0;
+		double left_back  = 0;
+		int revolve = 0;
 
 		double left_x = controller.stick(RPDS3::LEFT_X);
 		double left_y = controller.stick(RPDS3::LEFT_Y);
-		
 
-		double right_x = controller.stick(RPDS3::RIGHT_X) * changer;
+
+		double right_x = controller.stick(RPDS3::RIGHT_X) * -1;
 		double right_y = controller.stick(RPDS3::RIGHT_Y) ;
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
-		double right_t_arms_pwm;
-		double left_t_arms_pwm;
+		double t_arms_pwm;
 
 		double sum_turn = controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T);
 
@@ -81,7 +78,7 @@ int main(void){
 		double left_front_motor_pwm;
 		double left_back_motor_pwm;
 
-		if(sum_turn == 0){
+		if((sum_turn == 0 && left_x == 0) && left_y == 0){
 			if(controller.button(RPDS3::UP)){
 				if((right_front_motor_pwm == 0 && right_back_motor_pwm == 0) && (left_front_motor_pwm == 0 && left_back_motor_pwm == 0)){
 					right_front_motor_pwm = -20;
@@ -155,6 +152,31 @@ int main(void){
 					left_back_motor_pwm = PWM_MAX_VALUE;
 				}
 				std::cout << "left" << std::endl;
+			}else if(cross_flag == true){
+				if(left_distance > 150){
+					left_distance = 150;
+				}
+
+
+				left_theta = std::atan2(-left_y,left_x) + M_PI;
+
+				if(left_theta >= 0 && left_theta <= (M_PI/2)){
+					left_back  = (left_theta * 4 / M_PI) - 1;
+					left_front = 1;
+				}else if(left_theta > (M_PI/2) && left_theta <= (M_PI)){
+					left_back  = 1;
+					left_front = -(left_theta * 4 / M_PI) + 3;
+				}else if(left_theta > (M_PI) && left_theta <= (3*M_PI/2)){
+					left_back  = -(left_theta * 4 / M_PI) + 5;
+					left_front = -1;
+				}else if(left_theta > (3*M_PI/2) && left_theta <= (2*M_PI)){
+					left_back  = -1;
+					left_front = (left_theta * 4 / M_PI) - 7;
+				}
+
+
+				revolve = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;
+
 			}else{
 				right_front_motor_pwm = 0;
 				right_back_motor_pwm = 0;
@@ -162,7 +184,7 @@ int main(void){
 				left_back_motor_pwm = 0;
 				std::cout << "はようごかせやおらああああ！ " << std::endl;
 			}
-		}else{
+		}else if(sum_turn != 0 && (left_x == 0 && left_y == 0)){
 			right_front_motor_pwm = sum_turn / limiter * regulation;
 			right_back_motor_pwm = sum_turn / limiter* regulation;
 			left_front_motor_pwm = sum_turn / limiter* regulation;
@@ -203,44 +225,28 @@ int main(void){
 		ms.send(MECHANISM_MDD_NUM,Y_ARM,right_x * 2 * regulation);
 		ms.send(MECHANISM_MDD_NUM,Z_ARM,right_y * 2 * regulation);
 
+
+		//追加
 		if(controller.press(RPDS3::CROSS)){
-			if(y_arm_flag == true){
-				changer = 1;
-				y_arm_flag = false;
-			}else if(y_arm_flag == false){
-				changer = -1;
-				y_arm_flag = true;
+			if(cross_flag == true){
+				cross_flag = false;
+			}else{
+				cross_flag = true;
 			}
 		}
-		//追加
-		if(left_x != 0 || left_y != 0){
-			left_theta = std::atan2(left_x,left_y)/M_PI;
-			if( left_theta >= 0 && left_theta < 1/4){
-				rigth_t_arms_pwm = left_distance * regulation;
-				left_t_arms_pwm = 0;	
-			}else if( left_theta >= 1/4 && left_theta <= 3/4){
-				rigth_t_arms_pwm = left_distance * regulation;
-				left_t_arms_pwm = left_distance * regulation * -1;
-			}else if( left_theta > 3/4  && left_theta <= 1){
-				rigth_t_arms_pwm = 0;
-				left_t_arms_pwm = left_distance * regulation * -1;
-			}else if( left_theta > 1    && left_theta < 5/4){
-				rigth_t_arms_pwm = left_distance * regulation;
-				left_t_arms_pwm = -left_distance * regulation * -1;
-			}else if( left_theta >= 5/4 && left_theta <= 7/4){
-				rigth_t_arms_pwm = -left_distance * regulation;
-				left_t_arms_pwm = -left_distance * regulation * -1;
-			}else if( left_theta > 7/4  && left_theta < 2){
-				rigth_t_arms_pwm = -left_distance * regulation;
-				left_t_arms_pwm = 0;
+		if(cross_flag == false){
+			if(left_y > 0){
+				t_arms_pwm = 50;
+			}else if(left_y < 0){	
+				t_arms_pwm = -50;
+			}else{
+				t_arms_pwm = 0;
 			}
 		}else{
-			rigth_t_arms_pwm = 0;
-			left_t_arms_pwm = 0;
+			t_arms_pwm = 0;
 		}
-		ms.send(MECHANISM_MDD_NUM,RIGHT_T_ARM,right_t_arms_pwm);
-		ms.send(MECHANISM_MDD_NUM,LEFT_T_ARM,left_t_arms_pwm);
-
+		ms.send(MECHANISM_MDD_NUM,RIGHT_T_ARM,t_arms_pwm);
+		ms.send(MECHANISM_MDD_NUM,LEFT_T_ARM,t_arms_pwm * -1);
 		//終わり
 		//if(controller.button(RPDS3::TRIANGLE)){
 		//	ms.send(MECHANISM_MDD_NUM,BOX,50);
@@ -270,13 +276,13 @@ int main(void){
 		}
 
 	}
-        ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
-        ms.send(MECHANISM_MDD_NUM,Z_ARM,0);
+	ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
+	ms.send(MECHANISM_MDD_NUM,Z_ARM,0);
 
-        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,0);
-        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,0);
-        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,0);
-        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,0);
+	ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_FRONT_MOTOR_NUM,0);
+	ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,0);
+	ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,0);
+	ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,0);
 
 	gpioWrite(13,false);
 	return 0;
