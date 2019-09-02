@@ -19,6 +19,8 @@ int main(void){
 	constexpr short Z_ARM = 5; 
 	constexpr short Y_ARM = 4;
 	constexpr short PWM_MAX_VALUE = 50;
+	constexpr short RIGHT_T_ARM = ;
+	constexpr short LEFT_T_ARM = ;
 	//constexpr short STICK_MAX_VALUE = 250;
 	constexpr short HANGER_LEFT_SOLENOID = 3;
 	constexpr short HANGER_RIGHT_SOLENOID = 3;
@@ -51,8 +53,8 @@ int main(void){
 
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
-		//double left_distance = 0;
-		//double left_theta = 0;
+		double left_distance = 0;
+		double left_theta = 0;
 
 		//double right_distance = 0;
 		//double right_theta = 0;
@@ -61,12 +63,15 @@ int main(void){
 		//double left_back  = 0;
 		//int revolve = 0;
 
-		//double left_x = controller.stick(RPDS3::LEFT_X);
-		//double left_y = controller.stick(RPDS3::LEFT_Y);
+		double left_x = controller.stick(RPDS3::LEFT_X);
+		double left_y = controller.stick(RPDS3::LEFT_Y);
+		
 
 		double right_x = controller.stick(RPDS3::RIGHT_X) * changer;
 		double right_y = controller.stick(RPDS3::RIGHT_Y) ;
-		//left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
+		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
+		double right_t_arms_pwm;
+		double left_t_arms_pwm;
 
 		double sum_turn = controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T);
 
@@ -206,6 +211,36 @@ int main(void){
 				y_arm_flag = true;
 			}
 		}
+		//追加
+		if(left_x != 0 || left_y != 0){
+			left_theta = std::atan2(left_x,left_y)/M_PI;
+			if( left_theta >= 0 && left_theta < 1/4){
+				rigth_t_arms_pwm = left_distance * regulation;
+				left_t_arms_pwm = 0;	
+			}else if( left_theta >= 1/4 && left_theta <= 3/4){
+				rigth_t_arms_pwm = left_distance * regulation;
+				left_t_arms_pwm = left_distance * regulation * -1;
+			}else if( left_theta > 3/4  && left_theta <= 1){
+				rigth_t_arms_pwm = 0;
+				left_t_arms_pwm = left_distance * regulation * -1;
+			}else if( left_theta > 1    && left_theta < 5/4){
+				rigth_t_arms_pwm = left_distance * regulation;
+				left_t_arms_pwm = -left_distance * regulation * -1;
+			}else if( left_theta >= 5/4 && left_theta <= 7/4){
+				rigth_t_arms_pwm = -left_distance * regulation;
+				left_t_arms_pwm = -left_distance * regulation * -1;
+			}else if( left_theta > 7/4  && left_theta < 2){
+				rigth_t_arms_pwm = -left_distance * regulation;
+				left_t_arms_pwm = 0;
+			}
+		}else{
+			rigth_t_arms_pwm = 0;
+			left_t_arms_pwm = 0;
+		}
+		ms.send(MECHANISM_MDD_NUM,RIGHT_T_ARM,right_t_arms_pwm);
+		ms.send(MECHANISM_MDD_NUM,LEFT_T_ARM,left_t_arms_pwm);
+
+		//終わり
 		//if(controller.button(RPDS3::TRIANGLE)){
 		//	ms.send(MECHANISM_MDD_NUM,BOX,50);
 		//}else if(controller.button(RPDS3::CROSS)){
