@@ -97,9 +97,9 @@ int main(void){
 		ms.send(MECHANISM_MDD_NUM,Z_ARM,right_y*2*regulation);
 
                 if(controller.button(RPDS3::UP)){
-                        if(x<25){
-                                pwm = 2*x;
-                        }else if(x>25){
+                        if(speed<25){
+                                pwm = 2*speed;
+                        }else if(speed>25){
                                 pwm = 50;
                         }
                         ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,pwm);
@@ -111,9 +111,9 @@ int main(void){
 			speed++;
 			
                 }else if(controller.button(RPDS3::BACK)){
-                        if(x<25){
-                                pwm = 2*x;
-                        }else if(x>25){
+                        if(speed<25){
+                                pwm = 2*speed;
+                        }else if(speed>25){
                                 pwm = 50;
                         }
                         ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,-pwm);
@@ -125,9 +125,9 @@ int main(void){
 			speed++;
 			
                 }else if(controller.button(RPDS3::RIGHT)){
-                        if(x<25){
-                                pwm = 2*x;
-                        }else if(x>25){
+                        if(speed<25){
+                                pwm = 2*speed;
+                        }else if(speed>25){
                                 pwm = 50;
                         }
                         ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,-pwm);
@@ -139,9 +139,9 @@ int main(void){
 			speed++;
 			
                 }else if(controller.button(RPDS3::LEFT)){
-                        if(x<25){
-                                pwm = 2*x;
-                        }else if(x>25){
+                        if(speed<25){
+                                pwm = 2*speed;
+                        }else if(speed>25){
                                 pwm = 50;
                         }
                         ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,pwm);
