@@ -40,7 +40,10 @@ int main(void){
 		std::cout << "error" << std::endl;
 		return -1;
 	}
-	
+
+	gpioSetMode(12,PI_OUTPUT);
+	gpioSetMode(16,PI_OUTPUT);	
+
 	gpioSetMode(13,PI_OUTPUT);
 	gpioWrite(13,true);
 
@@ -156,6 +159,16 @@ int main(void){
 				changer = 1;
 				coat_flag = true;
 			}
+		}
+
+		if(coat_flag == true){
+			gpioInitialise();
+			gpioWrite(12,true);
+			gpioWrite(16,false);
+		}else{
+			gpioInitialise();
+			gpioWrite(16,true);
+			gpioWrite(12,false);
 		}
 
 		//回収機構のアーム
