@@ -44,6 +44,12 @@ int main(void){
 	gpioSetMode(13,PI_OUTPUT);
 	gpioWrite(13,true);
 
+	gpioSetMode(21,PI_INPUT);
+	gpioSetPullUpDown(21,PI_PUD_UP);
+
+	gpioSetMode(24,PI_INPUT);
+	gpioSetMode(24,PI_PUD_UP);
+
 	bool hanger_flag = true;
 
 	bool box_flag = true;
@@ -51,6 +57,9 @@ int main(void){
 	bool coat_flag = true;
 
 	bool towel_flag = true;
+
+	int t_arm_situation = 1;
+	bool moving_flag = false;
 
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
@@ -72,6 +81,9 @@ int main(void){
 		double right_y = controller.stick(RPDS3::RIGHT_Y) ;
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
 		double t_arms_pwm;
+
+		int t_arm_slit_1;
+		int t_arm_slit_2;
 
 		double sum_turn = controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T);
 
@@ -178,7 +190,40 @@ int main(void){
 				towel_flag = true;
 			}
 		}
-		
+
+		gpioInitialise();
+		t_arm_slit_1 = gpioRead(21);
+		t_arm_slit_2 = gpioRead(24);
+
+		if(moving_flag == false){
+			if(controller.press(RPDS3::CIRCLE)){
+				if(t_arm_slit_1 == 0){
+					ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
+					ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
+					moving_flag = true;
+				}else{
+                                        ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
+                                        ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+					moving_flag = false;
+				}
+			}else if(controller.press(RPDS3::CROSS)){
+				if(t_arm_slit_2 == 0){
+                                        ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
+                                        ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);
+					moving_flag = true;
+				}else{
+				        ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
+                                        ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+					moving_flag = false;
+				}
+			}
+		}else{
+			if(controller.press(RPDS3::CIRCLE) || controller.press(RPDS3::TRIANGLE)){
+				moving_flag = false;
+				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
+				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+			}
+		}
 	}
 	ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
 	ms.send(MECHANISM_MDD_NUM,Z_ARM,0);
