@@ -42,12 +42,12 @@ int main(void){
 
 	bool right_hanger_flag = true;
 	bool left_hanger_flag = true;
-	int x=0;
-	int y;
-	int a;
 
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
+		double x=0;
+		double pwm;
+		
 		double left_distance = 0;
 		double left_theta = 0;
 
@@ -102,10 +102,10 @@ int main(void){
                         }else if(x>25){
                                 y = 50;
                         }
-                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,y);
-                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,y);
-                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,-y);
-                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,-y);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,pwm);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,pwm);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,-pwm);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,-pwm);
 			
 			std::cout<<"front"<<std::endl;
 			
@@ -115,10 +115,10 @@ int main(void){
                         }else if(x>25){
                                 y = 50;
                         }
-                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,-y);
-                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,-y);
-                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,y);
-                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,y);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,-pwm);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,-pwm);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,pwm);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,pwm);
 			
 			std::cout<<"back"<<std::endl;
 			
@@ -128,10 +128,10 @@ int main(void){
                         }else if(x>25){
                                 y = 50;
                         }
-                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,-y);
-                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,y);
-                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,-y);
-                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,y);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,-pwm);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,pwm);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,-pwm);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,pwm);
 			
 			std::cout<<"right"<<std::endl;
 			
@@ -141,10 +141,10 @@ int main(void){
                         }else if(x>25){
                                 y = 50;
                         }
-                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,y);
-                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,-y);
-                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,y);
-                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,-y);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__FRONT_MOTOR_NUM,pwm);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT__BACK_MOTOR_NUM,-pwm);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__FRONT_MOTOR_NUM,pwm);
+                        ms.send(UNDERCARRIAGE_MDD_NUM,LEFT__BACK_MOTOR_NUM,-pwm);
 			
 			std::cout<<"left"<<std::endl
 			
@@ -157,9 +157,9 @@ int main(void){
                 }
 
 		if(controller.button(RPDS3::TRIANGLE)){
-			ms.send(MECHANISM_MDD_NUM,Z_ARM,y);
+			ms.send(MECHANISM_MDD_NUM,Z_ARM,50);
 		}else if(controller.button(RPDS3::CROSS)){
-			ms.send(MECHANISM_MDD_NUM,Z_ARM,-y);
+			ms.send(MECHANISM_MDD_NUM,Z_ARM,-50);
 		}else{
 			ms.send(MECHANISM_MDD_NUM,Z_ARM,0);
 		}
