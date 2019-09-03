@@ -60,7 +60,7 @@ int main(void){
 
 		double left_x = controller.stick(RPDS3::LEFT_X);
 		double left_y = controller.stick(RPDS3::LEFT_Y);
-		//double right_x = controller.stick(RPDS3::RIGHT_X);
+		double right_x = controller.stick(RPDS3::RIGHT_X);
 		double right_y = controller.stick(RPDS3::RIGHT_Y);
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
 
