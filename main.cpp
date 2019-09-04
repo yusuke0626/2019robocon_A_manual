@@ -85,12 +85,6 @@ int main(void){
 		int t_arm_limit_1;
 		int t_arm_limit_2;
 
-		double sum_turn = controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T);
-
-		double right_front_motor_pwm;
-		double right_back_motor_pwm;
-		double left_front_motor_pwm;
-		double left_back_motor_pwm;
 		double theta = 0;
 
 		left_theta = std::atan2(-left_y,left_x) + M_PI;
@@ -137,7 +131,7 @@ int main(void){
 
 		//ハンガー昇降機構
 		if(controller.press(RPDS3::SQUARE)){
-			if(right_hanger_flag == true){
+			if(hanger_flag == true){
 				ms.send(MECHANISM_MDD_NUM,HANGER_LEFT_SOLENOID,261);
                                 ms.send(MECHANISM_MDD_NUM,HANGER_RIGHT_SOLENOID,262);
 				hanger_flag = false;
@@ -158,15 +152,6 @@ int main(void){
 			}
 		}
 
-		if(coat_flag == true){
-			gpioInitialise();
-			gpioWrite(12,true);
-			gpioWrite(16,false);
-		}else{
-			gpioInitialise();
-			gpioWrite(16,true);
-			gpioWrite(12,false);
-		}
 
 		//回収機構のアーム
 		ms.send(MECHANISM_MDD_NUM,Y_ARM,right_x * 2 * regulation);
