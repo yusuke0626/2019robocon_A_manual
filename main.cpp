@@ -31,7 +31,6 @@ int main(void){
 	double regulation = 0.3;
 
 	int changer = 1;
-	constexpr short limiter = 4;
 
 	controller.update();
 	try{
@@ -80,7 +79,6 @@ int main(void){
 		double right_x = controller.stick(RPDS3::RIGHT_X) * changer;
 		double right_y = controller.stick(RPDS3::RIGHT_Y) ;
 		left_distance = std::sqrt(std::pow(left_x,2) + std::pow(left_y,2)) * 2;
-		double t_arms_pwm;
 
 		int t_arm_limit_1;
 		int t_arm_limit_2;
