@@ -64,9 +64,9 @@ int main(void){
 
 		double left_distance = 0;
 		double left_theta = 0;
-
+	
 		//double right_distance = 0;
-		//double right_theta = 0;
+		double right_theta = 0;
 
 		double left_front = 0;
 		double left_back  = 0;
@@ -74,7 +74,9 @@ int main(void){
 
 		double left_x = controller.stick(RPDS3::LEFT_X);
 		double left_y = controller.stick(RPDS3::LEFT_Y);
-
+		
+		double arms_x;
+		double arms_y;
 
 		double right_x = controller.stick(RPDS3::RIGHT_X) * changer;
 		double right_y = controller.stick(RPDS3::RIGHT_Y) ;
@@ -151,8 +153,25 @@ int main(void){
 
 
 		//回収機構のアーム
-		ms.send(MECHANISM_MDD_NUM,Y_ARM,right_x * 2 * regulation);
-		ms.send(MECHANISM_MDD_NUM,Z_ARM,right_y * 2 * regulation);
+
+                right_theta = std::atan2(right_y,right_x) + M_PI;
+
+		if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
+                	arms_x = 0;
+			arms_y = right_y;
+                }else if(right_theta > (M_PI/4)*3 && right_theta < (M_PI/4)*5){
+                        arms_x = right_x;
+                        arms_y = 0;
+                }else if(right_theta >= (M_PI/4)*5 && right_theta <= (M_PI/4)*7){
+                        arms_x = 0;
+                        arms_y = right_y;
+                }else{
+                        arms_x = right_x;
+                        arms_y = 0;
+                }
+
+		ms.send(MECHANISM_MDD_NUM,Y_ARM,arms_x * 2 * regulation);
+		ms.send(MECHANISM_MDD_NUM,Z_ARM,arms_y * 2 * regulation * -1);
 		
 		//回収機構の箱
 		if(controller.press(RPDS3::CROSS)){
