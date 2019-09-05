@@ -130,12 +130,11 @@ int main(void){
 		//ハンガー昇降機構
 		if(controller.press(RPDS3::SQUARE)){
 			if(hanger_flag == true){
-				ms.send(MECHANISM_MDD_NUM,HANGER_LEFT_SOLENOID,261);
-                                ms.send(MECHANISM_MDD_NUM,HANGER_RIGHT_SOLENOID,262);
+				ms.send(MECHANISM_MDD_NUM,3,1);
+             
 				hanger_flag = false;
 			}else{
-				ms.send(MECHANISM_MDD_NUM,HANGER_LEFT_SOLENOID,-261);
-                                ms.send(MECHANISM_MDD_NUM,HANGER_RIGHT_SOLENOID,-262);
+                                ms.send(MECHANISM_MDD_NUM,3,2);
 				hanger_flag = true;
 			}
 		}
