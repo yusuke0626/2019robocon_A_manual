@@ -40,6 +40,7 @@ int main(void){
 		return -1;
 	}
 	
+	gpioSetMode();
 
 	gpioSetMode(13,PI_OUTPUT);
 	gpioWrite(13,true);
@@ -48,7 +49,14 @@ int main(void){
 	gpioSetPullUpDown(12,PI_PUD_UP);
 
 	gpioSetMode(16,PI_INPUT);
-	gpioSetMode(16,PI_PUD_UP);
+	gpioSetPullUpDown(16,PI_PUD_UP);
+
+        gpioSetMode(11,PI_INPUT);
+        gpioSetPullUpDown(11,PI_PUD_UP);
+
+        gpioSetMode(22,PI_INPUT);
+        gpioSetPullUpDown(22,PI_PUD_UP);
+
 
 	bool hanger_flag = true;
 
@@ -58,8 +66,8 @@ int main(void){
 
 	bool towel_flag = true;
 
-	int  moving_mode = 1;
-
+	int right_moving_mode = 1;
+	int left_moving_mode = 1;
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 
 		double left_distance = 0;
@@ -203,9 +211,11 @@ int main(void){
 			}
 		}
 
-		t_arm_limit_1 = gpioRead(12);
-		t_arm_limit_2 = gpioRead(16);
-	
+		t_arm_limit_right_up = gpioRead(12);
+		t_arm_limit_right_down = gpioRead(16);
+                t_arm_limit_right_up = gpioRead(11);
+                t_arm_limit_right_down = gpioRead(22);
+
 		//バスタオルのアーム
 
 		/*
@@ -214,30 +224,45 @@ int main(void){
 		mode 3 -> down
 		*/
 
-		if(moving_mode == 1){
+		if(right_moving_mode == 1 && left_moving_mode == 1){
 			if(controller.press(RPDS3::CIRCLE)){
 				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
 				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
-				moving_mode = 2;
+				right_moving_mode = 2;
+				left_moving_mode = 2;
 			}else if(controller.press(RPDS3::CROSS)){
                                 ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
                                 ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);
-				moving_mode = 3;
+				right_moving_mode = 3;
+				left_moving_mode = 3;
 			}
 		}else{
+			//アーム停止
 			if(controller.press(RPDS3::CIRCLE) || controller.press(RPDS3::CROSS)){
-				moving_mode = 1;
+				right_moving_mode = 1;
+				left_moving_mode = 1;
 				ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
 				ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
-			}else if(moving_mode == 2 && t_arm_limit_1 == 0){
-                                moving_mode = 1;
+			} 
+
+			//右リミットスイッチの反応
+			if(right_moving_mode == 2 && t_arm_limit_right_up == 0){
+                                right_moving_mode = 1;
                                 ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
-                                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
-			}else if(moving_mode == 3 && t_arm_limit_2 == 0){
-                                moving_mode = 1;
+			}else if(right_moving_mode == 3 && t_arm_limit_right_down == 0){
+                                right_moving_mode = 1;
                                 ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
-                                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
 			}
+			
+			//左リミットスイッチの反応
+			if(left_moving_mode == 2 && t_arm_limit_left_up == 0){
+                                left_moving_mode = 1;
+                                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+                        }else if(left_moving_mode == 3 && t_arm_limit_left_down == 0){
+                                left_moving_mode = 1;
+                                ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+                        }
+
 		}
 	}
 	ms.send(MECHANISM_MDD_NUM,Y_ARM,0);
@@ -247,6 +272,9 @@ int main(void){
 	ms.send(UNDERCARRIAGE_MDD_NUM,RIGHT_BACK_MOTOR_NUM,0);
 	ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_FRONT_MOTOR_NUM,0);
 	ms.send(UNDERCARRIAGE_MDD_NUM,LEFT_BACK_MOTOR_NUM,0);
+
+	ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
+	ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
 
 	gpioWrite(13,false);
 	return 0;
