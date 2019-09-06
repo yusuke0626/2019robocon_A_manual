@@ -24,8 +24,7 @@ int main(void){
 	constexpr short LEFT_T_ARM = 3;
 	constexpr short TOWEL_SOLENOID = 4;
 	//constexpr short STICK_MAX_VALUE = 250;
-	constexpr short HANGER_LEFT_SOLENOID = 3;
-	constexpr short HANGER_RIGHT_SOLENOID = 3;
+	constexpr short HANGER_SOLENOID = 3;
 	//constexpr short POWER_WINDOW_MOTOR_NUM = 4;
 
 	double regulation = 0.3;
@@ -142,11 +141,11 @@ int main(void){
 		//ハンガー昇降機構
 		if(controller.press(RPDS3::SQUARE)){
 			if(hanger_flag == true){
-				ms.send(MECHANISM_MDD_NUM,3,1);
+				ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,1);
              
 				hanger_flag = false;
 			}else{
-                                ms.send(MECHANISM_MDD_NUM,3,2);
+                                ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,2);
 				hanger_flag = true;
 			}
 		}
@@ -214,8 +213,8 @@ int main(void){
 
 		t_arm_limit_right_up = gpioRead(12);
 		t_arm_limit_right_down = gpioRead(16);
-                t_arm_limit_right_up = gpioRead(11);
-                t_arm_limit_right_down = gpioRead(22);
+                t_arm_limit_left_up = gpioRead(11);
+                t_arm_limit_left_down = gpioRead(22);
 
 		//バスタオルのアーム
 
