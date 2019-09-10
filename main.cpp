@@ -144,7 +144,8 @@ int main(void){
                 ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,2);
                 hanger_flag = false;
             }else{
-                ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,0);
+                ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,-1);
+                ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,-2);
                 hanger_flag = true;
             }
         }
@@ -286,5 +287,7 @@ int main(void){
     ms.send(BATH_TOWEL_MDD_NUM,255,255);
 
     gpioWrite(13,false);
+
     return 0;
+
 }
