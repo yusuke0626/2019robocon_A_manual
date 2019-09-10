@@ -83,10 +83,10 @@ void GY521::updata(){
           (long double)(now.tv_nsec - prev.tv_nsec) / 1000000000);
   yaw += diffYaw;
   if(yaw > 180){
-    yaw -= 180;
+    yaw -= 360;
   }
   else if(yaw < -180){
-    yaw += 180;
+    yaw += 360;
   }
 
 }
