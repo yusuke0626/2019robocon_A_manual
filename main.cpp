@@ -161,24 +161,24 @@ int main(void){
 
 		//回収機構のアーム
 
-                right_theta = std::atan2(right_y,right_x) + M_PI;
+        right_theta = std::atan2(right_y,right_x) + M_PI;
 
 		if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
-                	arms_x = 0;
+        	arms_x = 0;
 			arms_y = right_y;
-                }else if(right_theta > (M_PI/4)*3 && right_theta < (M_PI/4)*5){
-                        arms_x = right_x;
-                        arms_y = 0;
-                }else if(right_theta >= (M_PI/4)*5 && right_theta <= (M_PI/4)*7){
-                        arms_x = 0;
-                        arms_y = right_y;
-                }else{
-                        arms_x = right_x;
-                        arms_y = 0;
-                }
+        }else if(right_theta > (M_PI/4)*3 && right_theta < (M_PI/4)*5){
+            arms_x = right_x;
+            arms_y = 0;
+        }else if(right_theta >= (M_PI/4)*5 && right_theta <= (M_PI/4)*7){
+            arms_x = 0;
+            arms_y = right_y;
+        }else{
+            arms_x = right_x;
+            arms_y = 0;
+        }
 
-		ms.send(MECHANISM_MDD_NUM,Y_ARM,arms_x * 2 * regulation);
-		ms.send(MECHANISM_MDD_NUM,Z_ARM,arms_y * 2 * regulation * -1);
+		ms.send(MECHANISM_MDD_NUM,Y_ARM,arms_x * 4 * regulation);
+		ms.send(MECHANISM_MDD_NUM,Z_ARM,arms_y * 4 * regulation * -1);
 
 		//回収機構の箱
 		if(controller.press(RPDS3::CROSS)){
