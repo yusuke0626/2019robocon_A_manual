@@ -121,12 +121,14 @@ int main(void){
 			left_distance = PWM_MAX_VALUE;
 		}
 
-		rotation = -(controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3 + gyro.yaw;//rotation component
+        double gyro_rad = gyro.yaw * M_PI / 180;
 
-        wheel_velocity[0] = -0.707 * left_x + 0.707 * left_y + rotation;// 1/root2 = 0.707
-        wheel_velocity[1] = -0.707 * left_x - 0.707 * left_y + rotation;
-        wheel_velocity[2] =  0.707 * left_x - 0.707 * left_y + rotation;
-        wheel_velocity[3] =  0.707 * left_x + 0.707 * left_y + rotation;
+		rotation = -(controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;//rotation component
+
+        wheel_velocity[0] = -std::sin(M_PI/4 + gyro_rad) * left_x + std::cos(M_PI/4 + gyro_rad) * left_y + rotation;// 1/root2 = 0.707
+        wheel_velocity[1] = -std::cos(M_PI/4 + gyro_rad) * left_x + -std::sin(M_PI/4 + gyro_rad) * left_y + rotation;// 1/root2 = 0.707
+        wheel_velocity[2] = std::sin(M_PI/4 + gyro_rad) * left_x + -std::cos(M_PI/4 + gyro_rad) * left_y + rotation;// 1/root2 = 0.707
+        wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation;// 1/root2 = 0.707
 
 
 		ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, wheel_velocity[1] * 0.4 * regulation + rotation);
