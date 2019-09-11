@@ -49,11 +49,11 @@ int main(void){
     gpioSetMode(16,PI_INPUT);
     gpioSetPullUpDown(16,PI_PUD_UP);
 
-    gpioSetMode(11,PI_INPUT);
-    gpioSetPullUpDown(11,PI_PUD_UP);
+	gpioSetMode(11,PI_INPUT);
+	gpioSetPullUpDown(11,PI_PUD_UP);
 
-    gpioSetMode(22,PI_INPUT);
-    gpioSetPullUpDown(22,PI_PUD_UP);
+	gpioSetMode(22,PI_INPUT);
+	gpioSetPullUpDown(22,PI_PUD_UP);
 
 
     bool hanger_flag = true;
@@ -150,21 +150,21 @@ int main(void){
             }
         }
 
-        //コートチェンジ
-        if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
-            if(coat_flag == true){
-                changer = -1;
-                coat_flag = false;
-            }else{
-                changer = 1;
-                coat_flag = true;
-            }
-        }
+	    //コートチェンジ（SELECT　＋　△　）
+		if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
+			if(coat_flag == true){
+				changer = -1;
+				coat_flag = false;
+			}else{
+				changer = 1;
+				coat_flag = true;
+			}
+		}
 
 
-        //回収機構のアーム
+		//回収機構のアーム（右スティック）
 
-        right_theta = std::atan2(right_y,right_x) + M_PI;
+		right_theta = std::atan2(right_y,right_x) + M_PI;
 
         if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
             arms_x = 0;
@@ -280,14 +280,10 @@ int main(void){
         }
     }
 
-    ms.send(MECHANISM_MDD_NUM,255,255);
-
-    ms.send(UNDERCARRIAGE_MDD_NUM,255,255);
-
-    ms.send(BATH_TOWEL_MDD_NUM,255,255);
+    ms.send(255,255,0);
 
     gpioWrite(13,false);
 
     return 0;
-
 }
+
