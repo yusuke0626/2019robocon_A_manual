@@ -29,6 +29,7 @@ int main(void){
 
 	//constexpr short POWER_WINDOW_MOTOR_NUM = 4;
 
+
 	bool sleep_flag = false;
 
 	double regulation = 0.3;
@@ -52,6 +53,15 @@ int main(void){
 	gpioSetMode(11,PI_INPUT);
 	gpioSetPullUpDown(11,PI_PUD_UP);
 	gpioSetMode(22,PI_INPUT);
+	gpioSetPullUpDown(22,PI_PUD_UP);
+
+    gpioSetMode(,PI_INPUT);
+	gpioSetPullUpDown(,PI_PUD_UP);
+    gpioSetMode(,PI_INPUT);
+	gpioSetPullUpDown(,PI_PUD_UP);
+    gpioSetMode(,PI_INPUT);
+	gpioSetPullUpDown(,PI_PUD_UP);
+    gpioSetMode(,PI_INPUT);
 	gpioSetPullUpDown(22,PI_PUD_UP);
 
 
