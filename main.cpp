@@ -27,6 +27,15 @@ int main(void){
 	//constexpr short STICK_MAX_VALUE = 250;
 	constexpr short HANGER_SOLENOID = 7;
 
+    constexpr int RIGHT_UP_T_ARM_LIMIT   = 12;
+    constexpr int RIGHT_DOWN_T_ARM_LIMIT = 16;
+    constexpr int LEFT_UP_T_ARM_LIMIT    = 11;
+    constexpr int LEFT_DOWN_T_ARM_LIMIT  = 22;
+
+    constexpr int Y_FRONT_TAIL_LIMIT = ;
+    constexpr int Y_BACK_TAIL_LIMIT = ;
+    constexpr int Z_UP_TAIL_LIMIT = ;
+    constexpr int Z_DOWN_TAIL_LIMIT = ;
 	//constexpr short POWER_WINDOW_MOTOR_NUM = 4;
 
 
@@ -46,23 +55,24 @@ int main(void){
 
 	gpioSetMode(13,PI_OUTPUT);
 	gpioWrite(13,true);
-	gpioSetMode(12,PI_INPUT);
-	gpioSetPullUpDown(12,PI_PUD_UP);
-	gpioSetMode(16,PI_INPUT);
-	gpioSetPullUpDown(16,PI_PUD_UP);
-	gpioSetMode(11,PI_INPUT);
-	gpioSetPullUpDown(11,PI_PUD_UP);
-	gpioSetMode(22,PI_INPUT);
-	gpioSetPullUpDown(22,PI_PUD_UP);
 
-    gpioSetMode(,PI_INPUT);
-	gpioSetPullUpDown(,PI_PUD_UP);
-    gpioSetMode(,PI_INPUT);
-	gpioSetPullUpDown(,PI_PUD_UP);
-    gpioSetMode(,PI_INPUT);
-	gpioSetPullUpDown(,PI_PUD_UP);
-    gpioSetMode(,PI_INPUT);
-	gpioSetPullUpDown(22,PI_PUD_UP);
+    gpioSetMode(RIGHT_UP_T_ARM_LIMIT,PI_INPUT);
+	gpioSetPullUpDown(RIGHT_UP_T_ARM_LIMIT,PI_PUD_UP);
+	gpioSetMode(RIGHT_DOWN_T_ARM_LIMIT,PI_INPUT);
+	gpioSetPullUpDown(RIGHT_DOWN_T_ARM_LIMIT,PI_PUD_UP);
+	gpioSetMode(LEFT_UP_T_ARM_LIMIT,PI_INPUT);
+	gpioSetPullUpDown(LEFT_UP_T_ARM_LIMIT,PI_PUD_UP);
+	gpioSetMode(LEFT_DOWN_T_ARM_LIMIT,PI_INPUT);
+	gpioSetPullUpDown(LEFT_DOWN_T_ARM_LIMIT,PI_PUD_UP);
+
+    gpioSetMode(Y_FRONT_TAIL_LIMIT,PI_INPUT);
+	gpioSetPullUpDown(Y_FRONT_TAIL_LIMIT,PI_PUD_UP);
+    gpioSetMode(Y_BACK_TAIL_LIMIT,PI_INPUT);
+	gpioSetPullUpDown(Y_BACK_TAIL_LIMIT,PI_PUD_UP);
+    gpioSetMode(Z_UP_TAIL_LIMIT,PI_INPUT);
+	gpioSetPullUpDown(Z_UP_TAIL_LIMIT,PI_PUD_UP);
+    gpioSetMode(Z_DOWN_TAIL_LIMIT,PI_INPUT);
+	gpioSetPullUpDown(Z_DOWN_TAIL_LIMIT,PI_PUD_UP);
 
 
 	bool hanger_flag = true;
@@ -185,10 +195,10 @@ int main(void){
 
 			//回収機構のアーム（右スティック）
 
-            pochama_limit_y_front = gpioRead();
-            pochama_limit_y_back  = gpioRead();
-            pochama_limit_z_up    = gpioRead();
-            pochama_limit_z_down  = gpioRead();
+            pochama_limit_y_front = gpioRead(Y_FRONT_TAIL_LIMIT);
+            pochama_limit_y_back  = gpioRead(Y_BACK_TAIL_LIMIT);
+            pochama_limit_z_up    = gpioRead(Z_UP_TAIL_LIMIT);
+            pochama_limit_z_down  = gpioRead(Z_DOWN_TAIL_LIMIT);
 
             /* z_tail_mode 及び　y_tail_modeは、モーターの動きが
              *mode 1 :　動いていない
@@ -230,11 +240,11 @@ int main(void){
                 y_tail_mode = true;
             }
 
-            if(y_tail_mode == true && ((right_x != 0 && right_y != 0) || ((controller.press(RPDS3::UP)) || controller.press(RPDS3::DOWN))){
+            if(y_tail_mode == true && ((right_x != 0 || right_y != 0) || ((controller.press(RPDS3::UP)) || controller.press(RPDS3::DOWN))){
                 sent_y = 0;
                 y_tail_mode = false;
             }
-            if(z_tail_mode == true && ((right_x != 0 && right_y != 0) || ((controller.press(RPDS3:: RIGHT)) || controller.press(RPDS3::LEFT))){
+            if(z_tail_mode == true && ((right_x != 0 ||  right_y != 0) || ((controller.press(RPDS3:: RIGHT)) || controller.press(RPDS3::LEFT))){
                 sent_z = 0;
                 y_tail_mode = false;
             }
@@ -260,10 +270,10 @@ int main(void){
 
 			//回収機構の箱
 
-			t_arm_limit_right_up = gpioRead(12);
-			t_arm_limit_right_down = gpioRead(16);
-			t_arm_limit_left_up = gpioRead(11);
-			t_arm_limit_left_down = gpioRead(22);
+			t_arm_limit_right_up = gpioRead(RIGHT_UP_T_ARM_LIMIT);
+			t_arm_limit_right_down = gpioRead(RIGHT_DOWN_T_ARM_LIMIT);
+			t_arm_limit_left_up = gpioRead(LEFT_UP_T_ARM_LIMIT);
+			t_arm_limit_left_down = gpioRead(LEFT_DOWN_T_ARM_LIMIT);
 
 			if(t_arm_limit_right_down == true && t_arm_limit_left_down == true){
 				if(controller.press(RPDS3::TRIANGLE)){
