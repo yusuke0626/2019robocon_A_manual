@@ -41,8 +41,9 @@ int main(void){
 	bool y_tail_mode = false;
 	bool z_tail_mode = false;
 	bool sleep_flag = false;
-	bool rotation_lock = true;
+    double rotation_origin = 0;
 
+    double correct_deg = 0;
 	double regulation = 0.3;
 	int changer = 1;
 
@@ -84,7 +85,7 @@ int main(void){
 	int left_moving_mode = 1;
 
 	std::cout << "Your coat is :: RED -> SELECT and TRIANGLE BLUE -> SELECT and CROSS" << std::endl;
-	UPDATELOOP(controller,controller.button(RPDS3::SELECT) && (controller.button(RPDS3::TRIANGLE) || controller.button(RPDS3::CROSS))){	
+	UPDATELOOP(controller,!(controller.button(RPDS3::SELECT) && (controller.button(RPDS3::TRIANGLE) || controller.button(RPDS3::CROSS)))){
 		if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::TRIANGLE)){
 			coat_flag = true;
 			std::cout << "Red coat selected" << std::endl;
@@ -93,7 +94,7 @@ int main(void){
 			std::cout << "Blue coat selected" << std::endl;
 		}
 	}
-	std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
+		std::cout << "Please calibrate (push SELECT and START button) " << std::endl;
 
 	UPDATELOOP(controller,!(controller.button(RPDS3::SELECT) && controller.button(RPDS3::START))){
 	}
@@ -165,27 +166,19 @@ int main(void){
 			  }*/
 
 			double gyro_rad = gyro.yaw * M_PI / 180;
-			//double correct_deg = 0;
 
-			if(controller.stick(RPDS3::RIGHT_T) > 5 || controller.stick(RPDS3::LEFT_T) > 5){
-				rotation = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;//rotation component
-				rotation_lock = false;
-			}else{
-				rotation_lock = true;
-			}
+            if(controller.stick(RPDS3::RIGHT_T) > 5 || controller.stick(RPDS3::LEFT_T > 5){
+			    rotation = (controller.stick(RPDS3::RIGHT_T) - controller.stick(RPDS3::LEFT_T)) * 0.3;//rotation component
+                rotation_origin = gyro_rad;
+            }
 
-			double correct_deg = 0;
 
-			if(rotation_lock == true){
-				correct_deg = -gyro.yaw;
-			}else{
-				correct_deg = 0;
-			}
+            correct_deg = gyro_rad -rotation_origin;
 
-			wheel_velocity[0] = -std::sin(M_PI/4 + gyro_rad) * left_x + std::cos(M_PI/4 + gyro_rad) * left_y + rotation -correct_deg * 2;
-			wheel_velocity[1] = -std::cos(M_PI/4 + gyro_rad) * left_x + -std::sin(M_PI/4 + gyro_rad) * left_y + rotation -correct_deg * 2;
-			wheel_velocity[2] = std::sin(M_PI/4 + gyro_rad) * left_x + -std::cos(M_PI/4 + gyro_rad) * left_y + rotation -correct_deg * 2;
-			wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation -correct_deg * 2;
+			wheel_velocity[0] = -std::sin(M_PI/4 + gyro_rad) * left_x + std::cos(M_PI/4 + gyro_rad) * left_y + rotation -correct_deg * 0.5;
+			wheel_velocity[1] = -std::cos(M_PI/4 + gyro_rad) * left_x + -std::sin(M_PI/4 + gyro_rad) * left_y + rotation -correct_deg * 0.5;
+			wheel_velocity[2] = std::sin(M_PI/4 + gyro_rad) * left_x + -std::cos(M_PI/4 + gyro_rad) * left_y + rotation -correct_deg * 0.5;
+			wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation -correct_deg * 0.5;
 
 
 			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, wheel_velocity[1] * 0.55 * regulation + rotation);
@@ -239,7 +232,7 @@ int main(void){
 
 			if(right_distance >= 20){
 				if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
-					sent_y = 0; 
+					sent_y = 0;
 					sent_z = -right_y;
 				}else if(right_theta > (M_PI/4)*3 || right_theta < -(M_PI/4)*3){
 					sent_y = right_x;
