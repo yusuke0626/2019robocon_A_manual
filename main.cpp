@@ -34,6 +34,7 @@ int main(void){
 	constexpr int Z_UP_TAIL_LIMIT = 9;
 	constexpr int Z_DOWN_TAIL_LIMIT = 10;
 
+    short bathtowel_arm_mode = 0;
 	bool y_tail_mode = false;
 	bool z_tail_mode = false;
 	bool sleep_flag = false;
@@ -41,12 +42,16 @@ int main(void){
 
 	double correct_deg = 0;
 	double regulation = 0.3;
+   // double rotation_correction = 0;
 	int changer = 1;
 	bool hanger_flag = true;
 	//bool box_flag = true;
 	bool coat_flag = true;
-	int send_arm = 0;
+	bool circle_flag = false;
+    bool cross_flag = false;
 
+    short right_arm_run = false;
+    short left_arm_run  = false;
 	controller.update();
 	try{
 		ms.init();
@@ -154,15 +159,21 @@ int main(void){
 				rotation_origin = gyro.yaw;
 			}
 
-
 			correct_deg = gyro.yaw - rotation_origin;
+
+            if(correct_deg > 80){
+                correct_deg = 80;
+            }
+
+            //rotation_correction = correct_deg * std::sin(
+
 
 
 			std::cout << correct_deg << std::endl;
-			wheel_velocity[0] = -std::sin(M_PI/4 + gyro_rad) * left_x + std::cos(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg  * 3;
-			wheel_velocity[1] = -std::cos(M_PI/4 + gyro_rad) * left_x + -std::sin(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg * 3;
-			wheel_velocity[2] = std::sin(M_PI/4 + gyro_rad) * left_x + -std::cos(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg  * 3;
-			wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg   * 3;
+			wheel_velocity[0] = -std::sin(M_PI/4 + gyro_rad) * left_x + std::cos(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg;
+			wheel_velocity[1] = -std::cos(M_PI/4 + gyro_rad) * left_x + -std::sin(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg;
+			wheel_velocity[2] = std::sin(M_PI/4 + gyro_rad) * left_x + -std::cos(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg;
+			wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg;
 
 
 			//-----------------------------------------ハンガー昇降機 ---------------------------------------------//
@@ -318,30 +329,76 @@ int main(void){
 			}
 
 			//-------------------バスタオルのアーム----------------------------------------------------------//
-			if(!(arm_limit_right_up == true && arm_limit_left_up == true)){
-				if(controller.press(RPDS3::CIRCLE)){
-					send_arm = 80;
-				}
-			}
 
-			if(!(arm_limit_right_down == true && arm_limit_left_down == true)){
-				if(controller.press(RPDS3::CROSS)){
-					send_arm = -80;
-				}
-			}
+            if(controller.press(RPDS3::CIRCLE)){
+                circle_flag = true;
+            }
 
-			if(send_arm != 0){
-				if(controller.press(RPDS3::CIRCLE) || controller.press(RPDS3::CROSS)){
-					send_arm = 0;
-				}
-			}
+            if(controller.press((RPDS3::CROSS)){
+                cross_flag = true;
+            }
+
+            if(arm_status == UP || arm_status == DOWN){
+                if(circle_flag == true || cross_flag == true){
+                    send_arm_right = 0;
+                    send_arm_left  = 0;
+                    circle_flag = false;
+                    cross_flag = false;
+                    arm_status = STOP;
+                }
+            }
+
+            if(circle_flag == true){
+                if(arm_limit_right_up == false){
+                    send_arm_right = 80;
+                    right_arm_run = true;
+                }else{
+                    send_arm_right = 0;
+                    right_arm_run = STOP;
+                }
+
+                if(arm_limit_left_up == false){
+                    send_arm_left = 80;
+                    left_arm_run = true;
+                }else{
+                    send_arm_left = 0;
+                    left_arm_run = false;
+                }
+
+                if(right_arm_run == STOP && left_arm_status == STOP){
+                    circle_flag = false;
+                }
+            }
+
+            if(cross_flag == true){
+                if(arm_limit_right_down == false){
+                    send_arm_right = -80;
+                    right_arm_run = true;
+                }else{
+                    send_arm_right = 0;
+                    right_arm_run = false;
+                }
+
+                if(arm_limit_left_up == false){
+                    send_arm_run = -80;
+                    right_arm_run = true;
+                }else{
+                    send_arm_left = 0;
+                    right_arm_run = false;
+                }
+
+                if(right_arm_run == STOP && left_arm_status == STOP){
+                    cross_flag = false;
+                }
+            }
+
 			//-------------------モータ動作関数--------------------------------------------------------------//
 			ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,send_arm);
 			ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,send_arm);
 			ms.send(MECHANISM_MDD_NUM,Y_ARM, sent_y * regulation);
 			ms.send(MECHANISM_MDD_NUM,Z_ARM, sent_z * regulation );
-			ms.send(MECHANISM_MDD_NUM,BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,send_arm);
-			ms.send(MECHANISM_MDD_NUM,BATH_TOWEL_MDD_NUM,LEFT_T_ARM,send_arm);
+			ms.send(MECHANISM_MDD_NUM,BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,send_arm_right);
+			ms.send(MECHANISM_MDD_NUM,BATH_TOWEL_MDD_NUM,LEFT_T_ARM,send_arm_left);
 			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, wheel_velocity[1] * 0.55 * regulation + rotation);
 			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  wheel_velocity[2] * 0.55 * regulation + rotation);
 			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,wheel_velocity[0] * 0.55 * regulation + rotation);
