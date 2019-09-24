@@ -4,6 +4,7 @@
 #include"Sensor-master/GY521/GY521.hpp"
 #include<iostream>
 #include<cmath>
+#include<chrono>
 
 RPMS::MotorSerial ms;
 RPDS3::DualShock3 controller;
@@ -47,8 +48,8 @@ int main(void){
 	bool hanger_flag = true;
 	//bool box_flag = true;
 	bool coat_flag = true;
-	bool circle_flag = false;
-	bool cross_flag = false;
+	int circle_flag = -1;
+	int cross_flag = -1;
 
 	short right_arm_run = false;
 	short left_arm_run  = false;
@@ -62,6 +63,7 @@ int main(void){
 
 	gpioSetMode(13,PI_OUTPUT);//RUN LED
 	gpioWrite(13,true);
+    gpioSetMode(27,PI_OUTPUT);
 
 	gpioSetMode(RIGHT_UP_T_ARM_LIMIT,PI_INPUT);
 	gpioSetPullUpDown(RIGHT_UP_T_ARM_LIMIT,PI_PUD_UP);
@@ -110,13 +112,19 @@ int main(void){
 		if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::SQUARE)){
 			sleep_flag = false;
 			std::cout << "wake up" << std::endl;
+
 		}
+        gpioWrite(27,PI_OUTPUT);
+
+
 		UPDATELOOP(controller, sleep_flag == false){
 			if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::SQUARE)){
 				sleep_flag = true;
 				std::cout << "zzz" << std::endl;
 				break;
 			}
+
+
 
 			double right_theta = 0;
 			double rotation = 0;
@@ -182,12 +190,12 @@ int main(void){
 			wheel_velocity[1] = -std::cos(M_PI/4 + gyro_rad) * left_x + -std::sin(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg * 1.5;
 			wheel_velocity[2] = std::sin(M_PI/4 + gyro_rad) * left_x + -std::cos(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg *1.5;
 			wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation + correct_deg *1.5;
-			
+
 			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, wheel_velocity[1] * 0.55 * regulation + rotation);
 			ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  wheel_velocity[2] * 0.55 * regulation + rotation);
 			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,wheel_velocity[0] * 0.55 * regulation + rotation);
 			ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM, wheel_velocity[3] * 0.55 * regulation + rotation);
-		
+
 
 			//-----------------------------------------ハンガー昇降機 ---------------------------------------------//
 			if(controller.press(RPDS3::SQUARE)){
@@ -432,5 +440,6 @@ int main(void){
 
 	ms.send(255,255,0);
 	gpioWrite(13,false);
+    gpioWrite(27,false);
 	return 0;
 }
