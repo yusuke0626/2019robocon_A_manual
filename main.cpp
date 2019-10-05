@@ -345,12 +345,11 @@ int main(void){
 					sent_z = -200;
 				}
 
-				if(arm_count < 15){
+				//if(arm_count < 15){
 					sent_y = 120;
 					y_tail_mode = true;
-					++arm_count;
 					y_arm_special_mode = true;
-				}
+				//}
 
 				triangle_press = true;
 			}
@@ -358,11 +357,14 @@ int main(void){
 			if(arm_count >= 15){
 				sent_y = 0;
 				y_tail_mode = false;
+                y_arm_special_mode = false;
 			}
 
 			if(y_arm_special_mode == true){
 				++arm_count;
 			}
+
+            std::cout << arm_count << std::endl;
 
 
 			if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && (pochama_limit_z_down == true && arm_count >= 15)){
@@ -380,6 +382,7 @@ int main(void){
 					solenoid_count = 0;
 					triangle_press = false;
 					box_permission_flag = false;
+                    arm_count = 0;
 				}
 			}
 
@@ -515,7 +518,7 @@ int main(void){
 					++led_count;
 					break;
 			}*/
-			usleep(1000);
+			//usleep(1000);
 		}
 		ms.send(255,255,0);
 	}
