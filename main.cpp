@@ -16,12 +16,17 @@ int main(void){
     constexpr short BOTTOM_MDD = 2;
     constexpr short DOWN_MDD   = 11;
     constexpr short UP_MDD     = 10;
-    constexpr short TOP_MDD    = 16
+    constexpr short TOP_MDD    = 16;
+    constexpr short TAPE_LED   = 12;
 
     //-----PORT------//
     constexpr short UNC_PORT        = 2;
     constexpr short SOLENOID_PORT   = 4;
     constexpr short ARM_PORT        = 3;
+
+    constexpr short TAPELED = 84;
+    constexpr short LED_1 = 10;
+    constexpr short LED_2 = 11;
 
     constexpr int RIGHT_UP_T_ARM_LIMIT   = 12;
     constexpr int RIGHT_DOWN_T_ARM_LIMIT = 16;
@@ -84,6 +89,7 @@ int main(void){
     bool coat_chosen = false;
     int solenoid_count = 0;
     bool limit_emergency_flag = false;
+    //int tape_led = 0;
 
     std::cout << "Your coat is :: RED -> SELECT and TRIANGLE BLUE -> SELECT and CROSS" << std::endl;
 
@@ -376,15 +382,6 @@ int main(void){
                     box_permission_flag = false;
                 }
             }
-            /*if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && pochama_limit_z_up == true){
-              if(controller.press(RPDS3::TRIANGLE)){
-              ms.send(MECHANISM_MDD_NUM,BOX,2);
-              }else{
-              ms.send(MECHANISM_MDD_NUM,BOX,0);
-              }
-              }else{
-              ms.send(MECHANISM_MDD_NUM,BOX,0);
-              }*/
 
             if(controller.button(RPDS3::R1) == true){
                 regulation = 0.5;
@@ -408,7 +405,7 @@ int main(void){
                mode 1 -> stop
                mode 2 -> up
                mode 3 -> down
-               */std::cout << right_moving_mode << std:
+               *///std::cout << right_moving_mode << std:
 
             if(right_moving_mode == 1 && left_moving_mode == 1){
                 if((controller.press(RPDS3::CIRCLE)) && !(controller.button(RPDS3::L1))){
@@ -466,6 +463,7 @@ int main(void){
                 }
 
             }
+
             usleep(1000);
         }
         ms.send(255,255,0);
