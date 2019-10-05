@@ -11,22 +11,17 @@ RPDS3::DualShock3 controller;
 
 
 int main(void){
-    constexpr short BATH_TOWEL_MDD_NUM = 17;
-    constexpr short UNDERCARRIAGE_MDD_NUM = 16;
-    constexpr short MECHANISM_MDD_NUM = 10;
-    constexpr short RIGHT_FRONT_MOTOR_NUM = 3;//2
-    constexpr short RIGHT_BACK_MOTOR_NUM  = 2;//3
-    constexpr short LEFT_FRONT_MOTOR_NUM  = 5;//4
-    constexpr short LEFT_BACK_MOTOR_NUM   = 4;//5
-    constexpr short BOX = 6;
-    constexpr short Z_ARM = 5;
-    constexpr short Y_ARM = 4;
-    //constexpr short PWM_MAX_VALUE = 180;
-    constexpr short RIGHT_T_ARM = 2;
-    constexpr short LEFT_T_ARM = 3;
-    constexpr short TOWEL_SOLENOID = 8;
-    //constexpr short STICK_MAX_VALUE = 250;
-    constexpr short HANGER_SOLENOID = 7;
+
+    //------MDD------//
+    constexpr short BOTTOM_MDD = 2;
+    constexpr short DOWN_MDD   = 11;
+    constexpr short UP_MDD     = 10;
+    constexpr short TOP_MDD    = 16
+
+    //-----PORT------//
+    constexpr short UNC_PORT        = 2;
+    constexpr short SOLENOID_PORT   = 4;
+    constexpr short ARM_PORT        = 3;
 
     constexpr int RIGHT_UP_T_ARM_LIMIT   = 12;
     constexpr int RIGHT_DOWN_T_ARM_LIMIT = 16;
@@ -152,21 +147,21 @@ int main(void){
             wheel_velocity[3] = std::cos(M_PI/4 + gyro_rad) * left_x + std::sin(M_PI/4 + gyro_rad) * left_y + rotation;
 
 
-            ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_FRONT_MOTOR_NUM, wheel_velocity[1] * 0.55 * regulation + rotation);
-            ms.send(UNDERCARRIAGE_MDD_NUM, LEFT_BACK_MOTOR_NUM,  wheel_velocity[2] * 0.55 * regulation + rotation);
-            ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_FRONT_MOTOR_NUM,wheel_velocity[0] * 0.55 * regulation + rotation);
-            ms.send(UNDERCARRIAGE_MDD_NUM, RIGHT_BACK_MOTOR_NUM, wheel_velocity[3] * 0.55 * regulation + rotation);
+            ms.send(BOTTOM_MDD, MOTOR_PORT , wheel_velocity[1] * 0.55 * regulation + rotation);
+            ms.send(DOWN_MDD,   MOTOR_PORT , wheel_velocity[2] * 0.55 * regulation + rotation);
+            ms.send(UP_MDD,     MOTOR_NUM  , wheel_velocity[0] * 0.55 * regulation + rotation);
+            ms.send(TOP_MDD,    MOTOR_PORT , wheel_velocity[3] * 0.55 * regulation + rotation);
 
 
             //---------------------ハンガー昇降機（▲　）----------------------------------------//
             if(controller.press(RPDS3::SQUARE) && !(controller.button(RPDS3::SELECT))){
                 if(hanger_flag == true){
-                    ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,1);
-                    ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,2);
+                    ms.send(UP_MDD, SOLENOID_PORT, 261);
+                    ms.send(UP_MDD, SOLENOID_PORT, 262);
                     hanger_flag = false;
                     std::cout << "up" << std::endl;
                 }else{
-                    ms.send(MECHANISM_MDD_NUM,HANGER_SOLENOID,0);
+                    ms.send(UP_MDD, SOLENOID_PORT, 0);
                     hanger_flag = true;
                     std::cout << "down" << std::endl;
                 }
@@ -192,7 +187,6 @@ int main(void){
             }
 
             //------------------------------------------------------------------------//
-
 
             //-------------------回収機構のアーム（右スティック）---------------------------------//
 
@@ -321,11 +315,11 @@ int main(void){
 
             }
 
-            ms.send(MECHANISM_MDD_NUM,Y_ARM, sent_y * regulation);
-            ms.send(MECHANISM_MDD_NUM,Z_ARM, sent_z * regulation );
+            ms.send(TOP_MDD, ARM_PORT, sent_y * regulation);
+            ms.send(UP_MDD,  ARM_PORT, sent_z * regulation );
 
 
-            //回収機構の箱 
+            //回収機構の箱
             bool  t_arm_limit_right_up = gpioRead(RIGHT_UP_T_ARM_LIMIT);
             bool  t_arm_limit_right_down = gpioRead(RIGHT_DOWN_T_ARM_LIMIT);
             bool  t_arm_limit_left_up = gpioRead(LEFT_UP_T_ARM_LIMIT);
@@ -373,10 +367,10 @@ int main(void){
 
             if(triangle_press == true && box_permission_flag == true){
                 if(solenoid_count <= 10){
-                    ms.send(MECHANISM_MDD_NUM,BOX,2);
+                    ms.send(TOP_MDD,BOX,261);
                     ++solenoid_count;
                 }else{
-                    ms.send(MECHANISM_MDD_NUM,BOX,0);
+                    ms.send(TOP_MDD,BOX,0);
                     solenoid_count = 0;
                     triangle_press = false;
                     box_permission_flag = false;
@@ -401,12 +395,11 @@ int main(void){
 
             //バスタオルのソレノイド
             if(controller.button(RPDS3::L1) && controller.button(RPDS3::CIRCLE)){
-                ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,1);
-                ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,2);
+                ms.send(DOWN_MDD,SOLENOID_PORT,261);
+                ms.send(DOWN_MDD,SOLENOID_PORT,262);
 
             }else{
-                ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,-1);
-                ms.send(BATH_TOWEL_MDD_NUM,TOWEL_SOLENOID,-2);
+                ms.send(DOWN_MDD,SOLENOID_PORT,0);
             }
 
             //バスタオルのアーム
@@ -415,19 +408,19 @@ int main(void){
                mode 1 -> stop
                mode 2 -> up
                mode 3 -> down
-               */
+               */std::cout << right_moving_mode << std:
 
             if(right_moving_mode == 1 && left_moving_mode == 1){
                 if((controller.press(RPDS3::CIRCLE)) && !(controller.button(RPDS3::L1))){
-                    ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,50);
-                    ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,50);//モータのハンダ付けが違う向きのため同じ符号
+                    ms.send(DOWN_MDD,   ARM_PORT,50);//右
+                    ms.send(BOTTOM_MDD, ARM_PORT,50);//モータのハンダ付けが違う向きのため同じ符号
                     right_moving_mode = 2;
                     left_moving_mode = 2;
                 }
 
                 if(controller.press(RPDS3::CROSS)){
-                    ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-50);
-                    ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-50);
+                    ms.send(DOWN_MDD   ,ARM_PORT,-50);
+                    ms.send(BOTTOM_MDD ,ARM_PORT,-50);
                     right_moving_mode = 3;
                     left_moving_mode = 3;
                 }
@@ -437,39 +430,39 @@ int main(void){
                 if((controller.press(RPDS3::CIRCLE) || controller.press(RPDS3::CROSS)) && !(controller.button(RPDS3::L1))){
                     right_moving_mode = 1;
                     left_moving_mode = 1;
-                    ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
-                    ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+                    ms.send(DOWN_MDD   ,ARM_PORT,0);
+                    ms.send(BOTTOM_MDD ,ARM_PORT,0);
                     std::cout << "stop\n";
                 }
 
                 //右リミットスイッチの反応
                 if(right_moving_mode == 2 && t_arm_limit_right_down == true){
                     right_moving_mode = 1;
-                    ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
+                    ms.send(DOWN_MDD,ARM_PORT,0);
                     std::cout << "r_limit\n";
                 }else if(right_moving_mode == 3 && t_arm_limit_right_up == true){
                     right_moving_mode = 1;
-                    ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,0);
+                    ms.send(DOWN_MDD,ARM_PORT,0);
                     std::cout << "r_limit\n";
                 }
 
                 //左リミットスイッチの反応
                 if(left_moving_mode == 2 && t_arm_limit_left_down == true){
                     left_moving_mode = 1;
-                    ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+                    ms.send(BOTTOM_MDD,ARM_PORT,0);
                     std::cout << "l_limit\n";
                 }else if(left_moving_mode == 3 && t_arm_limit_left_up == true){
                     left_moving_mode = 1;
-                    ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,0);
+                    ms.send(BOTTOM_MDD,ARM_PORT,0);
                     std::cout << "l_limit\n";
                 }
 
                 if(right_moving_mode == 2 && left_moving_mode == 2){
-                    ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,-150);
-                    ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,-150);
+                    ms.send(DOWN_MDD,   ARM_PORT,-150);
+                    ms.send(BOTTOM_MDD, ARM_PORT,-150);
                 }else if(right_moving_mode == 3 && left_moving_mode == 3){
-                    ms.send(BATH_TOWEL_MDD_NUM,RIGHT_T_ARM,150);
-                    ms.send(BATH_TOWEL_MDD_NUM,LEFT_T_ARM,150);
+                    ms.send(DOWN_MDD,   ARM_PORT,150);
+                    ms.send(BOTTOM_MDD, ARM_PORT,150);
                 }
 
             }
