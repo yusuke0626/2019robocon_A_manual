@@ -129,7 +129,7 @@ int main(void){
 	UPDATELOOP(controller, !(controller.button(RPDS3::START) && controller.button(RPDS3::RIGHT))){
 		if(controller.button(RPDS3::SELECT) && controller.press(RPDS3::SQUARE)){
 			sleep_flag = false;
-			led_lightning_mode = 10;
+			led_lightning_mode = 1;
 			std::cout << "wake up" << std::endl;
 		}
 
@@ -170,6 +170,13 @@ int main(void){
 			ms.send(DOWN_MDD,   UNC_PORT , -wheel_velocity[2] * 0.8 * regulation + rotation * 1.2);
 			ms.send(UP_MDD,     UNC_PORT  , -wheel_velocity[0] * 0.8 * regulation + rotation * 1.2);
 			ms.send(TOP_MDD,    UNC_PORT , -wheel_velocity[3] * 0.8 * regulation + rotation * 1.2);
+
+			//std::cout << "[0]"  << -wheel_velocity[1] * 0.8 * regulation + rotation * 1.2 << std::endl;
+			//std::cout << "[1]"  << -wheel_velocity[2] * 0.8 * regulation + rotation * 1.2 << std::endl;
+			//std::cout << "[2]"  << -wheel_velocity[0] * 0.8 * regulation + rotation * 1.2 << std::endl;
+			//std::cout << "[3]"  << -wheel_velocity[3] * 0.8 * regulation + rotation * 1.2 << std::endl;
+
+
 
 
 			//---------------------ハンガー昇降機（▲　）----------------------------------------//
@@ -226,10 +233,10 @@ int main(void){
 			}
 
 			if(limit_emergency_flag == true){
-				pochama_limit_y_front = true;//trueの時おされてない
-				pochama_limit_y_back  = true;
-				pochama_limit_z_up    = true;
-				pochama_limit_z_down  = true;
+				pochama_limit_y_front = false;//trueの時おされてない
+				pochama_limit_y_back  = false;
+				pochama_limit_z_up    = false;
+				pochama_limit_z_down  = false;
 			}else{
 				pochama_limit_y_front = gpioRead(Y_FRONT_TAIL_LIMIT);
 				pochama_limit_y_back  = gpioRead(Y_BACK_TAIL_LIMIT);
@@ -391,7 +398,6 @@ int main(void){
 
 			if((t_arm_limit_right_down == true && t_arm_limit_left_down == true) && (pochama_limit_z_down == true && arm_count >= 15)){
 				box_permission_flag = true;
-				std::cout << "ppppppppppppppppppppppp" << std::endl;
 				arm_count = 0;
 				y_arm_special_mode = false;
 			}
@@ -407,7 +413,6 @@ int main(void){
 				if(solenoid_count <= 15){
 					ms.send(TOP_MDD,SOLENOID_PORT,251);
 					++solenoid_count;
-					//std::cout << "やりますねぇ！" << std::endl;
 					led_lightning_mode = 10;
 				}else{
 					ms.send(TOP_MDD,SOLENOID_PORT,0);
@@ -429,7 +434,6 @@ int main(void){
 			if(controller.button(RPDS3::L1) && controller.button(RPDS3::CIRCLE)){
 				ms.send(DOWN_MDD,SOLENOID_PORT,251);
 				ms.send(DOWN_MDD,SOLENOID_PORT,252);
-				//std::cout << "aaaaaaaaa" << std::endl;
 
 			}else{
 				ms.send(DOWN_MDD,SOLENOID_PORT,0);
@@ -441,7 +445,7 @@ int main(void){
 			   mode 1 -> stop
 			   mode 2 -> up
 			   mode 3 -> down
-			   *///std::cout << right_moving_mode << std:
+			*/
 
 			if(right_moving_mode == 1 && left_moving_mode == 1){
 				if((controller.press(RPDS3::CIRCLE)) && !(controller.button(RPDS3::L1))){
@@ -544,14 +548,14 @@ int main(void){
 						ms.send(TAPELED,70,wait);
 						break;
 					case 8:
-						ms.send(TAPELED,80,wait);
-						ms.send(TAPELED,80,wait);
-						ms.send(TAPELED,80,wait);
+						ms.send(TAPELED,80,100);
+						ms.send(TAPELED,80,100);
+						ms.send(TAPELED,80,100);
 						break;
 					case 9:
-						ms.send(TAPELED,90,wait);
-						ms.send(TAPELED,90,wait);
-						ms.send(TAPELED,90,wait);
+						ms.send(TAPELED,90,100);
+						ms.send(TAPELED,90,100);
+						ms.send(TAPELED,90,100);
 						break;
 					case 10:
 						ms.send(TAPELED,100,wait);
