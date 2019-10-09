@@ -475,7 +475,20 @@ int main(void){
 					std::cout << "stop\n";
 				}
 
-				//右リミットスイッチの反応
+				if(limit_emergency_flag == true){
+					if(controller.button(RPDS3::CIRCLE)){
+						ms.send(DOWN_MDD,ARM_PORT,-150);
+						ms.send(BOTTOM_MDD,ARM_PORT,-150);
+					}else if(controller.button(RPDS3::CROSS)){
+						ms.send(DOWN_MDD,ARM_PORT,150);
+						ms.send(BOTTOM_MDD,ARM_PORT,150);
+					}else{
+						ms.send(DOWN_MDD,ARM_PORT,0);
+						ms.send(BOTTOM_MDD,ARM_PORT,0);
+					}
+				}else{
+
+                //右リミットスイッチの反応
 				if(right_moving_mode == 2 && t_arm_limit_right_down == true){
 					right_moving_mode = 1;
 					ms.send(DOWN_MDD,ARM_PORT,0);
@@ -497,18 +510,7 @@ int main(void){
 					std::cout << "lll_limit\n";
 				}
 
-				if(limit_emergency_flag == true){
-					if(controller.button(RPDS3::CIRCLE)){
-						ms.send(DOWN_MDD,ARM_PORT,-150);
-						ms.send(BOTTOM_MDD,ARM_PORT,-150);
-					}else if(controller.button(RPDS3::CROSS)){
-						ms.send(DOWN_MDD,ARM_PORT,150);
-						ms.send(BOTTOM_MDD,ARM_PORT,150);
-					}else{
-						ms.send(DOWN_MDD,ARM_PORT,0);
-						ms.send(BOTTOM_MDD,ARM_PORT,0);
-					}
-				}else{
+
 
 					if(right_moving_mode == 2 && left_moving_mode == 2){
 						ms.send(DOWN_MDD,   ARM_PORT,-150);
