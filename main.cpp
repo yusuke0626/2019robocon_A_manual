@@ -26,10 +26,10 @@ int main(void){
 
 	constexpr short TAPELED = 84;
 
-	constexpr int RIGHT_UP_T_ARM_LIMIT   = 12;
-	constexpr int RIGHT_DOWN_T_ARM_LIMIT = 16;
-	constexpr int LEFT_UP_T_ARM_LIMIT    = 11;
-	constexpr int LEFT_DOWN_T_ARM_LIMIT  = 22;
+	constexpr int RIGHT_UP_T_ARM_LIMIT   = 16;//12
+	constexpr int RIGHT_DOWN_T_ARM_LIMIT = 12;//16
+	constexpr int LEFT_UP_T_ARM_LIMIT    = 22;//11
+	constexpr int LEFT_DOWN_T_ARM_LIMIT  = 11;//22
 
 	constexpr int Y_FRONT_TAIL_LIMIT = 26;
 	constexpr int Y_BACK_TAIL_LIMIT = 19;
