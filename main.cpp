@@ -237,6 +237,7 @@ int main(void){
 				pochama_limit_y_back  = false;
 				pochama_limit_z_up    = false;
 				pochama_limit_z_down  = false;
+				std::cout << "em" << std::endl;
 			}else{
 				pochama_limit_y_front = gpioRead(Y_FRONT_TAIL_LIMIT);
 				pochama_limit_y_back  = gpioRead(Y_BACK_TAIL_LIMIT);
@@ -362,28 +363,37 @@ int main(void){
 			bool  t_arm_limit_left_up = gpioRead(LEFT_UP_T_ARM_LIMIT);
 			bool  t_arm_limit_left_down = gpioRead(LEFT_DOWN_T_ARM_LIMIT);
 
-			if(controller.press(RPDS3::TRIANGLE) && !(controller.button(RPDS3::SELECT))){
-				if(t_arm_limit_right_down == false){
-					right_moving_mode = 2;
+			if(limit_emergency_flag == false){
+				if(controller.press(RPDS3::TRIANGLE) && !(controller.button(RPDS3::SELECT))){
+					if(t_arm_limit_right_down == false){
+						right_moving_mode = 2;
+					}
+
+					if(t_arm_limit_left_down == false){
+						left_moving_mode = 2;
+					}
+
+					if(pochama_limit_z_down == false){
+						z_tail_mode = true;
+						sent_z = -200;
+					}
+
+					//if(arm_count < 15){
+					sent_y = 120;
+					y_tail_mode = true;
+					y_arm_special_mode = true;
+					//}
+
+					triangle_press = true;
 				}
-
-				if(t_arm_limit_left_down == false){
-					left_moving_mode = 2;
+			}else{
+				if(controller.button(RPDS3::TRIANGLE)){
+					ms.send(TOP_MDD,SOLENOID_PORT,251);
+				}else{
+					ms.send(TOP_MDD,SOLENOID_PORT,0);
 				}
-
-				if(pochama_limit_z_down == false){
-					z_tail_mode = true;
-					sent_z = -200;
-				}
-
-				//if(arm_count < 15){
-				sent_y = 120;
-				y_tail_mode = true;
-				y_arm_special_mode = true;
-				//}
-
-				triangle_press = true;
 			}
+
 
 			if(arm_count >= 30){
 				sent_y = 0;
@@ -445,7 +455,7 @@ int main(void){
 			   mode 1 -> stop
 			   mode 2 -> up
 			   mode 3 -> down
-			*/
+			   */
 
 			if(right_moving_mode == 1 && left_moving_mode == 1){
 				if((controller.press(RPDS3::CIRCLE)) && !(controller.button(RPDS3::L1))){
@@ -488,27 +498,27 @@ int main(void){
 					}
 				}else{
 
-                //右リミットスイッチの反応
-				if(right_moving_mode == 2 && t_arm_limit_right_down == true){
-					right_moving_mode = 1;
-					ms.send(DOWN_MDD,ARM_PORT,0);
-					std::cout << "r_limit\n";
-				}else if(right_moving_mode == 3 && t_arm_limit_right_up == true){
-					right_moving_mode = 1;
-					ms.send(DOWN_MDD,ARM_PORT,0);
-					std::cout << "rrr_limit\n";
-				}
+					//右リミットスイッチの反応
+					if(right_moving_mode == 2 && t_arm_limit_right_down == true){
+						right_moving_mode = 1;
+						ms.send(DOWN_MDD,ARM_PORT,0);
+						std::cout << "r_limit\n";
+					}else if(right_moving_mode == 3 && t_arm_limit_right_up == true){
+						right_moving_mode = 1;
+						ms.send(DOWN_MDD,ARM_PORT,0);
+						std::cout << "rrr_limit\n";
+					}
 
-				//左リミットスイッチの反応
-				if(left_moving_mode == 2 && t_arm_limit_left_down == true){
-					left_moving_mode = 1;
-					ms.send(BOTTOM_MDD,ARM_PORT,0);
-					std::cout << "l_limit\n";
-				}else if(left_moving_mode == 3 && t_arm_limit_left_up == true){
-					left_moving_mode = 1;
-					ms.send(BOTTOM_MDD,ARM_PORT,0);
-					std::cout << "lll_limit\n";
-				}
+					//左リミットスイッチの反応
+					if(left_moving_mode == 2 && t_arm_limit_left_down == true){
+						left_moving_mode = 1;
+						ms.send(BOTTOM_MDD,ARM_PORT,0);
+						std::cout << "l_limit\n";
+					}else if(left_moving_mode == 3 && t_arm_limit_left_up == true){
+						left_moving_mode = 1;
+						ms.send(BOTTOM_MDD,ARM_PORT,0);
+						std::cout << "lll_limit\n";
+					}
 
 
 
