@@ -256,15 +256,15 @@ int main(void){
 			if(right_distance >= 20){
 				if(right_theta >= (M_PI/4) && right_theta <= (M_PI/4) * 3){
 					sent_y = 0;
-					sent_z = -right_y;
+					sent_z = -right_y * 1.8;
 				}else if(right_theta > (M_PI/4)*3 || right_theta < -(M_PI/4)*3){
-					sent_y = right_x;
+					sent_y = right_x * 1.8;
 					sent_z = 0;
 				}else if(right_theta >= -(M_PI/4)*3 && right_theta <= -(M_PI/4)){
 					sent_y = 0;
-					sent_z = -right_y;
+					sent_z = -right_y * 1.8;
 				}else if(right_theta > -(M_PI/4)  && right_theta < (M_PI/4)){
-					sent_y = right_x;
+					sent_y = right_x * 1.8;
 					sent_z = 0;
 				}
 			}else{
