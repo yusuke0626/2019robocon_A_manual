@@ -354,7 +354,7 @@ int main(void){
 			}
 
 			ms.send(TOP_MDD, ARM_PORT, sent_y * regulation);
-			ms.send(UP_MDD,  ARM_PORT, sent_z * regulation );
+			ms.send(UP_MDD,  ARM_PORT, -sent_z * regulation );
 
 
 			//回収機構の箱
